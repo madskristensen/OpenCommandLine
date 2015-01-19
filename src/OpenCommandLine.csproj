@@ -135,7 +135,7 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Images.png" />
+    <None Include="Resources\buttons.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\icon.png">
