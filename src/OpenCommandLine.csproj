@@ -138,6 +138,9 @@
   <ItemGroup>
     <Compile Include="Guids.cs" />
     <Compile Include="OpenCommandLinePackage.cs" />
+    <Compile Include="Options.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

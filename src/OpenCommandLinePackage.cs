@@ -14,6 +14,7 @@ namespace MadsKristensen.OpenCommandLine
     [InstalledProductRegistration("#110", "#112", Version, IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
+    [ProvideOptionPage(typeof(Options), "Command Line", "General", 101, 104, true, new[] { "cmd", "powershell", "bash" })]
     [Guid(GuidList.guidOpenCommandLinePkgString)]
     public sealed class OpenCommandLinePackage : Package
     {
@@ -41,7 +42,9 @@ namespace MadsKristensen.OpenCommandLine
             if (string.IsNullOrEmpty(path))
                 return;
 
-            ProcessStartInfo start = new ProcessStartInfo("cmd", "/k")
+            Options options = this.GetDialogPage(typeof(Options)) as Options;
+
+            ProcessStartInfo start = new ProcessStartInfo(options.Command, options.Arguments)
             {
                 WorkingDirectory = path
             };
