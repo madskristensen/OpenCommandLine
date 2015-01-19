@@ -18,7 +18,7 @@ namespace MadsKristensen.OpenCommandLine
     [Guid(GuidList.guidOpenCommandLinePkgString)]
     public sealed class OpenCommandLinePackage : Package
     {
-        public const string Version = "1.0";
+        public const string Version = "1.1";
         private static DTE2 _dte;
 
         protected override void Initialize()
