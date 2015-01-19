@@ -2,11 +2,12 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
     <Identity Id="f4ab1e64-5d35-4f06-bad9-bf414f4b3bbb" Version="1.0" Language="en-US" Publisher="Mads Kristensen" />
-    <DisplayName>OpenCommandLine</DisplayName>
+    <DisplayName>Open Command Line</DisplayName>
     <Description>Opens a command line (cmd) at the root of the project</Description>
     <License>Resources\LICENSE</License>
     <Icon>Resources\icon.png</Icon>
     <PreviewImage>Resources\preview.png</PreviewImage>
+    <Tags>Solution Explorer, cmd</Tags>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0]" />
