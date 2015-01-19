@@ -27,12 +27,9 @@ namespace MadsKristensen.OpenCommandLine
             _dte = GetService(typeof(DTE)) as DTE2;
 
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (null != mcs)
-            {
-                CommandID menuCommandID = new CommandID(GuidList.guidOpenCommandLineCmdSet, (int)PkgCmdIDList.cmdidOpenCommandLine);
-                MenuCommand menuItem = new MenuCommand(OpenCmd, menuCommandID);
-                mcs.AddCommand(menuItem);
-            }
+            CommandID menuCommandID = new CommandID(GuidList.guidOpenCommandLineCmdSet, (int)PkgCmdIDList.cmdidOpenCommandLine);
+            MenuCommand menuItem = new MenuCommand(OpenCmd, menuCommandID);
+            mcs.AddCommand(menuItem);
         }
 
         private void OpenCmd(object sender, EventArgs e)
