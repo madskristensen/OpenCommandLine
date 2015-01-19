@@ -41,18 +41,29 @@ namespace MadsKristensen.OpenCommandLine
 
             Options options = this.GetDialogPage(typeof(Options)) as Options;
 
-            ProcessStartInfo start = new ProcessStartInfo(options.Command, options.Arguments)
-            {
-                WorkingDirectory = path
-            };
+            ProcessStartInfo start = new ProcessStartInfo(options.Command, options.Arguments);
+            start.WorkingDirectory = path;
 
-            var p = new System.Diagnostics.Process();
-            p.StartInfo = start;
-            p.Start();
+            System.Diagnostics.Process.Start(start);
         }
 
         private static string GetPath()
         {
+            Window2 window = _dte.ActiveWindow as Window2;
+
+            // If Solution Explorer isn't active but document is, then use the document's containing project
+            if (window != null && window.Type == vsWindowType.vsWindowTypeDocument)
+            {
+                Document doc = _dte.ActiveDocument;
+                if (doc != null && !string.IsNullOrEmpty(doc.FullName))
+                {
+                    ProjectItem item = _dte.Solution.FindProjectItem(doc.FullName);
+
+                    if (item != null && item.ContainingProject != null && !string.IsNullOrEmpty(item.ContainingProject.FullName))
+                        return item.ContainingProject.Properties.Item("FullPath").Value.ToString();
+                }
+            }
+
             Project project = GetActiveProject();
 
             if (project != null && !string.IsNullOrEmpty(project.FullName))
