@@ -11,12 +11,13 @@ using Microsoft.VisualStudio.Shell.Interop;
 namespace MadsKristensen.OpenCommandLine
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", Version, IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [Guid(GuidList.guidOpenCommandLinePkgString)]
     public sealed class OpenCommandLinePackage : Package
     {
+        public const string Version = "1.0";
         private static DTE2 _dte;
 
         protected override void Initialize()
