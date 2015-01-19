@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using Microsoft.VisualStudio.Shell;
 
 namespace MadsKristensen.OpenCommandLine
@@ -13,6 +8,7 @@ namespace MadsKristensen.OpenCommandLine
         [DisplayName("Command")]
         [Description("The command or filepath to an executable such as cmd.exe")]
         [DefaultValue("cmd")]
+        [TypeConverter(typeof(CommandTypeConverter))]
         public string Command { get; set; }
 
         [DisplayName("Command arguments")]
@@ -26,6 +22,19 @@ namespace MadsKristensen.OpenCommandLine
 
             if (string.IsNullOrEmpty(Command))
                 Command = "cmd";
+        }
+    }
+
+    class CommandTypeConverter : StringConverter
+    {
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+        {
+            return new StandardValuesCollection(new[] { "cmd", "PowerShell" });
         }
     }
 }
