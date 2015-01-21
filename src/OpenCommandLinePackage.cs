@@ -34,7 +34,7 @@ namespace MadsKristensen.OpenCommandLine
 
         private void OpenCmd(object sender, EventArgs e)
         {
-			Options options = GetDialogPage(typeof(Options)) as Options;
+            Options options = GetDialogPage(typeof(Options)) as Options;
 
             string folder = GetFolderPath(options);
 
@@ -49,13 +49,14 @@ namespace MadsKristensen.OpenCommandLine
 
         private static string GetFolderPath(Options options)
         {
+            // If option to always open at sln level is chosen, use that.
+            if (options.OpenSlnLevel && _dte.Solution != null && !string.IsNullOrEmpty(_dte.Solution.FullName))
+                return Path.GetDirectoryName(_dte.Solution.FullName);
+
             Window2 window = _dte.ActiveWindow as Window2;
 
-			// If option to always open at sln level is chosen, use that.
-			if (_dte.Solution != null && !string.IsNullOrEmpty(_dte.Solution.FullName) && options.OpenSlnLevel)
-				return Path.GetDirectoryName(_dte.Solution.FullName);
-
             // If Solution Explorer isn't active but document is, then use the document's containing project
+            if (window != null && window.Type == vsWindowType.vsWindowTypeDocument)
             {
                 Document doc = _dte.ActiveDocument;
                 if (doc != null && !string.IsNullOrEmpty(doc.FullName))
