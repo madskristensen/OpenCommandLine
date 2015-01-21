@@ -40,8 +40,21 @@ namespace MadsKristensen.OpenCommandLine
                 return;
 
             Options options = GetDialogPage(typeof(Options)) as Options;
+            string command = options.Command;
+            string arguments = options.Arguments;
 
-            ProcessStartInfo start = new ProcessStartInfo(options.Command, options.Arguments);
+            if (options.ReplaceEnvironmentVariables)
+            {
+                command = Environment.ExpandEnvironmentVariables(options.Command);
+                arguments = Environment.ExpandEnvironmentVariables(options.Arguments);
+            }
+
+            if (!string.IsNullOrWhiteSpace(options.FolderPathReplacementToken))
+            {
+                arguments = arguments.Replace(options.FolderPathReplacementToken, folder);
+            }
+
+            ProcessStartInfo start = new ProcessStartInfo(command, arguments);
             start.WorkingDirectory = folder;
 
             System.Diagnostics.Process.Start(start);
