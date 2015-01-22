@@ -26,6 +26,11 @@ namespace MadsKristensen.OpenCommandLine
         [DefaultValue(true)]
         public bool ReplaceEnvironmentVariables { get; set; }
 
+		[DisplayName("Always open at solution level")]
+		[Description("Always open command prompt at the solution level.")]
+		[DefaultValue(false)]
+		public bool OpenSlnLevel { get; set; }
+
         public override void LoadSettingsFromStorage()
         {
             base.LoadSettingsFromStorage();

@@ -18,7 +18,7 @@ namespace MadsKristensen.OpenCommandLine
     [Guid(GuidList.guidOpenCommandLinePkgString)]
     public sealed class OpenCommandLinePackage : Package
     {
-        public const string Version = "1.2";
+        public const string Version = "1.4";
         private static DTE2 _dte;
 
         protected override void Initialize()
@@ -34,12 +34,11 @@ namespace MadsKristensen.OpenCommandLine
 
         private void OpenCmd(object sender, EventArgs e)
         {
-            string folder = GetFolderPath();
-
+            Options options = GetDialogPage(typeof(Options)) as Options;
+            string folder = GetFolderPath(options);
             if (string.IsNullOrEmpty(folder))
                 return;
-
-            Options options = GetDialogPage(typeof(Options)) as Options;
+            
             string command = options.Command;
             string arguments = options.Arguments;
 
@@ -60,8 +59,12 @@ namespace MadsKristensen.OpenCommandLine
             System.Diagnostics.Process.Start(start);
         }
 
-        private static string GetFolderPath()
+        private static string GetFolderPath(Options options)
         {
+            // If option to always open at sln level is chosen, use that.
+            if (options.OpenSlnLevel && _dte.Solution != null && !string.IsNullOrEmpty(_dte.Solution.FullName))
+                return Path.GetDirectoryName(_dte.Solution.FullName);
+
             Window2 window = _dte.ActiveWindow as Window2;
 
             // If Solution Explorer isn't active but document is, then use the document's containing project
@@ -85,7 +88,7 @@ namespace MadsKristensen.OpenCommandLine
             if (_dte.Solution != null && !string.IsNullOrEmpty(_dte.Solution.FullName))
                 return Path.GetDirectoryName(_dte.Solution.FullName);
 
-            return null;
+            return Environment.GetFolderPath(Environment.SpecialFolder.System);
         }
 
         public static Project GetActiveProject()
