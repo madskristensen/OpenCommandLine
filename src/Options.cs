@@ -16,6 +16,16 @@ namespace MadsKristensen.OpenCommandLine
         [DefaultValue("")]
         public string Arguments { get; set; }
 
+        [DisplayName("Folder path replacement token")]
+        [Description("If not empty, the token will be replaced verbatim in the command line.")]
+        [DefaultValue("$FolderPath$")]
+        public string FolderPathReplacementToken { get; set; }
+
+        [DisplayName("Replace environment variables")]
+        [Description("Replace environment variables in command and arguments.")]
+        [DefaultValue(true)]
+        public bool ReplaceEnvironmentVariables { get; set; }
+
 		[DisplayName("Always open at solution level")]
 		[Description("Always open command prompt at the solution level.")]
 		[DefaultValue(false)]
