@@ -17,7 +17,7 @@ namespace MadsKristensen.OpenCommandLine
         public string Arguments { get; set; }
 
         [DisplayName("Folder path replacement token")]
-        [Description("If not empty, the token will be replaced verbatim in the command line.")]
+        [Description("If not empty, the token will be replaced verbatim in the command line. Example: $FolderPath$")]
         [DefaultValue("$FolderPath$")]
         public string FolderPathReplacementToken { get; set; }
 
