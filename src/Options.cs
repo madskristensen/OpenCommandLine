@@ -7,7 +7,7 @@ namespace MadsKristensen.OpenCommandLine
     {
         [DisplayName("Command")]
         [Description("The command or filepath to an executable such as cmd.exe")]
-        [DefaultValue("cmd")]
+        [DefaultValue("cmd.exe")]
         [TypeConverter(typeof(CommandTypeConverter))]
         public string Command { get; set; }
 
@@ -36,7 +36,7 @@ namespace MadsKristensen.OpenCommandLine
             base.LoadSettingsFromStorage();
 
             if (string.IsNullOrEmpty(Command))
-                Command = "cmd";
+                Command = "cmd.exe";
         }
     }
 
@@ -49,7 +49,7 @@ namespace MadsKristensen.OpenCommandLine
 
         public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
         {
-            return new StandardValuesCollection(new[] { "cmd", "PowerShell" });
+            return new StandardValuesCollection(new[] { "cmd.exe", "powershell.exe" });
         }
     }
 }
