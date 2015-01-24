@@ -3,9 +3,12 @@ version: 1.0.{build}
 configuration: CI
 platform: Any CPU
 
-before_build: 
+init: 
   - ps: Invoke-WebRequest https://raw.githubusercontent.com/madskristensen/ExtensionScripts/master/AppVeyor/vsix.ps1 -OutFile '.\vsix.ps1'
-  - ps: ./vsix.ps1 -incrementVersion
+  - ps: Import-Module './vsix.ps1'
+
+before_build: 
+  - ps: Vsix-IncrementVersion
 
 build:
   verbosity: minimal
