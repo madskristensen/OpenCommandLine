@@ -5,12 +5,12 @@ platform: Any CPU
 
 before_build: 
   ps: |
-    Invoke-WebRequest https://raw.githubusercontent.com/madskristensen/ExtensionScripts/master/AppVeyor/build.ps1 -OutFile ".\build.ps1"
+    Invoke-WebRequest https://raw.githubusercontent.com/madskristensen/ExtensionScripts/master/AppVeyor/build.ps1 -OutFile '.\build.ps1'
     ./build.ps1
 
 build:
   verbosity: minimal
 
 artifacts:
-- path: '**/*.vsix'
+- path: '**/bin/$(configuration)/*.vsix'
   name: Nightly Build
