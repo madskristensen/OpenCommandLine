@@ -14,7 +14,7 @@ build:
   verbosity: minimal
 
 build_script:
-  - ps: '**/*.sln' /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /logger:'C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll''
+  - ps: "**/*.sln" /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /logger:'C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll''
 
 artifacts:
 - path: '**/bin/$(configuration)/*.vsix'
