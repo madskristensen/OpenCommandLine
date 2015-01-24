@@ -4,7 +4,7 @@ configuration: CI
 platform: Any CPU
 
 install: 
-  - ps: Invoke-WebRequest https://raw.githubusercontent.com/madskristensen/ExtensionScripts/master/AppVeyor/vsix.ps1 -OutFile '.\vsix.ps1'
+  - ps: Start-FileDownload https://raw.githubusercontent.com/madskristensen/ExtensionScripts/master/AppVeyor/vsix.ps1
   - ps: Import-Module './vsix.ps1'
 
 before_build: 
