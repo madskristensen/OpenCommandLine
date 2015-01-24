@@ -11,7 +11,7 @@ build:
   verbosity: minimal
 
 build_script:
-  - ps: Vsix-Build -configuration Release|Any CPU
+  - ps: Vsix-Build -configuration Release
 
 artifacts:
 - path: '**/bin/$(configuration)/*.vsix'
