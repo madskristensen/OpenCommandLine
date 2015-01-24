@@ -8,7 +8,7 @@ init:
   - ps: Import-Module './vsix.ps1'
 
 before_build: 
-  - ps: Vsix-IncrementVersion
+  - ps: Vsix-IncrementVersion 
 
 build:
   verbosity: minimal
