@@ -5,10 +5,7 @@ install:
   - ps: Import-Module './vsix.ps1'
 
 before_build: 
-  - ps: Vsix-IncrementVersion -versionSpot build
+  - ps: Vsix-IncrementVersion -versionType build -updateBuildVersion
 
 build_script:
-  - ps: Vsix-Build -configuration Release
-
-after_build:
-  - ps: Get-ChildItem ./**/bin/**/*.vsix | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+  - ps: Vsix-Build -configuration Release -pushArtifacts
