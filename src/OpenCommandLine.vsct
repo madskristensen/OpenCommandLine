@@ -10,7 +10,7 @@
       <Menu guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
         <Parent guid="guidOpenCommandLineCmdSet" id="ContextMenuGroup" />
         <Strings>
-          <ButtonText>Open Command Line Here</ButtonText>
+          <ButtonText>Open Command Line</ButtonText>
         </Strings>
       </Menu>
     </Menus>
