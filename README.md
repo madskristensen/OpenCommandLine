@@ -25,3 +25,7 @@ Explorer, then a console will open at the root of the .sln file.
 ![Open Command Line](https://raw.githubusercontent.com/madskristensen/OpenCommandLine/master/screenshots/context-menu.png)
 
 You can access the command by hitting **ALT+Space** as well.
+
+You may change this shortcut in the Options Window under Environment -> Keyboard 
+
+Look for the command ProjectAndSolutionContextMenus.Project.OpenCommandLine.Default
