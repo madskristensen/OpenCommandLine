@@ -1,6 +1,4 @@
-﻿// Guids.cs
-// MUST match guids.h
-using System;
+﻿using System;
 
 namespace MadsKristensen.OpenCommandLine
 {
@@ -15,5 +13,8 @@ namespace MadsKristensen.OpenCommandLine
     static class PkgCmdIDList
     {
         public const uint cmdidOpenCommandLine = 0x100;
+        public const uint cmdidOpenCmd = 0x200;
+        public const uint cmdidOpenPowershell = 0x300;
+        public const uint cmdidOpenOptions = 0x400;
     }
 }
