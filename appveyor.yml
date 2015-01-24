@@ -1,6 +1,6 @@
 version: 1.0.{build}
 
-configuration: CI
+configuration: Release
 platform: Any CPU
 
 install: 
@@ -13,8 +13,8 @@ before_build:
 build:
   verbosity: minimal
 
-#build_script:
-#  - msbuild ./**/*.sln /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /logger:'C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll'
+build_script:
+  - ps: Vsix-Build -configuration $(configuration)
 
 artifacts:
 - path: '**/bin/$(configuration)/*.vsix'
