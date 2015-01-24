@@ -1,8 +1,5 @@
 version: 1.0.{build}
 
-configuration: Release
-platform: Any CPU
-
 install: 
   - ps: Start-FileDownload https://raw.githubusercontent.com/madskristensen/ExtensionScripts/master/AppVeyor/vsix.ps1
   - ps: Import-Module './vsix.ps1'
@@ -14,7 +11,7 @@ build:
   verbosity: minimal
 
 build_script:
-  - ps: Vsix-Build
+  - ps: Vsix-Build -configuration Release|Any CPU
 
 artifacts:
 - path: '**/bin/$(configuration)/*.vsix'
