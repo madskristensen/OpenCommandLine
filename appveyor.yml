@@ -5,7 +5,7 @@ install:
   - ps: Import-Module './vsix.ps1'
 
 before_build: 
-  - ps: Vsix-IncrementVersion -versionType build -updateBuildVersion
+  - ps: Vsix-IncrementVersion | Vsix-UpdateBuildVersion
 
 build_script:
-  - ps: Vsix-Build -configuration Release -pushArtifacts
+  - ps: Vsix-Build | Vsix-PushArtifacts
