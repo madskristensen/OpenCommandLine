@@ -5,10 +5,10 @@ install:
   - ps: Import-Module './vsix.ps1'
 
 before_build: 
-  - ps: Vsix-IncrementVersion -updateBuildVersion
+  - ps: Vsix-IncrementVsixVersion -updateBuildVersion
 
 build_script:
-  - ps: Vsix-Build -configuration Release
+  - msbuild /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /v:m
 
 after_build:
   - ps: Vsix-PushArtifacts
