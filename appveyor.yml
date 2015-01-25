@@ -4,8 +4,5 @@ install:
   - ps: Start-FileDownload https://raw.githubusercontent.com/madskristensen/ExtensionScripts/master/AppVeyor/vsix.ps1
   - ps: Import-Module './vsix.ps1'
 
-before_build: 
-  - ps: Vsix-IncrementVersion -versionType build -updateBuildVersion
-
 build_script:
-  - ps: Vsix-Build -configuration Release -pushArtifacts
+  - ps: Vsix-IncrementVersion | Vsix-PushArtifacts | Vsix-Build | Vsix-PushArtifacts
