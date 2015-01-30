@@ -21,16 +21,41 @@ namespace MadsKristensen.OpenCommandLine
 
             Window2 window = dte.ActiveWindow as Window2;
 
-            // If Solution Explorer isn't active but document is, then use the document's containing project
-            if (window != null && window.Type == vsWindowType.vsWindowTypeDocument)
+            if (window != null)
             {
-                Document doc = dte.ActiveDocument;
-                if (doc != null && !string.IsNullOrEmpty(doc.FullName))
+                if(window.Type == vsWindowType.vsWindowTypeDocument)
                 {
-                    ProjectItem item = dte.Solution.FindProjectItem(doc.FullName);
+                    // if a document is active, use the document's containing project
+                    Document doc = dte.ActiveDocument;
+                    if (doc != null && !string.IsNullOrEmpty(doc.FullName))
+                    {
+                        ProjectItem item = dte.Solution.FindProjectItem(doc.FullName);
 
-                    if (item != null && item.ContainingProject != null && !string.IsNullOrEmpty(item.ContainingProject.FullName))
-                        return item.ContainingProject.Properties.Item("FullPath").Value.ToString();
+                        if (item != null && item.ContainingProject != null && !string.IsNullOrEmpty(item.ContainingProject.FullName))
+                            return item.ContainingProject.Properties.Item("FullPath").Value.ToString();
+                    }
+                }
+                else if(window.Type == vsWindowType.vsWindowTypeSolutionExplorer)
+                {
+                    // if solution explorer is active, use the path of the first selected item
+                    UIHierarchy hierarchy = window.Object as UIHierarchy;
+                    if (hierarchy != null && hierarchy.SelectedItems != null)
+                    {
+                        UIHierarchyItem[] hierarchyItems = hierarchy.SelectedItems as UIHierarchyItem[];
+                        if(hierarchyItems != null && hierarchyItems.Length > 0)
+                        {
+                            UIHierarchyItem hierarchyItem = hierarchyItems[0] as UIHierarchyItem;
+                            if(hierarchyItem != null)
+                            {
+                                ProjectItem projectItem = hierarchyItem.Object as ProjectItem;
+                                if (projectItem != null && projectItem.FileCount > 0)
+                                {
+                                    string file = projectItem.FileNames[0];
+                                    return Path.GetDirectoryName(file);
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
