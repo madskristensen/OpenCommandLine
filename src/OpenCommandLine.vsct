@@ -8,7 +8,7 @@
 
     <Menus>
       <Menu guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
-        <Parent guid="guidOpenCommandLineCmdSet" id="ContextMenuGroup" />
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_FOLDER_EXPLORE" />
         <Strings>
           <ButtonText>Open Command Line</ButtonText>
         </Strings>
@@ -36,6 +36,7 @@
         <Icon guid="guidImages" id="default" />
         <CommandFlag>TextChanges</CommandFlag>
         <Strings>
+          <CommandName>Open Command Line</CommandName>
           <ButtonText>Default</ButtonText>
         </Strings>
       </Button>
@@ -43,6 +44,7 @@
         <Parent guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" />
         <Icon guid="guidImages" id="cmd" />
         <Strings>
+          <CommandName>Open Developer Command Prompt</CommandName>
           <ButtonText>Developer Command Prompt</ButtonText>
         </Strings>
       </Button>
@@ -50,12 +52,14 @@
         <Parent guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" />
         <Icon guid="guidImages" id="powershell" />
         <Strings>
+          <CommandName>Open PowerShell</CommandName>
           <ButtonText>PowerShell</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenOptions" priority="0x0200" type="Button">
         <Parent guid="guidOpenCommandLineCmdSet" id="OptionsMenuGroup" />
         <Strings>
+          <CommandName>Open Command Line Options</CommandName>
           <ButtonText>Settings...</ButtonText>
         </Strings>
       </Button>
@@ -71,26 +75,14 @@
   </KeyBindings>
 
   <CommandPlacements>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="ContextMenuGroup" priority="0x0600">
-      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_WEBPROJECT"/>
+    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
+      <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_EXPLORE"/>
     </CommandPlacement>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="ContextMenuGroup" priority="0x0600">
-      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_WEBFOLDER"/>
+    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
+      <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_SOLUTION_EXPLORE"/>
     </CommandPlacement>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="ContextMenuGroup" priority="0x0600">
-      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_WEBITEMNODE"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="ContextMenuGroup" priority="0x0600">
-      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="ContextMenuGroup" priority="0x0600">
-      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="ContextMenuGroup" priority="0x0600">
-      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="ContextMenuGroup" priority="0x0600">
-      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_FOLDERNODE"/>
+    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
+      <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_OPEN"/>
     </CommandPlacement>
   </CommandPlacements>
 
