@@ -25,10 +25,10 @@ namespace MadsKristensen.OpenCommandLine
         public string FolderPathReplacementToken { get; set; }
 
         [Category("Settings")]
-		[DisplayName("Always open at solution level")]
-		[Description("Always open command prompt at the solution level.")]
-		[DefaultValue(false)]
-		public bool OpenSlnLevel { get; set; }
+        [DisplayName("Always open at solution level")]
+        [Description("Always open command prompt at the solution level.")]
+        [DefaultValue(false)]
+        public bool OpenSlnLevel { get; set; }
 
         public override void LoadSettingsFromStorage()
         {
