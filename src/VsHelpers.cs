@@ -50,7 +50,7 @@ namespace MadsKristensen.OpenCommandLine
                                 ProjectItem projectItem = hierarchyItem.Object as ProjectItem;
                                 if (projectItem != null && projectItem.FileCount > 0)
                                 {
-                                    string file = projectItem.FileNames[0];
+                                    string file = projectItem.FileNames[1];
                                     return Path.GetDirectoryName(file);
                                 }
                             }
