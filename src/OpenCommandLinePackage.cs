@@ -19,7 +19,7 @@ namespace MadsKristensen.OpenCommandLine
     [Guid(GuidList.guidOpenCommandLinePkgString)]
     public sealed class OpenCommandLinePackage : Package
     {
-        public const string Version = "1.4";
+        public const string Version = "1.6";
         private static DTE2 _dte;
         public Package Instance;
 
@@ -60,42 +60,30 @@ namespace MadsKristensen.OpenCommandLine
         private void OpenCustom(object sender, EventArgs e)
         {
             Options options = GetDialogPage(typeof(Options)) as Options;
-
-            if (IsCustomSameAsCmd(options))
-            {
-                OpenCmd(sender, e);
-                return;
-            }
-
             string folder = VsHelpers.GetFolderPath(options, _dte);
 
-            string arguments = options.Arguments;
-
-            if (!string.IsNullOrWhiteSpace(options.FolderPathReplacementToken))
-            {
-                arguments = arguments.Replace(options.FolderPathReplacementToken, folder);
-            }
-
-            StartProcess(folder, options.Command, arguments);
+            StartProcess(folder, options.Command, options.Arguments);
         }
 
         private void OpenCmd(object sender, EventArgs e)
         {
-            Options options = GetDialogPage(typeof(Options)) as Options;
-            string folder = VsHelpers.GetFolderPath(options, _dte);
-
             string installDir = VsHelpers.GetInstallDirectory(this);
             string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
 
-            StartProcess(folder, "cmd.exe", "/k \"" + devPromptFile + "\"");
+            SetupProcess("cmd.exe", "/k \"" + devPromptFile + "\"");
         }
 
         private void OpenPowershell(object sender, EventArgs e)
         {
+            SetupProcess("powershell.exe", "");
+        }
+
+        private void SetupProcess(string command, string arguments)
+        {
             Options options = GetDialogPage(typeof(Options)) as Options;
             string folder = VsHelpers.GetFolderPath(options, _dte);
 
-            StartProcess(folder, "powershell.exe", "");
+            StartProcess(folder, command, arguments);
         }
 
         private static void StartProcess(string workingDirectory, string command, string arguments)
@@ -107,13 +95,6 @@ namespace MadsKristensen.OpenCommandLine
             start.WorkingDirectory = workingDirectory;
 
             System.Diagnostics.Process.Start(start);
-        }
-
-        private static bool IsCustomSameAsCmd(Options options)
-        {
-            bool nameMatch = options.Command.Equals("cmd", StringComparison.OrdinalIgnoreCase) || options.Command.Equals("cmd.exe", StringComparison.OrdinalIgnoreCase);
-
-            return nameMatch && string.IsNullOrWhiteSpace(options.Arguments);
         }
     }
 }
