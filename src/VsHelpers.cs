@@ -67,7 +67,7 @@ namespace MadsKristensen.OpenCommandLine
             if (dte.Solution != null && !string.IsNullOrEmpty(dte.Solution.FullName))
                 return Path.GetDirectoryName(dte.Solution.FullName);
 
-            return Environment.GetFolderPath(Environment.SpecialFolder.System);
+            return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         }
 
         private static Project GetActiveProject(DTE2 dte)
