@@ -21,10 +21,12 @@ namespace MadsKristensen.OpenCommandLine
     {
         public const string Version = "1.4";
         private static DTE2 _dte;
+        public Package Instance;
 
         protected override void Initialize()
         {
             base.Initialize();
+
             _dte = GetService(typeof(DTE)) as DTE2;
 
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
@@ -52,9 +54,7 @@ namespace MadsKristensen.OpenCommandLine
             OleMenuCommand button = (OleMenuCommand)sender;
             Options options = GetDialogPage(typeof(Options)) as Options;
 
-            int index = options.Command.LastIndexOf('/') + 1;
-
-            button.Text = "Default (" + options.Command.Substring(index) + ")";
+            button.Text = "Default (" + options.Preset + ")";
         }
 
         private void OpenCustom(object sender, EventArgs e)
