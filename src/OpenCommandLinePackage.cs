@@ -15,7 +15,6 @@ namespace MadsKristensen.OpenCommandLine
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [ProvideOptionPage(typeof(Options), "Environment", "Command Line", 101, 104, true, new[] { "cmd", "powershell", "bash" })]
-    [ProvideOptionPage(typeof(Options), "Environment", "Command Line", 201, 204, true, new[] { "cmd", "powershell", "bash" })]
     [Guid(GuidList.guidOpenCommandLinePkgString)]
     public sealed class OpenCommandLinePackage : Package
     {
