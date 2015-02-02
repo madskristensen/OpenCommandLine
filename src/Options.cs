@@ -8,6 +8,7 @@ namespace MadsKristensen.OpenCommandLine
     class Options : DialogPage
     {
         public static Dictionary<string, Command> DefaultPresets = new Dictionary<string, Command>();
+        private bool _isLoading, _isChanging;
 
         string _preset;
 
@@ -22,27 +23,49 @@ namespace MadsKristensen.OpenCommandLine
             set
             {
                 _preset = value;
-                if (DefaultPresets.ContainsKey(value))
+
+                if (!_isLoading && DefaultPresets.ContainsKey(value))
                 {
+                    _isChanging = true;
                     Command command = DefaultPresets[value];
                     this.Command = command.Name;
                     this.Arguments = command.Arguments;
+                    _isChanging = false;
                 }
             }
         }
+
+        string _command;
 
         [Category("Console")]
         [DisplayName("Command")]
         [Description("The command or filepath to an executable such as cmd.exe")]
         [DefaultValue("cmd.exe")]
-        public string Command { get; set; }
+        public string Command
+        {
+            get { return _command; }
+            set
+            {
+                _command = value;
+                SetCustom();
+            }
+        }
 
+        string _arguments;
 
         [Category("Console")]
         [DisplayName("Command arguments")]
         [Description("Any arguments to pass to the command.")]
         [DefaultValue("")]
-        public string Arguments { get; set; }
+        public string Arguments
+        {
+            get { return _arguments; }
+            set
+            {
+                _arguments = value;
+                SetCustom();
+            }
+        }
 
         [Category("Settings")]
         [DisplayName("Always open at solution level")]
@@ -52,6 +75,8 @@ namespace MadsKristensen.OpenCommandLine
 
         public override void LoadSettingsFromStorage()
         {
+            _isLoading = true;
+
             base.LoadSettingsFromStorage();
 
             if (string.IsNullOrEmpty(Command))
@@ -71,6 +96,14 @@ namespace MadsKristensen.OpenCommandLine
                 DefaultPresets["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")");
                 DefaultPresets["Custom"] = new Command("", "");
             }
+
+            _isLoading = false;
+        }
+
+        private void SetCustom()
+        {
+            if (!_isChanging && !_isLoading)
+                _preset = "Custom";
         }
     }
 
@@ -79,6 +112,11 @@ namespace MadsKristensen.OpenCommandLine
         public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
         {
             return true;
+        }
+
+        public override bool IsValid(ITypeDescriptorContext context, object value)
+        {
+            return Options.DefaultPresets.ContainsKey(value.ToString());
         }
 
         public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
