@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using Microsoft.VisualStudio.Shell;
@@ -94,6 +95,13 @@ namespace MadsKristensen.OpenCommandLine
                 DefaultPresets["Dev Cmd Promt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\"");
                 DefaultPresets["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
                 DefaultPresets["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")");
+
+                string GitHubForWindowsPath = Path.Combine(Environment.GetEnvironmentVariable("LocalAppData"), "GitHub", "GitHub.appref-ms");
+                if (File.Exists(GitHubForWindowsPath))
+                {
+                    DefaultPresets["GitHub Console"] = new Command(@"%LOCALAPPDATA%\GitHub\GitHub.appref-ms", "-open-shell");
+                }
+
                 DefaultPresets["Custom"] = new Command("", "");
             }
 
