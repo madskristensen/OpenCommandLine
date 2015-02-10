@@ -6,7 +6,7 @@
 Download from the
 [Visual Studio Gallery](https://visualstudiogallery.msdn.microsoft.com/4e84e2cf-2d6b-472a-b1e2-b84932511379)
 or get the
-[nightly build](https://ci.appveyor.com/project/madskristensen/opencommandline/build/1.0.2/artifacts)
+[nightly build](http://vsixgallery.com/extension/f4ab1e64-5d35-4f06-bad9-bf414f4b3bbb/)
 
 ## Supported consoles
 
