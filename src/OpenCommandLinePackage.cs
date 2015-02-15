@@ -61,7 +61,7 @@ namespace MadsKristensen.OpenCommandLine
             Options options = GetDialogPage(typeof(Options)) as Options;
             string folder = VsHelpers.GetFolderPath(options, _dte);
 
-            var arguments = options.Arguments.Replace("{folder}", folder);
+            var arguments = options.Arguments.Replace("%folder%", folder);
             StartProcess(folder, options.Command, arguments);
         }
 
