@@ -56,7 +56,7 @@ namespace MadsKristensen.OpenCommandLine
 
         [Category("Console")]
         [DisplayName("Command arguments")]
-        [Description("Any arguments to pass to the command.")]
+        [Description("Any arguments to pass to the command.\n%folder% parameter pass to argument current file path.")]
         [DefaultValue("")]
         public string Arguments
         {
@@ -95,14 +95,15 @@ namespace MadsKristensen.OpenCommandLine
                 DefaultPresets["Dev Cmd Promt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\"");
                 DefaultPresets["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
                 DefaultPresets["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")");
-
+                
                 string GitHubForWindowsPath = Path.Combine(Environment.GetEnvironmentVariable("LocalAppData"), "GitHub", "GitHub.appref-ms");
                 if (File.Exists(GitHubForWindowsPath))
                 {
                     DefaultPresets["GitHub Console"] = new Command(@"%LOCALAPPDATA%\GitHub\GitHub.appref-ms", "-open-shell");
                 }
 
-                DefaultPresets["Custom"] = new Command("", "");
+                DefaultPresets["cmder"] = new Command("cmder.exe", "/START %folder%");
+                DefaultPresets["Custom"] = new Command(string.Empty, string.Empty);
             }
 
             _isLoading = false;
