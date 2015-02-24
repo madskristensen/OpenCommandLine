@@ -75,7 +75,7 @@ namespace MadsKristensen.OpenCommandLine
 
         private void OpenPowershell(object sender, EventArgs e)
         {
-            SetupProcess("powershell.exe", "");
+            SetupProcess("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
         }
 
         private void SetupProcess(string command, string arguments)
@@ -94,7 +94,25 @@ namespace MadsKristensen.OpenCommandLine
             ProcessStartInfo start = new ProcessStartInfo(command, arguments);
             start.WorkingDirectory = workingDirectory;
 
+            ModifyPathVariable(start);
+
             System.Diagnostics.Process.Start(start);
+        }
+
+        private static void ModifyPathVariable(ProcessStartInfo start)
+        {
+            string path = ".\\node_modules\\.bin" + ";" + start.EnvironmentVariables["PATH"];
+
+            string toolsDir = Environment.GetEnvironmentVariable("VS140COMNTOOLS");
+
+            if (Directory.Exists(toolsDir))
+            {
+                string parent = Directory.GetParent(toolsDir).ToString();
+                path += ";" + Path.Combine(parent, @"IDE\Extensions\Microsoft\Web Tools\External");
+            }
+
+            start.UseShellExecute = false;
+            start.EnvironmentVariables["PATH"] = path;
         }
     }
 }
