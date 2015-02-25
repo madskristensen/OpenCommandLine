@@ -60,8 +60,8 @@ namespace MadsKristensen.OpenCommandLine
         {
             Options options = GetDialogPage(typeof(Options)) as Options;
             string folder = VsHelpers.GetFolderPath(options, _dte);
+            string arguments = (options.Arguments ?? string.Empty).Replace("%folder%", folder);
 
-            var arguments = options.Arguments.Replace("%folder%", folder);
             StartProcess(folder, options.Command, arguments);
         }
 
@@ -88,8 +88,8 @@ namespace MadsKristensen.OpenCommandLine
 
         private static void StartProcess(string workingDirectory, string command, string arguments)
         {
-            command = Environment.ExpandEnvironmentVariables(command);
-            arguments = Environment.ExpandEnvironmentVariables(arguments);
+            command = Environment.ExpandEnvironmentVariables(command ?? string.Empty);
+            arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
             
             ProcessStartInfo start = new ProcessStartInfo(command, arguments);
             start.WorkingDirectory = workingDirectory;
