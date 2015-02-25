@@ -107,7 +107,7 @@ namespace MadsKristensen.OpenCommandLine
 
             if (Directory.Exists(toolsDir))
             {
-                string parent = Directory.GetParent(toolsDir).ToString();
+                string parent = Directory.GetParent(toolsDir).Parent.FullName;
                 path += ";" + Path.Combine(parent, @"IDE\Extensions\Microsoft\Web Tools\External");
             }
 
