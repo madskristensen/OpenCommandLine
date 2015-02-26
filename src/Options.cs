@@ -92,7 +92,7 @@ namespace MadsKristensen.OpenCommandLine
                 string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
 
                 DefaultPresets["cmd"] = new Command("cmd.exe");
-                DefaultPresets["Dev Cmd Promt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\"");
+                DefaultPresets["Dev Cmd Prompt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\"");
                 DefaultPresets["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
                 DefaultPresets["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")");
                 
