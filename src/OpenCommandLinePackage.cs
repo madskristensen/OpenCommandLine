@@ -90,7 +90,7 @@ namespace MadsKristensen.OpenCommandLine
         {
             command = Environment.ExpandEnvironmentVariables(command ?? string.Empty);
             arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
-            
+
             ProcessStartInfo start = new ProcessStartInfo(command, arguments);
             start.WorkingDirectory = workingDirectory;
 
