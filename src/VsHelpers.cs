@@ -44,7 +44,7 @@ namespace MadsKristensen.OpenCommandLine
                             if (hierarchyItem != null)
                             {
                                 ProjectItem projectItem = hierarchyItem.Object as ProjectItem;
-                                if (projectItem != null && projectItem.FileCount > 0 && File.Exists(projectItem.FileNames[1]))
+                                if (projectItem != null && projectItem.FileCount > 0 && Directory.Exists(projectItem.FileNames[1]))
                                 {
                                     string file = projectItem.FileNames[1];
                                     return Path.GetDirectoryName(file);
