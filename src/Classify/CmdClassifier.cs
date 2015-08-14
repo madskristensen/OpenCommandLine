@@ -11,10 +11,11 @@ namespace MadsKristensen.OpenCommandLine
     public class CmdClassifier : IClassifier
     {
         public static Regex _rString = new Regex("\"([^\"]+)\"", RegexOptions.Compiled);
+        public static Regex _rIdentifier = new Regex("(?<=(\\bset([\\s]+)?))([\\S]+)(?=([\\s]+)?=)|%([^%\\s]+)%|%~([fdpnxsatz]+\\d)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public static Regex _rComment = new Regex(@"(^([\s]+)?(rem|::).+)|((?<=[\s]+)&(rem|::).+)", RegexOptions.Compiled);
-        public static Regex _rIdentifier = new Regex("(?<=(goto|^):)([\\w]+)|%([^%\\s]+)%|\\bnul\\b|%~([fdpnxsatz]+\\d)", RegexOptions.Compiled);
         public static Regex _rOperator = new Regex(@"(&|&&|\|\||([012]?>>?)|<|!|=|^)", RegexOptions.Compiled);
         public static Regex _rParameter = new Regex("(?<=(\\s))(/|-?-)([\\w]+)", RegexOptions.Compiled);
+        public static Regex _rLabel = new Regex("^(([\\s]+)?):([^\\s:]+)|(?<=(goto(:|\\s)([\\s]+)?))([^\\s:]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public static Regex _rKeyword = CmdKeywords.KeywordRegex;
         public Dictionary<Regex, IClassificationType> _map;
         private IClassificationType _comment, _identifier;
@@ -28,6 +29,7 @@ namespace MadsKristensen.OpenCommandLine
             {
                 {_rString, registry.GetClassificationType(PredefinedClassificationTypeNames.String)},
                 {_rKeyword, registry.GetClassificationType(PredefinedClassificationTypeNames.Keyword)},
+                {_rLabel, registry.GetClassificationType(PredefinedClassificationTypeNames.SymbolReference)},
                 {_rOperator, registry.GetClassificationType(PredefinedClassificationTypeNames.Operator)},
                 {_rParameter, registry.GetClassificationType(PredefinedClassificationTypeNames.ExcludedCode)},
             };

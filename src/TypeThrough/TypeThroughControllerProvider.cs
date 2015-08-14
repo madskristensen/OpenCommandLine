@@ -58,6 +58,9 @@ namespace MadsKristensen.OpenCommandLine
 
             case '\'':
                 return '\'';
+
+            case '%':
+                return '%';
             }
 
             return '\0';

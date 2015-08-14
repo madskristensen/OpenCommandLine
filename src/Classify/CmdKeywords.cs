@@ -26,7 +26,7 @@ namespace MadsKristensen.OpenCommandLine
         {
             var list = GetList().Keys;
             string keywords = string.Join("|", list);
-            return new Regex("\\b@?(?<hit>" + keywords + ")\\b", RegexOptions.Compiled);
+            return new Regex("\\b@?(" + keywords + ")\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         }
 
         private static Dictionary<string, string> GetList()
@@ -75,6 +75,7 @@ namespace MadsKristensen.OpenCommandLine
                 {"move",        "Moves one or more files from one directory to another directory."},
                 {"net",         "NET"},
                 {"not",         "Not for if"},
+                {"nul",         "Null value"},
                 {"openfiles",   "Displays files opened by remote users for a file share."},
                 {"path",        "Displays or sets a search path for executable files."},
                 {"pause",       "Suspends processing of a batch file and displays a message."},
