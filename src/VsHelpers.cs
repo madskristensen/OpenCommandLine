@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -140,7 +141,27 @@ namespace MadsKristensen.OpenCommandLine
             return installDirectory;
         }
 
-        public static IEnumerable<ProjectItem> GetSelectedItems(DTE2 dte)
+        public static ProjectItem GetProjectItem(DTE2 dte)
+        {
+            Window2 window = dte.ActiveWindow as Window2;
+
+            if (window == null)
+                return null;
+
+            if (window.Type == vsWindowType.vsWindowTypeDocument)
+            {
+                Document doc = dte.ActiveDocument;
+
+                if (doc != null && !string.IsNullOrEmpty(doc.FullName))
+                {
+                    return dte.Solution.FindProjectItem(doc.FullName);
+                }
+            }
+
+            return GetSelectedItems(dte).FirstOrDefault();
+        }
+
+        private static IEnumerable<ProjectItem> GetSelectedItems(DTE2 dte)
         {
             var items = (Array)dte.ToolWindows.SolutionExplorer.SelectedItems;
 

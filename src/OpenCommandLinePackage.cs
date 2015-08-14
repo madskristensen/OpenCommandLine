@@ -57,7 +57,7 @@ namespace MadsKristensen.OpenCommandLine
         void BeforeExeQuery(object sender, EventArgs e)
         {
             OleMenuCommand button = (OleMenuCommand)sender;
-            var item = VsHelpers.GetSelectedItems(_dte).FirstOrDefault();
+            var item = VsHelpers.GetProjectItem(_dte);
 
             if (item == null || item.FileCount == 0)
             {
@@ -75,7 +75,7 @@ namespace MadsKristensen.OpenCommandLine
 
         private void ExecuteFile(object sender, EventArgs e)
         {
-            var item = VsHelpers.GetSelectedItems(_dte).FirstOrDefault();
+            var item = VsHelpers.GetProjectItem(_dte);
             string path = item.FileNames[1];
             string folder = Path.GetDirectoryName(path);
 

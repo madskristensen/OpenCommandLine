@@ -82,6 +82,7 @@
 
     <KeyBindings>
         <KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenCommandLine" mod1="Alt" key1="VK_SPACE" editor="guidVSStd97"/>
+        <KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdExecuteCmd" mod1="Alt Shift" key1="5" editor="guidVSStd97"/>
     </KeyBindings>
 
     <CommandPlacements>
