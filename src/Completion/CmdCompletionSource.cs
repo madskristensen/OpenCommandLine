@@ -12,7 +12,7 @@ namespace MadsKristensen.OpenCommandLine
     class CmdCompletionSource : ICompletionSource
     {
         private ITextBuffer _buffer;
-        private static ImageSource _glyph;
+        private static ImageSource _keywordGlyph, _identifierGlyph;
         private ITextStructureNavigator _textStructureNavigator;
         private IClassifier _classifier;
         private bool _disposed = false;
@@ -21,7 +21,8 @@ namespace MadsKristensen.OpenCommandLine
         {
             _buffer = buffer;
             _classifier = classifier.GetClassifier(buffer);
-            _glyph = glyphService.GetGlyph(StandardGlyphGroup.GlyphGroupVariable, StandardGlyphItem.GlyphItemPublic);
+            _keywordGlyph = glyphService.GetGlyph(StandardGlyphGroup.GlyphGroupVariable, StandardGlyphItem.GlyphItemPublic);
+            _identifierGlyph = glyphService.GetGlyph(StandardGlyphGroup.GlyphGroupProperty, StandardGlyphItem.GlyphItemPublic);
             _textStructureNavigator = textStructureNavigator;
         }
 
@@ -32,21 +33,41 @@ namespace MadsKristensen.OpenCommandLine
 
             ITextSnapshot snapshot = _buffer.CurrentSnapshot;
             SnapshotPoint? triggerPoint = session.GetTriggerPoint(snapshot);
+            ClassificationSpan clsSpan;
 
-            if (triggerPoint == null || !triggerPoint.HasValue || triggerPoint.Value.Position == 0 || !IsAllowed(triggerPoint.Value))
+            if (triggerPoint == null || !triggerPoint.HasValue || triggerPoint.Value.Position == 0 || !IsAllowed(triggerPoint.Value, out clsSpan))
+                return;
+
+            ITrackingSpan tracking = FindTokenSpanAtPosition(session);
+
+            if (tracking == null)
                 return;
 
             List<Completion> completions = new List<Completion>();
 
-            foreach (string keyword in CmdKeywords.Keywords.Keys)
+            if (clsSpan != null && clsSpan.ClassificationType.IsOfType(PredefinedClassificationTypeNames.SymbolDefinition))
             {
-                completions.Add(new Completion(keyword, keyword, CmdKeywords.Keywords[keyword], _glyph, keyword));
+                var doc = new SnapshotSpan(snapshot, 0, snapshot.Length);
+                var idents = _classifier.GetClassificationSpans(doc).Where(g => g.ClassificationType.IsOfType(PredefinedClassificationTypeNames.SymbolDefinition));
+
+                foreach (var ident in idents.Where(i => !i.Span.IntersectsWith(tracking.GetSpan(snapshot))))
+                {
+                    string text = ident.Span.GetText().Trim();
+                    string displayText = text.Trim('%');
+
+                    if (text.StartsWith("%") && text.EndsWith("%") && !completions.Any(c => c.InsertionText == displayText))
+                        completions.Add(new Completion(displayText, displayText, null, _identifierGlyph, "automationText"));
+                }
+            }
+            else
+            {
+                foreach (string keyword in CmdKeywords.Keywords.Keys)
+                {
+                    completions.Add(new Completion(keyword, keyword, CmdKeywords.Keywords[keyword], _keywordGlyph, keyword));
+                }
             }
 
-            ITrackingSpan tracking = FindTokenSpanAtPosition(session);
-
-            if (tracking != null)
-                completionSets.Add(new CompletionSet("Cmd", "Cmd", tracking, completions, Enumerable.Empty<Completion>()));
+            completionSets.Add(new CompletionSet("Cmd", "Cmd", tracking, completions, Enumerable.Empty<Completion>()));
         }
 
         private ITrackingSpan FindTokenSpanAtPosition(ICompletionSession session)
@@ -59,22 +80,26 @@ namespace MadsKristensen.OpenCommandLine
             if (prev != null && !prev.Contains(extent.Span))
             {
                 string text = prev.GetText();
-                if (!string.IsNullOrEmpty(text) && !char.IsLetter(text[0]))
+                if (!string.IsNullOrEmpty(text) && text.Last() != '%' && !char.IsLetter(text[0]))
                     return null;
             }
 
             return currentPoint.Snapshot.CreateTrackingSpan(extent.Span, SpanTrackingMode.EdgeInclusive);
         }
 
-        private bool IsAllowed(SnapshotPoint triggerPoint)
+        private bool IsAllowed(SnapshotPoint triggerPoint, out ClassificationSpan classificationType)
         {
             var line = triggerPoint.GetContainingLine().Extent;
-            var spans = _classifier.GetClassificationSpans(line);
+            var spans = _classifier.GetClassificationSpans(line).Where(c => c.Span.Contains(triggerPoint.Position));
+            classificationType = spans.LastOrDefault();
 
-            bool isComment = spans.Any(c => c.Span.Contains(triggerPoint.Position) && c.ClassificationType.IsOfType(PredefinedClassificationTypeNames.Comment));
+            if (spans.Any(c => c.ClassificationType.IsOfType(PredefinedClassificationTypeNames.SymbolDefinition)))
+                return true;
+
+            bool isComment = spans.Any(c => c.ClassificationType.IsOfType(PredefinedClassificationTypeNames.Comment));
             if (isComment) return false;
 
-            bool isString = spans.Any(c => c.Span.Contains(triggerPoint.Position) && c.ClassificationType.IsOfType(PredefinedClassificationTypeNames.String));
+            bool isString = spans.Any(c => c.ClassificationType.IsOfType(PredefinedClassificationTypeNames.String));
             if (isString) return false;
 
             return true;

@@ -41,6 +41,7 @@ namespace MadsKristensen.OpenCommandLine
                 {
                 case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                 case VSConstants.VSStd2KCmdID.COMPLETEWORD:
+                case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
                     handled = StartSession();
                     break;
                 case VSConstants.VSStd2KCmdID.RETURN:
@@ -154,6 +155,7 @@ namespace MadsKristensen.OpenCommandLine
                 {
                 case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                 case VSConstants.VSStd2KCmdID.COMPLETEWORD:
+                case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
                     prgCmds[0].cmdf = (uint)OLECMDF.OLECMDF_ENABLED | (uint)OLECMDF.OLECMDF_SUPPORTED;
                     return VSConstants.S_OK;
                 }

@@ -12,7 +12,7 @@ namespace MadsKristensen.OpenCommandLine
     {
         public static Regex _rString = new Regex("\"([^\"]+)\"", RegexOptions.Compiled);
         public static Regex _rComment = new Regex(@"(^([\s]+)?(rem|::).+)|((?<=[\s]+)&(rem|::).+)", RegexOptions.Compiled);
-        public static Regex _rIdentifier = new Regex("(?<=(goto|^):)([\\w]+)|%([^%\\s]+)%|\\bnul\\b", RegexOptions.Compiled);
+        public static Regex _rIdentifier = new Regex("(?<=(goto|^):)([\\w]+)|%([^%\\s]+)%|\\bnul\\b|%~([fdpnxsatz]+\\d)", RegexOptions.Compiled);
         public static Regex _rOperator = new Regex(@"(&|&&|\|\||([012]?>>?)|<|!|=|^)", RegexOptions.Compiled);
         public static Regex _rParameter = new Regex("(?<=(\\s))(/|-?-)([\\w]+)", RegexOptions.Compiled);
         public static Regex _rKeyword = CmdKeywords.KeywordRegex;
@@ -49,7 +49,7 @@ namespace MadsKristensen.OpenCommandLine
                     return list;
             }
 
-            // Strings, keywords and operators
+            // Strings, keywords, operators and parameters
             foreach (Regex regex in _map.Keys)
             {
                 var classifier = _map[regex];
