@@ -5,7 +5,7 @@ namespace MadsKristensen.OpenCommandLine
 {
     class CmdContentTypeDefinition
     {
-        public const string CmdContentType = "CMD_HAT";
+        public const string CmdContentType = "batch file";
 
         [Export(typeof(ContentTypeDefinition))]
         [Name(CmdContentType)]
