@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using Microsoft.VisualStudio.Language.Intellisense;
@@ -12,7 +14,7 @@ namespace MadsKristensen.OpenCommandLine
     class CmdCompletionSource : ICompletionSource
     {
         private ITextBuffer _buffer;
-        private static ImageSource _keywordGlyph, _identifierGlyph;
+        private static ImageSource _keywordGlyph, _environmentGlyph;
         private ITextStructureNavigator _textStructureNavigator;
         private IClassifier _classifier;
         private bool _disposed = false;
@@ -22,7 +24,7 @@ namespace MadsKristensen.OpenCommandLine
             _buffer = buffer;
             _classifier = classifier.GetClassifier(buffer);
             _keywordGlyph = glyphService.GetGlyph(StandardGlyphGroup.GlyphGroupVariable, StandardGlyphItem.GlyphItemPublic);
-            _identifierGlyph = glyphService.GetGlyph(StandardGlyphGroup.GlyphGroupProperty, StandardGlyphItem.GlyphItemPublic);
+            _environmentGlyph = glyphService.GetGlyph(StandardGlyphGroup.GlyphAssembly, StandardGlyphItem.GlyphItemPublic);
             _textStructureNavigator = textStructureNavigator;
         }
 
@@ -47,27 +49,48 @@ namespace MadsKristensen.OpenCommandLine
 
             if (clsSpan != null && clsSpan.ClassificationType.IsOfType(PredefinedClassificationTypeNames.SymbolDefinition))
             {
-                var doc = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                var idents = _classifier.GetClassificationSpans(doc).Where(g => g.ClassificationType.IsOfType(PredefinedClassificationTypeNames.SymbolDefinition));
-
-                foreach (var ident in idents.Where(i => !i.Span.IntersectsWith(tracking.GetSpan(snapshot))))
-                {
-                    string text = ident.Span.GetText().Trim();
-                    string displayText = text.Trim('%');
-
-                    if (text.StartsWith("%") && text.EndsWith("%") && !completions.Any(c => c.InsertionText == displayText))
-                        completions.Add(new Completion(displayText, displayText, null, _identifierGlyph, "automationText"));
-                }
+                AddVariableCompletions(snapshot, tracking, completions);
             }
             else
             {
-                foreach (string keyword in CmdKeywords.Keywords.Keys)
-                {
-                    completions.Add(new Completion(keyword, keyword, CmdKeywords.Keywords[keyword], _keywordGlyph, keyword));
-                }
+                AddKeywordCompletions(completions);
             }
 
-            completionSets.Add(new CompletionSet("Cmd", "Cmd", tracking, completions, Enumerable.Empty<Completion>()));
+            var ordered = completions.OrderBy(c => c.DisplayText);
+
+            completionSets.Add(new CompletionSet("Cmd", "Cmd", tracking, ordered, Enumerable.Empty<Completion>()));
+        }
+
+        private void AddVariableCompletions(ITextSnapshot snapshot, ITrackingSpan tracking, List<Completion> completions)
+        {
+            var envVars = Environment.GetEnvironmentVariables();
+
+            foreach (DictionaryEntry variable in envVars)
+            {
+                string displayText = variable.Key.ToString();
+                string description = Environment.GetEnvironmentVariable(displayText);
+                completions.Add(new Completion(displayText, displayText, description, _environmentGlyph, "automationText"));
+            }
+
+            var doc = new SnapshotSpan(snapshot, 0, snapshot.Length);
+            var idents = _classifier.GetClassificationSpans(doc).Where(g => g.ClassificationType.IsOfType(PredefinedClassificationTypeNames.SymbolDefinition));
+
+            foreach (var ident in idents.Where(i => !i.Span.IntersectsWith(tracking.GetSpan(snapshot))))
+            {
+                string text = ident.Span.GetText().Trim();
+                string displayText = text.Trim('%');
+
+                if (text.StartsWith("%") && text.EndsWith("%") && !completions.Any(c => c.InsertionText == displayText))
+                    completions.Add(new Completion(displayText, displayText, null, _keywordGlyph, "automationText"));
+            }
+        }
+
+        private static void AddKeywordCompletions(List<Completion> completions)
+        {
+            foreach (string keyword in CmdKeywords.Keywords.Keys)
+            {
+                completions.Add(new Completion(keyword, keyword, CmdKeywords.Keywords[keyword], _keywordGlyph, keyword));
+            }
         }
 
         private ITrackingSpan FindTokenSpanAtPosition(ICompletionSession session)
