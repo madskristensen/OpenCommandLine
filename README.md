@@ -26,7 +26,7 @@ Explorer, then a console will open at the root of the .sln file.
 
 You can access the command by hitting **ALT+Space** as well.
 
-You may change this shortcut in the Options Window under Environment -> Keyboard 
+You may change this shortcut in the Options Window under Environment -> Keyboard
 
 Look for the command ProjectAndSolutionContextMenus.Project.OpenCommandLine.Default
 
@@ -43,8 +43,8 @@ Intellisense is provided for all built in keywords.
 
 ![Intellisense keywords](screenshots/intellisense.png)
 
-Theres also Intellisense for variable names used previously in the same
-file.
+There is also Intellisense for variable names used previously in the
+same file.
 
 ![Intellisense variables](screenshots/intellisense-variables.png)
 
