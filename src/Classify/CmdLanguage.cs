@@ -7,15 +7,24 @@ using System.Threading.Tasks;
 
 namespace MadsKristensen.OpenCommandLine
 {
-    class CmdKeywords
+    public class CmdLanguage
     {
-        private static Regex _regex = GetKeywordRegex();
+        private static Regex _rKeyword = GetKeywordRegex();
+        private static Regex _rString = new Regex("\"([^\"]+)\"", RegexOptions.Compiled);
+        private static Regex _rIdentifier = new Regex("(?<=(\\bset([\\s]+)))([\\S]+)(?=([\\s]+)?=)|%([^%\\s]+)%|%~([fdpnxsatz]+\\d)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex _rComment = new Regex("(?<=(^[\\s]+))?(rem|::).+|((?<=([\\s]+))&(rem|::).+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex _rOperator = new Regex(@"(&|&&|\|\||([012]?>>?)|<|!|=|^)", RegexOptions.Compiled);
+        private static Regex _rParameter = new Regex("(?<=(\\s))(/|-?-)([\\w]+)", RegexOptions.Compiled);
+        private static Regex _rLabel = new Regex("^(([\\s]+)?):([^\\s:]+)|(?<=(goto(:|\\s)([\\s]+)?))([^\\s:]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static Dictionary<string, string> _keywords = GetList();
 
-        public static Regex KeywordRegex
-        {
-            get { return _regex; }
-        }
+        public static Regex KeywordRegex { get { return _rKeyword; } }
+        public static Regex StringRegex { get { return _rString; } }
+        public static Regex IdentifierRegex { get { return _rIdentifier; } }
+        public static Regex CommentRegex { get { return _rComment; } }
+        public static Regex OperatorRegex { get { return _rOperator; } }
+        public static Regex ParameterRegex { get { return _rParameter; } }
+        public static Regex LabelRegex { get { return _rLabel; } }
 
         public static Dictionary<string, string> Keywords
         {
@@ -26,7 +35,7 @@ namespace MadsKristensen.OpenCommandLine
         {
             var list = GetList().Keys;
             string keywords = string.Join("|", list);
-            return new Regex("\\b@?(" + keywords + ")\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            return new Regex("(?<=(^|([\\s]+)))@?(" + keywords + ")\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         }
 
         private static Dictionary<string, string> GetList()

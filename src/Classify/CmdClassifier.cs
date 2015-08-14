@@ -10,13 +10,6 @@ namespace MadsKristensen.OpenCommandLine
 {
     public class CmdClassifier : IClassifier
     {
-        public static Regex _rString = new Regex("\"([^\"]+)\"", RegexOptions.Compiled);
-        public static Regex _rIdentifier = new Regex("(?<=(\\bset([\\s]+)?))([\\S]+)(?=([\\s]+)?=)|%([^%\\s]+)%|%~([fdpnxsatz]+\\d)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        public static Regex _rComment = new Regex(@"(^([\s]+)?(rem|::).+)|((?<=[\s]+)&(rem|::).+)", RegexOptions.Compiled);
-        public static Regex _rOperator = new Regex(@"(&|&&|\|\||([012]?>>?)|<|!|=|^)", RegexOptions.Compiled);
-        public static Regex _rParameter = new Regex("(?<=(\\s))(/|-?-)([\\w]+)", RegexOptions.Compiled);
-        public static Regex _rLabel = new Regex("^(([\\s]+)?):([^\\s:]+)|(?<=(goto(:|\\s)([\\s]+)?))([^\\s:]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        public static Regex _rKeyword = CmdKeywords.KeywordRegex;
         public Dictionary<Regex, IClassificationType> _map;
         private IClassificationType _comment, _identifier;
 
@@ -27,11 +20,11 @@ namespace MadsKristensen.OpenCommandLine
 
             _map = new Dictionary<Regex, IClassificationType>
             {
-                {_rString, registry.GetClassificationType(PredefinedClassificationTypeNames.String)},
-                {_rKeyword, registry.GetClassificationType(PredefinedClassificationTypeNames.Keyword)},
-                {_rLabel, registry.GetClassificationType(PredefinedClassificationTypeNames.SymbolReference)},
-                {_rOperator, registry.GetClassificationType(PredefinedClassificationTypeNames.Operator)},
-                {_rParameter, registry.GetClassificationType(PredefinedClassificationTypeNames.ExcludedCode)},
+                {CmdLanguage.StringRegex, registry.GetClassificationType(PredefinedClassificationTypeNames.String)},
+                {CmdLanguage.KeywordRegex, registry.GetClassificationType(PredefinedClassificationTypeNames.Keyword)},
+                {CmdLanguage.LabelRegex, registry.GetClassificationType(PredefinedClassificationTypeNames.SymbolReference)},
+                {CmdLanguage.OperatorRegex, registry.GetClassificationType(PredefinedClassificationTypeNames.Operator)},
+                {CmdLanguage.ParameterRegex, registry.GetClassificationType(PredefinedClassificationTypeNames.ExcludedCode)},
             };
         }
 
@@ -41,7 +34,7 @@ namespace MadsKristensen.OpenCommandLine
             string text = span.GetText();
 
             // Comments
-            Match commentMatch = _rComment.Match(text);
+            Match commentMatch = CmdLanguage.CommentRegex.Match(text);
             if (commentMatch.Success)
             {
                 var result = new SnapshotSpan(span.Snapshot, span.Start + commentMatch.Index, commentMatch.Length);
@@ -70,7 +63,7 @@ namespace MadsKristensen.OpenCommandLine
             }
 
             // Identifier
-            foreach (Match match in _rIdentifier.Matches(text))
+            foreach (Match match in CmdLanguage.IdentifierRegex.Matches(text))
             {
                 var result = new SnapshotSpan(span.Snapshot, span.Start + match.Index, match.Length);
                 list.Add(new ClassificationSpan(result, _identifier));

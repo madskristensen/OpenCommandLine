@@ -125,7 +125,7 @@
   <ItemGroup>
     <Compile Include="Classify\CmdClassifier.cs" />
     <Compile Include="Classify\CmdClassifierProvider.cs" />
-    <Compile Include="Classify\CmdKeywords.cs" />
+    <Compile Include="Classify\CmdLanguage.cs" />
     <Compile Include="Completion\CmdCreationListener.cs" />
     <Compile Include="Completion\CmdCompletionController.cs" />
     <Compile Include="Completion\CmdCompletionSourceProvider.cs" />

@@ -89,11 +89,11 @@ namespace MadsKristensen.OpenCommandLine
             if (string.IsNullOrWhiteSpace(text))
                 return false;
 
-            if (!CmdKeywords.Keywords.ContainsKey(text.ToLowerInvariant()))
+            if (!CmdLanguage.Keywords.ContainsKey(text.ToLowerInvariant()))
                 return false;
 
             applicableToSpan = _buffer.CurrentSnapshot.CreateTrackingSpan(span.Span, SpanTrackingMode.EdgeNegative);
-            qiContent.Add(CmdKeywords.Keywords[text.ToLowerInvariant()]);
+            qiContent.Add(CmdLanguage.Keywords[text.ToLowerInvariant()]);
 
             return true;
         }

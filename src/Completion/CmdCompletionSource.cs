@@ -87,9 +87,9 @@ namespace MadsKristensen.OpenCommandLine
 
         private static void AddKeywordCompletions(List<Completion> completions)
         {
-            foreach (string keyword in CmdKeywords.Keywords.Keys)
+            foreach (string keyword in CmdLanguage.Keywords.Keys)
             {
-                completions.Add(new Completion(keyword, keyword, CmdKeywords.Keywords[keyword], _keywordGlyph, keyword));
+                completions.Add(new Completion(keyword, keyword, CmdLanguage.Keywords[keyword], _keywordGlyph, keyword));
             }
         }
 
