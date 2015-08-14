@@ -16,5 +16,6 @@ namespace MadsKristensen.OpenCommandLine
         public const uint cmdidOpenCmd = 0x200;
         public const uint cmdidOpenPowershell = 0x300;
         public const uint cmdidOpenOptions = 0x400;
+        public const uint cmdExecuteCmd = 0x500;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
@@ -46,6 +47,39 @@ namespace MadsKristensen.OpenCommandLine
             CommandID cmdOptions = new CommandID(GuidList.guidOpenCommandLineCmdSet, (int)PkgCmdIDList.cmdidOpenOptions);
             MenuCommand optionsItem = new MenuCommand((s, e) => { ShowOptionPage(typeof(Options)); }, cmdOptions);
             mcs.AddCommand(optionsItem);
+
+            CommandID cmdExe = new CommandID(GuidList.guidOpenCommandLineCmdSet, (int)PkgCmdIDList.cmdExecuteCmd);
+            OleMenuCommand exeItem = new OleMenuCommand(ExecuteFile, cmdExe);
+            exeItem.BeforeQueryStatus += BeforeExeQuery;
+            mcs.AddCommand(exeItem);
+        }
+
+        void BeforeExeQuery(object sender, EventArgs e)
+        {
+            OleMenuCommand button = (OleMenuCommand)sender;
+            var item = VsHelpers.GetSelectedItems(_dte).FirstOrDefault();
+
+            if (item == null || item.FileCount == 0)
+            {
+                button.Enabled = button.Visible = false;
+                return;
+            }
+
+            string path = item.FileNames[1];
+            string[] allowed = new [] { ".CMD", ".BAT"};
+            string ext = Path.GetExtension(path).ToUpperInvariant();
+            bool isEnabled = allowed.Contains(ext) && File.Exists(path);
+
+            button.Enabled = button.Visible = isEnabled;
+        }
+
+        private void ExecuteFile(object sender, EventArgs e)
+        {
+            var item = VsHelpers.GetSelectedItems(_dte).FirstOrDefault();
+            string path = item.FileNames[1];
+            string folder = Path.GetDirectoryName(path);
+
+            StartProcess(folder, "cmd.exe", "/k \"" + Path.GetFileName(path) + "\"");
         }
 
         private void BeforeQueryStatus(object sender, EventArgs e)

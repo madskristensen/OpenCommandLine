@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using EnvDTE;
@@ -137,6 +138,19 @@ namespace MadsKristensen.OpenCommandLine
             }
 
             return installDirectory;
+        }
+
+        public static IEnumerable<ProjectItem> GetSelectedItems(DTE2 dte)
+        {
+            var items = (Array)dte.ToolWindows.SolutionExplorer.SelectedItems;
+
+            foreach (UIHierarchyItem selItem in items)
+            {
+                ProjectItem item = selItem.Object as ProjectItem;
+
+                if (item != null)
+                    yield return item;
+            }
         }
     }
 }
