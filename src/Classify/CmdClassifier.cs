@@ -14,6 +14,7 @@ namespace MadsKristensen.OpenCommandLine
         public static Regex _rComment = new Regex(@"(^([\s]+)?(rem|::).+)|((?<=[\s]+)&(rem|::).+)", RegexOptions.Compiled);
         public static Regex _rIdentifier = new Regex("(?<=(goto|^):)([\\w]+)|%([^%\\s]+)%|\\bnul\\b", RegexOptions.Compiled);
         public static Regex _rOperator = new Regex(@"(&|&&|\|\||([012]?>>?)|<|!|=|^)", RegexOptions.Compiled);
+        public static Regex _rParameter = new Regex("(?<=(\\s))(/|-?-)([\\w]+)", RegexOptions.Compiled);
         public static Regex _rKeyword = CmdKeywords.KeywordRegex;
         public Dictionary<Regex, IClassificationType> _map;
         private IClassificationType _comment, _identifier;
@@ -28,6 +29,7 @@ namespace MadsKristensen.OpenCommandLine
                 {_rString, registry.GetClassificationType(PredefinedClassificationTypeNames.String)},
                 {_rKeyword, registry.GetClassificationType(PredefinedClassificationTypeNames.Keyword)},
                 {_rOperator, registry.GetClassificationType(PredefinedClassificationTypeNames.Operator)},
+                {_rParameter, registry.GetClassificationType(PredefinedClassificationTypeNames.ExcludedCode)},
             };
         }
 

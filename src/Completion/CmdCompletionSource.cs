@@ -44,13 +44,25 @@ namespace MadsKristensen.OpenCommandLine
             }
 
             ITrackingSpan tracking = FindTokenSpanAtPosition(session);
-            completionSets.Add(new CompletionSet("Cmd", "Cmd", tracking, completions, Enumerable.Empty<Completion>()));
+
+            if (tracking != null)
+                completionSets.Add(new CompletionSet("Cmd", "Cmd", tracking, completions, Enumerable.Empty<Completion>()));
         }
 
         private ITrackingSpan FindTokenSpanAtPosition(ICompletionSession session)
         {
             SnapshotPoint currentPoint = (session.TextView.Caret.Position.BufferPosition) - 1;
             TextExtent extent = _textStructureNavigator.GetExtentOfWord(currentPoint);
+
+            var prev = _textStructureNavigator.GetSpanOfPreviousSibling(extent.Span);
+
+            if (prev != null && !prev.Contains(extent.Span))
+            {
+                string text = prev.GetText();
+                if (!string.IsNullOrEmpty(text) && !char.IsLetter(text[0]))
+                    return null;
+            }
+
             return currentPoint.Snapshot.CreateTrackingSpan(extent.Span, SpanTrackingMode.EdgeInclusive);
         }
 

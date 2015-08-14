@@ -73,12 +73,12 @@ namespace MadsKristensen.OpenCommandLine
                         else if (_currentSession != null)
                             Filter();
                         break;
-                    case VSConstants.VSStd2KCmdID.BACKSPACE:
-                        if (_currentSession == null)
-                            StartSession();
+                    //case VSConstants.VSStd2KCmdID.BACKSPACE:
+                    //    if (_currentSession == null)
+                    //        StartSession();
 
-                        Filter();
-                        break;
+                    //    Filter();
+                    //    break;
                     }
                 }
             }
