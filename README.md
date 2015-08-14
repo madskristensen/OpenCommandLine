@@ -14,7 +14,7 @@ The Open Command Line extension supports all types of consoles like cmd, PowerSh
 Bash and more. You can easily configure which to use by setting the paths and arguments
 in the Options.
 
-![Open Command Line](https://raw.githubusercontent.com/madskristensen/OpenCommandLine/master/screenshots/options.png)
+![Open Command Line](screenshots/options.png)
 
 ### How it works
 
@@ -22,10 +22,39 @@ This extension adds a new command to the project context menu that will open
 a command prompt on the project's path. If the solution node is selection in Solution
 Explorer, then a console will open at the root of the .sln file.
 
-![Open Command Line](https://raw.githubusercontent.com/madskristensen/OpenCommandLine/master/screenshots/context-menu.png)
+![Open Command Line](screenshots/context-menu.png)
 
 You can access the command by hitting **ALT+Space** as well.
 
 You may change this shortcut in the Options Window under Environment -> Keyboard 
 
 Look for the command ProjectAndSolutionContextMenus.Project.OpenCommandLine.Default
+
+### Syntax highlighter
+
+Full colorization for batch files (.cmd and .bat) in the Visual Studio
+editor.
+
+![Batch file colorizer](screenshots/classifier.png)
+
+### Intellisense
+
+Intellisense is provided for all built in keywords.
+
+![Intellisense keywords](screenshots/intellisense.png)
+
+Theres also Intellisense for variable names used previously in the same
+file.
+
+![Intellisense variables](screenshots/intellisense-variables.png)
+
+### Execute batch file
+
+You can easily execute any .cmd or .bat file. For files in your solution,
+a context-menu button shows up.
+
+![Execute batch file](screenshots/execute-context-menu.png)
+
+Alternatively, the keyboard shortcut `Shift+Alt+5` can be used when
+editing a batch file. This makes it really easy and fast to execute
+any batch file - even ones that are not part of your project.
