@@ -39,14 +39,9 @@ editor.
 
 ### Intellisense
 
-Intellisense is provided for all built in keywords.
+Intellisense is provided for variables.
 
 ![Intellisense keywords](screenshots/intellisense.png)
-
-There is also Intellisense for variable names used previously in the
-same file.
-
-![Intellisense variables](screenshots/intellisense-variables.png)
 
 ### Execute batch file
 

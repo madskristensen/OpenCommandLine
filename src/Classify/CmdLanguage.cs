@@ -43,7 +43,7 @@ namespace MadsKristensen.OpenCommandLine
                 {"convert",     "Converts FAT volumes to NTFS.  You cannot convert the current drive."},
                 {"copy",        "Copies one or more files to another location."},
                 {"date",        "Displays or sets the date."},
-                {"define",      "Define."},
+                {"defined",     "Defined."},
                 {"del",         "Deletes one or more files."},
                 {"dir",         "Displays a list of files and subdirectories in a directory."},
                 {"diskcomp",    "Compares the contents of two floppy disks."},

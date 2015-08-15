@@ -52,10 +52,10 @@ namespace MadsKristensen.OpenCommandLine
             {
                 AddVariableCompletions(snapshot, tracking, completions);
             }
-            else if (!tracking.GetText(snapshot).Any(c => !char.IsLetter(c) && !char.IsWhiteSpace(c)))
-            {
-                AddKeywordCompletions(completions);
-            }
+            //else if (!tracking.GetText(snapshot).Any(c => !char.IsLetter(c) && !char.IsWhiteSpace(c)))
+            //{
+            //    AddKeywordCompletions(completions);
+            //}
 
             if (completions.Count > 0)
             {
@@ -83,7 +83,7 @@ namespace MadsKristensen.OpenCommandLine
                 string text = ident.Span.GetText().Trim();
                 string displayText = text.Trim('%');
 
-                if (text.StartsWith("%") && text.EndsWith("%") && !completions.Any(c => c.InsertionText == displayText))
+                if (!completions.Any(c => c.InsertionText == displayText))
                     completions.Add(new Completion(displayText, displayText, null, _keywordGlyph, "automationText"));
             }
         }
