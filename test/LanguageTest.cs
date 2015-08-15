@@ -51,6 +51,8 @@ namespace Test
             Regex regex = CmdLanguage.StringRegex;
             Assert.AreEqual("'hat'", regex.Match(" test  'hat'  foo").Value);
             Assert.AreEqual("\"hat\"", regex.Match(" test  \"hat\"  foo").Value);
+            Assert.AreEqual("\"foo 'test' bar\"", regex.Match("\"foo 'test' bar\"").Value);
+            Assert.AreEqual("foo bar", regex.Match("echo foo bar").Value);
             Assert.AreEqual("", regex.Match(" test  \"hat  ").Value);
         }
 

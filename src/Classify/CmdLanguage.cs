@@ -9,13 +9,13 @@ namespace MadsKristensen.OpenCommandLine
 {
     public class CmdLanguage
     {
-        private static Regex _rKeyword = GetKeywordRegex();
-        private static Regex _rString = new Regex("(\"|')([^\"]+)\\1", RegexOptions.Compiled);
-        private static Regex _rIdentifier = new Regex("(?<=(\\bset([\\s]+)))([\\S]+)(?=([\\s]+)?=)|%([^%\\s]+)%|%~([fdpnxsatz]+\\d)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static Regex _rComment = new Regex("(?<=(^[\\s]+))?(rem|::).+|((?<=([\\s]+))&(rem|::).+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex _rIdentifier = new Regex("(?<=(\\bset([\\s]+)))([\\S]+)(?=([\\s]+)?=)|%([^%\\s]+)%|%~([fdpnxsatz]+\\d)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex _rKeyword = GetKeywordRegex();
+        private static Regex _rLabel = new Regex("^(([\\s]+)?):([^\\s:]+)|(?<=(\\bgoto(:|\\s)([\\s]+)?))([^\\s:]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static Regex _rOperator = new Regex(@"(&|&&|\|\||([012]?>>?)|<|!|=|^)", RegexOptions.Compiled);
         private static Regex _rParameter = new Regex("(?<=(\\s))(/|-?-)([\\w]+)", RegexOptions.Compiled);
-        private static Regex _rLabel = new Regex("^(([\\s]+)?):([^\\s:]+)|(?<=(\\bgoto(:|\\s)([\\s]+)?))([^\\s:]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex _rString = new Regex("(\"|')([^\\1]+)\\1|(?<=echo([\\s]+)).+", RegexOptions.Compiled);
         private static Dictionary<string, string> _keywords = GetList();
 
         public static Regex KeywordRegex { get { return _rKeyword; } }
