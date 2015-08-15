@@ -44,5 +44,41 @@ namespace Test
             Assert.AreEqual("&rem hat", regex.Match("foo &rem hat").Value);
             Assert.AreEqual("&rem hat &REM test", regex.Match("foo &rem hat &REM test").Value);
         }
+
+        [TestMethod, TestCategory("Language")]
+        public void StringTest()
+        {
+            Regex regex = CmdLanguage.StringRegex;
+            Assert.AreEqual("'hat'", regex.Match(" test  'hat'  foo").Value);
+            Assert.AreEqual("\"hat\"", regex.Match(" test  \"hat\"  foo").Value);
+            Assert.AreEqual("", regex.Match(" test  \"hat  ").Value);
+        }
+
+        [TestMethod, TestCategory("Language")]
+        public void LabelTest()
+        {
+            Regex regex = CmdLanguage.LabelRegex;
+            Assert.AreEqual(":foo", regex.Match(":foo").Value);
+            Assert.AreEqual("foo", regex.Match("goto:foo").Value);
+            Assert.AreEqual("foo", regex.Match("goto foo").Value);
+            Assert.AreEqual("foo", regex.Match("   goto:foo").Value);
+
+            Assert.AreEqual("", regex.Match("notgoto:foo").Value);
+            Assert.AreEqual("", regex.Match("notgoto foo").Value);
+        }
+
+        [TestMethod, TestCategory("Language")]
+        public void ParameterTest()
+        {
+            Regex regex = CmdLanguage.ParameterRegex;
+            Assert.AreEqual("/f", regex.Match(" /f ").Value);
+            Assert.AreEqual("-f", regex.Match(" -f ").Value);
+            Assert.AreEqual("--f", regex.Match(" --f ").Value);
+
+            Assert.AreEqual("", regex.Match("fo/f").Value);
+            Assert.AreEqual("", regex.Match("fo-f").Value);
+            Assert.AreEqual("", regex.Match("fo--f").Value);
+            Assert.AreEqual("", regex.Match("-- f").Value);
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace MadsKristensen.OpenCommandLine
     class CmdCompletionSource : ICompletionSource
     {
         private ITextBuffer _buffer;
-        private static ImageSource _keywordGlyph, _environmentGlyph;
+        private static ImageSource _keywordGlyph, _environmentGlyph, _labelGlyph;
         private ITextStructureNavigator _textStructureNavigator;
         private IClassifier _classifier;
         private bool _disposed = false;
@@ -25,6 +25,7 @@ namespace MadsKristensen.OpenCommandLine
             _classifier = classifier.GetClassifier(buffer);
             _keywordGlyph = glyphService.GetGlyph(StandardGlyphGroup.GlyphGroupVariable, StandardGlyphItem.GlyphItemPublic);
             _environmentGlyph = glyphService.GetGlyph(StandardGlyphGroup.GlyphAssembly, StandardGlyphItem.GlyphItemPublic);
+            _labelGlyph = glyphService.GetGlyph(StandardGlyphGroup.GlyphArrow, StandardGlyphItem.GlyphItemPublic);
             _textStructureNavigator = textStructureNavigator;
         }
 
@@ -33,7 +34,7 @@ namespace MadsKristensen.OpenCommandLine
             if (_disposed)
                 return;
 
-            ITextSnapshot snapshot = _buffer.CurrentSnapshot;
+            ITextSnapshot snapshot = session.TextView.TextBuffer.CurrentSnapshot;
             SnapshotPoint? triggerPoint = session.GetTriggerPoint(snapshot);
             ClassificationSpan clsSpan;
 
@@ -51,14 +52,16 @@ namespace MadsKristensen.OpenCommandLine
             {
                 AddVariableCompletions(snapshot, tracking, completions);
             }
-            else
+            else if (!tracking.GetText(snapshot).Any(c => !char.IsLetter(c) && !char.IsWhiteSpace(c)))
             {
                 AddKeywordCompletions(completions);
             }
 
-            var ordered = completions.OrderBy(c => c.DisplayText);
-
-            completionSets.Add(new CompletionSet("Cmd", "Cmd", tracking, ordered, Enumerable.Empty<Completion>()));
+            if (completions.Count > 0)
+            {
+                var ordered = completions.OrderBy(c => c.DisplayText);
+                completionSets.Add(new CompletionSet("Cmd", "Cmd", tracking, ordered, Enumerable.Empty<Completion>()));
+            }
         }
 
         private void AddVariableCompletions(ITextSnapshot snapshot, ITrackingSpan tracking, List<Completion> completions)
@@ -95,7 +98,7 @@ namespace MadsKristensen.OpenCommandLine
 
         private ITrackingSpan FindTokenSpanAtPosition(ICompletionSession session)
         {
-            SnapshotPoint currentPoint = (session.TextView.Caret.Position.BufferPosition) - 1;
+            SnapshotPoint currentPoint = session.TextView.Caret.Position.BufferPosition - 1;
             TextExtent extent = _textStructureNavigator.GetExtentOfWord(currentPoint);
 
             var prev = _textStructureNavigator.GetSpanOfPreviousSibling(extent.Span);
@@ -105,6 +108,13 @@ namespace MadsKristensen.OpenCommandLine
                 string text = prev.GetText();
                 if (!string.IsNullOrEmpty(text) && text.Last() != '%' && !char.IsLetter(text[0]))
                     return null;
+
+                if (text.First() != '%' && CmdLanguage.Keywords.ContainsKey(text.ToLowerInvariant()))
+                {
+                    text = text.ToLowerInvariant();
+                    if (text != "if" && text != "not")
+                        return null;
+                }
             }
 
             return currentPoint.Snapshot.CreateTrackingSpan(extent.Span, SpanTrackingMode.EdgeInclusive);
@@ -113,7 +123,7 @@ namespace MadsKristensen.OpenCommandLine
         private bool IsAllowed(SnapshotPoint triggerPoint, out ClassificationSpan classificationType)
         {
             var line = triggerPoint.GetContainingLine().Extent;
-            var spans = _classifier.GetClassificationSpans(line).Where(c => c.Span.Contains(triggerPoint.Position));
+            var spans = _classifier.GetClassificationSpans(line).Where(c => c.Span.Contains(triggerPoint.Position - 1));
             classificationType = spans.LastOrDefault();
 
             if (spans.Any(c => c.ClassificationType.IsOfType(PredefinedClassificationTypeNames.SymbolDefinition)))

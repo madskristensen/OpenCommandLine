@@ -10,12 +10,12 @@ namespace MadsKristensen.OpenCommandLine
     public class CmdLanguage
     {
         private static Regex _rKeyword = GetKeywordRegex();
-        private static Regex _rString = new Regex("\"([^\"]+)\"", RegexOptions.Compiled);
+        private static Regex _rString = new Regex("(\"|')([^\"]+)\\1", RegexOptions.Compiled);
         private static Regex _rIdentifier = new Regex("(?<=(\\bset([\\s]+)))([\\S]+)(?=([\\s]+)?=)|%([^%\\s]+)%|%~([fdpnxsatz]+\\d)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static Regex _rComment = new Regex("(?<=(^[\\s]+))?(rem|::).+|((?<=([\\s]+))&(rem|::).+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static Regex _rOperator = new Regex(@"(&|&&|\|\||([012]?>>?)|<|!|=|^)", RegexOptions.Compiled);
         private static Regex _rParameter = new Regex("(?<=(\\s))(/|-?-)([\\w]+)", RegexOptions.Compiled);
-        private static Regex _rLabel = new Regex("^(([\\s]+)?):([^\\s:]+)|(?<=(goto(:|\\s)([\\s]+)?))([^\\s:]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex _rLabel = new Regex("^(([\\s]+)?):([^\\s:]+)|(?<=(\\bgoto(:|\\s)([\\s]+)?))([^\\s:]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static Dictionary<string, string> _keywords = GetList();
 
         public static Regex KeywordRegex { get { return _rKeyword; } }
@@ -75,6 +75,7 @@ namespace MadsKristensen.OpenCommandLine
                 {"help",        "Provides Help information for Windows commands."},
                 {"icacls",      "Display, modify, backup, or restore ACLs for files and directories."},
                 {"if",          "Performs conditional processing in batch programs."},
+                {"in",          ""},
                 {"label",       "Creates, changes, or deletes the volume label of a disk."},
                 {"md",          "Creates a directory."},
                 {"mkdir",       "Creates a directory."},

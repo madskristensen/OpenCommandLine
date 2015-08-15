@@ -61,26 +61,16 @@ namespace MadsKristensen.OpenCommandLine
 
             if (ErrorHandler.Succeeded(hresult))
             {
-                if (pguidCmdGroup == VSConstants.VSStd2K)
+                if (pguidCmdGroup == VSConstants.VSStd2K && (VSConstants.VSStd2KCmdID)nCmdID == VSConstants.VSStd2KCmdID.TYPECHAR)
                 {
-                    switch ((VSConstants.VSStd2KCmdID)nCmdID)
-                    {
-                    case VSConstants.VSStd2KCmdID.TYPECHAR:
-                        char ch = GetTypeChar(pvaIn);
-                        if (ch == ' ')
-                            Cancel();
-                        else if (!char.IsPunctuation(ch) && !char.IsControl(ch))
-                            StartSession();
-                        else if (_currentSession != null)
-                            Filter();
-                        break;
-                    //case VSConstants.VSStd2KCmdID.BACKSPACE:
-                    //    if (_currentSession == null)
-                    //        StartSession();
+                    char ch = GetTypeChar(pvaIn);
 
-                    //    Filter();
-                    //    break;
-                    }
+                    if (ch == ' ' || ch == ':' || char.IsSeparator(ch))
+                        Cancel();
+                    else if (char.IsLetter(ch))
+                        StartSession();
+                    else if (_currentSession != null)
+                        Filter();
                 }
             }
 
