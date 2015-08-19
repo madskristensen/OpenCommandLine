@@ -70,7 +70,7 @@
                 <CommandFlag>DefaultDisabled</CommandFlag>
                 <CommandFlag>DynamicVisibility</CommandFlag>
                 <Strings>
-                    <ButtonText>Exexute File</ButtonText>
+                    <ButtonText>Execute File</ButtonText>
                 </Strings>
             </Button>
         </Buttons>
