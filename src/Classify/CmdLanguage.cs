@@ -10,7 +10,7 @@ namespace MadsKristensen.OpenCommandLine
         private static Regex _rKeyword = GetKeywordRegex();
         private static Regex _rLabel = new Regex("^(([\\s]+)?):([^\\s:]+)|(?<=(\\bgoto(:|\\s)([\\s]+)?))([^\\s:]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static Regex _rOperator = new Regex(@"(&|&&|\|\||([012]?>>?)|<|!|=|^)", RegexOptions.Compiled);
-        private static Regex _rParameter = new Regex("(?<=(\\s))(/|-?-)([\\w]+)", RegexOptions.Compiled);
+        private static Regex _rParameter = new Regex("(?<=(\\s))(/|-?-)([\\S]+)", RegexOptions.Compiled);
         private static Regex _rString = new Regex("(\"|')([^\\1]+)\\1|(?<=echo([\\s]+)).+", RegexOptions.Compiled);
         private static Dictionary<string, string> _keywords = GetList();
 
