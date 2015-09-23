@@ -102,7 +102,7 @@ namespace MadsKristensen.OpenCommandLine
                     DefaultPresets["GitHub Console"] = new Command(@"%LOCALAPPDATA%\GitHub\GitHub.appref-ms", "-open-shell");
                 }
 
-                DefaultPresets["cmder"] = new Command("cmder.exe", "/START %folder%");
+                DefaultPresets["cmder"] = new Command("cmder.exe", "/START \"%folder%\"");
                 DefaultPresets["Custom"] = new Command(string.Empty, string.Empty);
             }
 
