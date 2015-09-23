@@ -23,14 +23,12 @@ namespace MadsKristensen.OpenCommandLine
             {
                 if (window.Type == vsWindowType.vsWindowTypeDocument)
                 {
-                    // if a document is active, use the document's containing project
+                    // if a document is active, use the document's containing folder
                     Document doc = dte.ActiveDocument;
                     if (doc != null && !string.IsNullOrEmpty(doc.FullName))
                     {
                         ProjectItem item = dte.Solution.FindProjectItem(doc.FullName);
-
-                        if (item != null && item.ContainingProject != null && !string.IsNullOrEmpty(item.ContainingProject.FullName))
-                            return item.ContainingProject.Properties.Item("FullPath").Value.ToString();
+                        return Path.GetDirectoryName(item.FileNames[1]);
                     }
                 }
                 else if (window.Type == vsWindowType.vsWindowTypeSolutionExplorer)
@@ -46,10 +44,12 @@ namespace MadsKristensen.OpenCommandLine
                             if (hierarchyItem != null)
                             {
                                 ProjectItem projectItem = hierarchyItem.Object as ProjectItem;
-                                if (projectItem != null && projectItem.FileCount > 0 && Directory.Exists(projectItem.FileNames[1]))
+                                if (projectItem != null && projectItem.FileCount > 0)
                                 {
-                                    string file = projectItem.FileNames[1];
-                                    return Path.GetDirectoryName(file);
+                                    if (Directory.Exists(projectItem.FileNames[1]))
+                                        return projectItem.FileNames[1];
+
+                                    return Path.GetDirectoryName(projectItem.FileNames[1]);
                                 }
                             }
                         }
@@ -59,7 +59,7 @@ namespace MadsKristensen.OpenCommandLine
 
             Project project = GetActiveProject(dte);
 
-            if (project != null)
+            if (project != null && !project.Kind.Equals(ProjectKinds.vsProjectKindSolutionFolder, StringComparison.OrdinalIgnoreCase))
                 return project.GetRootFolder();
 
             if (dte.Solution != null && !string.IsNullOrEmpty(dte.Solution.FullName))
