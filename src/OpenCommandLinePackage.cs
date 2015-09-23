@@ -87,7 +87,7 @@ namespace MadsKristensen.OpenCommandLine
             OleMenuCommand button = (OleMenuCommand)sender;
             Options options = GetDialogPage(typeof(Options)) as Options;
 
-            button.Text = "Default (" + options.Preset + ")";
+            button.Text = options.FriendlyName;
         }
 
         private void OpenCustom(object sender, EventArgs e)

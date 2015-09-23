@@ -28,13 +28,22 @@ namespace MadsKristensen.OpenCommandLine
                 if (!_isLoading && DefaultPresets.ContainsKey(value))
                 {
                     _isChanging = true;
+
                     Command command = DefaultPresets[value];
-                    this.Command = command.Name;
-                    this.Arguments = command.Arguments;
+                    Command = command.Name;
+                    Arguments = command.Arguments;
+                    FriendlyName = "Default (" + value + ")";
+
                     _isChanging = false;
                 }
             }
         }
+
+        [Category("Command Preset")]
+        [DisplayName("Friendly name")]
+        [Description("Specify the friendly name for the default command")]
+        [DefaultValue("Default (cmd)")]
+        public string FriendlyName { get; set; }
 
         string _command;
 
@@ -82,6 +91,9 @@ namespace MadsKristensen.OpenCommandLine
 
             if (string.IsNullOrEmpty(Command))
                 Command = "cmd.exe";
+
+            if (string.IsNullOrEmpty(FriendlyName))
+                FriendlyName = "Default (cmd)";
 
             if (string.IsNullOrEmpty(Preset))
                 Preset = "cmd";
