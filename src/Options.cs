@@ -85,7 +85,7 @@ namespace MadsKristensen.OpenCommandLine
 
         [Category("Settings")]
         [DisplayName("Open files at project level")]
-        [Description("Opening a command line when a document it active will open at the project level.")]
+        [Description("Opening a command line when a document is active will open it at the project level.")]
         [DefaultValue(false)]
         public bool OpenProjectLevel { get; set; }
 
