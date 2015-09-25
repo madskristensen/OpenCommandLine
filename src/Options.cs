@@ -83,6 +83,12 @@ namespace MadsKristensen.OpenCommandLine
         [DefaultValue(false)]
         public bool OpenSlnLevel { get; set; }
 
+        [Category("Settings")]
+        [DisplayName("Open files at project level")]
+        [Description("Opening a command line when a document it active will open at the project level.")]
+        [DefaultValue(false)]
+        public bool OpenProjectLevel { get; set; }
+
         public override void LoadSettingsFromStorage()
         {
             _isLoading = true;

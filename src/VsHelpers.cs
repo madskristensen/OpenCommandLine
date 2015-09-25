@@ -28,7 +28,11 @@ namespace MadsKristensen.OpenCommandLine
                     if (doc != null && !string.IsNullOrEmpty(doc.FullName))
                     {
                         ProjectItem item = dte.Solution.FindProjectItem(doc.FullName);
-                        return Path.GetDirectoryName(item.FileNames[1]);
+
+                        if (options.OpenProjectLevel && item.ContainingProject != null && !string.IsNullOrEmpty(item.ContainingProject.FullName))
+                            return item.ContainingProject.GetRootFolder();
+                        else
+                            return Path.GetDirectoryName(item.FileNames[1]);
                     }
                 }
                 else if (window.Type == vsWindowType.vsWindowTypeSolutionExplorer)
