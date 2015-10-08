@@ -66,7 +66,7 @@ namespace MadsKristensen.OpenCommandLine
                 return;
             }
 
-            string path = item.Properties.Item("FullPath")?.Value?.ToString();
+            string path = item.Properties.Item("FullPath").Value.ToString();
 
             if (string.IsNullOrEmpty(path) || !Path.IsPathRooted(path))
                 return;
