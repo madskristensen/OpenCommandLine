@@ -57,6 +57,7 @@ namespace MadsKristensen.OpenCommandLine
         void BeforeExeQuery(object sender, EventArgs e)
         {
             OleMenuCommand button = (OleMenuCommand)sender;
+            button.Enabled = button.Visible = false;
             var item = VsHelpers.GetProjectItem(_dte);
 
             if (item == null || item.FileCount == 0)
@@ -65,7 +66,11 @@ namespace MadsKristensen.OpenCommandLine
                 return;
             }
 
-            string path = item.FileNames[1];
+            string path = item.Properties.Item("FullPath")?.Value?.ToString();
+
+            if (string.IsNullOrEmpty(path) || !Path.IsPathRooted(path))
+                return;
+
             string[] allowed = new [] { ".CMD", ".BAT"};
             string ext = Path.GetExtension(path).ToUpperInvariant();
             bool isEnabled = allowed.Contains(ext) && File.Exists(path);
