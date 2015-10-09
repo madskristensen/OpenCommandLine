@@ -25,14 +25,24 @@ namespace MadsKristensen.OpenCommandLine
                 {
                     // if a document is active, use the document's containing folder
                     Document doc = dte.ActiveDocument;
-                    if (doc != null && !string.IsNullOrEmpty(doc.FullName))
+                    if (doc != null && IsValidFileName(doc.FullName))
                     {
-                        ProjectItem item = dte.Solution.FindProjectItem(doc.FullName);
+                        if (options.OpenProjectLevel)
+                        {
+                            Project p = GetActiveProject(dte);
 
-                        if (options.OpenProjectLevel && item.ContainingProject != null && !string.IsNullOrEmpty(item.ContainingProject.FullName))
-                            return item.ContainingProject.GetRootFolder();
+                            if (p != null)
+                            {
+                                string folder = p.GetRootFolder();
+
+                                if (!string.IsNullOrEmpty(folder))
+                                    return Path.GetDirectoryName(folder);
+                            }
+                        }
                         else
-                            return Path.GetDirectoryName(item.FileNames[1]);
+                        {
+                            return Path.GetDirectoryName(dte.ActiveDocument.FullName);
+                        }
                     }
                 }
                 else if (window.Type == vsWindowType.vsWindowTypeSolutionExplorer)
