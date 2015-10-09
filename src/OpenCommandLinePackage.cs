@@ -66,9 +66,9 @@ namespace MadsKristensen.OpenCommandLine
                 return;
             }
 
-            string path = item.Properties.Item("FullPath").Value.ToString();
+            string path = item.FileNames[1];
 
-            if (string.IsNullOrEmpty(path) || !Path.IsPathRooted(path))
+            if (!VsHelpers.IsValidFileName(path))
                 return;
 
             string[] allowed = new [] { ".CMD", ".BAT"};

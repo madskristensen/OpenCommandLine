@@ -53,7 +53,8 @@ namespace MadsKristensen.OpenCommandLine
                                     if (Directory.Exists(projectItem.FileNames[1]))
                                         return projectItem.FileNames[1];
 
-                                    return Path.GetDirectoryName(projectItem.FileNames[1]);
+                                    if (IsValidFileName(projectItem.FileNames[1]))
+                                        return Path.GetDirectoryName(projectItem.FileNames[1]);
                                 }
                             }
                         }
@@ -176,6 +177,17 @@ namespace MadsKristensen.OpenCommandLine
                 if (item != null)
                     yield return item;
             }
+        }
+
+        public static bool IsValidFileName(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+                return false;
+
+            Uri pathUri;
+            Boolean isValidUri = Uri.TryCreate(fileName, UriKind.Absolute, out pathUri);
+
+            return isValidUri && pathUri != null && pathUri.IsLoopback;
         }
     }
 }
