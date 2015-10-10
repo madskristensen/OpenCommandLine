@@ -29,14 +29,14 @@ namespace MadsKristensen.OpenCommandLine
                     {
                         if (options.OpenProjectLevel)
                         {
-                            Project p = GetActiveProject(dte);
+                            ProjectItem item = dte.Solution.FindProjectItem(doc.FullName);
 
-                            if (p != null)
+                            if (item != null && item.ContainingProject != null && !string.IsNullOrEmpty(item.ContainingProject.FullName))
                             {
-                                string folder = p.GetRootFolder();
+                                string folder = item.ContainingProject.GetRootFolder();
 
                                 if (!string.IsNullOrEmpty(folder))
-                                    return Path.GetDirectoryName(folder);
+                                    return folder;
                             }
                         }
                         else
