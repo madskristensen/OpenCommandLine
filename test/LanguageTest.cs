@@ -7,6 +7,12 @@ namespace Test
     [TestClass]
     public class LanguageTest
     {
+        [TestInitialize]
+        public void Setup()
+        {
+            Telemetry.Enabled = false;
+        }
+
         [TestMethod, TestCategory("Language")]
         public void KeywordTest()
         {

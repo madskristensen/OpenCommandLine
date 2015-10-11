@@ -30,13 +30,20 @@ namespace MadsKristensen.OpenCommandLine
 
             _events = dte.Events.DTEEvents;
             _events.OnBeginShutdown += delegate { _telemetry.Flush(); };
+
+            Enabled = true;
         }
+
+        public static bool Enabled { get; set; }
 
         /// <summary>Tracks an event to ApplicationInsights.</summary>
         public static void TrackEvent(string key)
         {
 #if !DEBUG
-            _telemetry.TrackEvent(key);
+            if (Enabled)
+            {
+                _telemetry.TrackEvent(key);
+            }
 #endif
         }
 
@@ -44,9 +51,12 @@ namespace MadsKristensen.OpenCommandLine
         public static void TrackException(Exception ex)
         {
 #if !DEBUG
-            var telex = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
-            telex.HandledAt = Microsoft.ApplicationInsights.DataContracts.ExceptionHandledAt.UserCode;
-            _telemetry.TrackException(telex);
+            if (Enabled)
+            {
+                var telex = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
+                telex.HandledAt = Microsoft.ApplicationInsights.DataContracts.ExceptionHandledAt.UserCode;
+                _telemetry.TrackException(telex);
+            }
 #endif
         }
     }
