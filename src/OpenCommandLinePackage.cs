@@ -28,6 +28,7 @@ namespace MadsKristensen.OpenCommandLine
             base.Initialize();
 
             _dte = GetService(typeof(DTE)) as DTE2;
+            Telemetry.Initialize(_dte, Version, "d6836c4a-0c01-4114-98fe-d4f34b9b9b50");
 
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
@@ -84,6 +85,7 @@ namespace MadsKristensen.OpenCommandLine
             string path = item.FileNames[1];
             string folder = Path.GetDirectoryName(path);
 
+            Telemetry.TrackEvent("Execute file");
             StartProcess(folder, "cmd.exe", "/k \"" + Path.GetFileName(path) + "\"");
         }
 
@@ -101,6 +103,7 @@ namespace MadsKristensen.OpenCommandLine
             string folder = VsHelpers.GetFolderPath(options, _dte);
             string arguments = (options.Arguments ?? string.Empty).Replace("%folder%", folder);
 
+            Telemetry.TrackEvent("Open custom");
             StartProcess(folder, options.Command, arguments);
         }
 
@@ -109,11 +112,13 @@ namespace MadsKristensen.OpenCommandLine
             string installDir = VsHelpers.GetInstallDirectory(this);
             string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
 
+            Telemetry.TrackEvent("Open cmd");
             SetupProcess("cmd.exe", "/k \"" + devPromptFile + "\"");
         }
 
         private void OpenPowershell(object sender, EventArgs e)
         {
+            Telemetry.TrackEvent("Open PowerShell");
             SetupProcess("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
         }
 
