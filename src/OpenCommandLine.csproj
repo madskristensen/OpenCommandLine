@@ -145,11 +145,11 @@
     <Compile Include="QuickInfo\QuickInfoController.cs" />
     <Compile Include="QuickInfo\QuickInfoControllerProvider.cs" />
     <Compile Include="QuickInfo\QuickInfoSourceProvider.cs" />
-    <Compile Include="Telemetry.cs" />
+    <Compile Include="Helpers\Telemetry.cs" />
     <Compile Include="TypeThrough\ProvisionalText.cs" />
     <Compile Include="TypeThrough\TypeThroughController.cs" />
     <Compile Include="TypeThrough\TypeThroughControllerProvider.cs" />
-    <Compile Include="VsHelpers.cs" />
+    <Compile Include="Helpers\VsHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="VSPackage.resx">

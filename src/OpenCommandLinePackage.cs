@@ -72,7 +72,7 @@ namespace MadsKristensen.OpenCommandLine
             if (!VsHelpers.IsValidFileName(path))
                 return;
 
-            string[] allowed = new [] { ".CMD", ".BAT"};
+            string[] allowed = new[] { ".CMD", ".BAT" };
             string ext = Path.GetExtension(path).ToUpperInvariant();
             bool isEnabled = allowed.Contains(ext) && File.Exists(path);
 
@@ -132,15 +132,26 @@ namespace MadsKristensen.OpenCommandLine
 
         private static void StartProcess(string workingDirectory, string command, string arguments)
         {
-            command = Environment.ExpandEnvironmentVariables(command ?? string.Empty);
-            arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
+            try
+            {
+                command = Environment.ExpandEnvironmentVariables(command ?? string.Empty);
+                arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
 
-            ProcessStartInfo start = new ProcessStartInfo(command, arguments);
-            start.WorkingDirectory = workingDirectory;
+                ProcessStartInfo start = new ProcessStartInfo(command, arguments);
+                start.WorkingDirectory = workingDirectory;
+                start.LoadUserProfile = true;
 
-            ModifyPathVariable(start);
+                ModifyPathVariable(start);
 
-            System.Diagnostics.Process.Start(start);
+                using (System.Diagnostics.Process.Start(start))
+                {
+                    // Makes sure the process handle is disposed
+                }
+            }
+            catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+            }
         }
 
         private static void ModifyPathVariable(ProcessStartInfo start)
