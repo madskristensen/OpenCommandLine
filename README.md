@@ -53,3 +53,6 @@ a context-menu button shows up.
 Alternatively, the keyboard shortcut `Shift+Alt+5` can be used when
 editing a batch file. This makes it really easy and fast to execute
 any batch file - even ones that are not part of your project.
+
+## License
+[Apache 2.0](LICENSE)
