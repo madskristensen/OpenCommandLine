@@ -29,7 +29,7 @@ namespace MadsKristensen.OpenCommandLine
             _telemetry.Context.Component.Version = version;
 
             _events = dte.Events.DTEEvents;
-            _events.OnBeginShutdown += delegate { _telemetry.Flush(); };
+            _events.OnBeginShutdown += _telemetry.Flush;
 
             Enabled = true;
         }

@@ -72,7 +72,7 @@ namespace MadsKristensen.OpenCommandLine
             if (!VsHelpers.IsValidFileName(path))
                 return;
 
-            string[] allowed = new[] { ".CMD", ".BAT" };
+            string[] allowed = { ".CMD", ".BAT" };
             string ext = Path.GetExtension(path).ToUpperInvariant();
             bool isEnabled = allowed.Contains(ext) && File.Exists(path);
 

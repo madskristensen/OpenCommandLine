@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace MadsKristensen.OpenCommandLine
 {
-    public class CmdLanguage
+    public static class CmdLanguage
     {
         private static Regex _rComment = new Regex("(?<=(^[\\s]+))?(rem|::).+|((?<=([\\s]+))&(rem|::).+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static Regex _rIdentifier = new Regex("(?<=(\\bset([\\s]+)))([\\S]+)(?=([\\s]+)?=)|%([^%\\s]+)%|%~([fdpnxsatz]+\\d)", RegexOptions.Compiled | RegexOptions.IgnoreCase);

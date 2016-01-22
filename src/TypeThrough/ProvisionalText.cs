@@ -168,7 +168,7 @@ namespace MadsKristensen.OpenCommandLine
             if (e.Changes.Count == 0)
             {
                 _projectionsChanged = true;
-                Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => ResoreHighlight()));
+                Dispatcher.CurrentDispatcher.BeginInvoke(new Action(ResoreHighlight));
             }
 
             if (_textView != null && !IgnoreChange && !_projectionsChanged)
