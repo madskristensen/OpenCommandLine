@@ -12,14 +12,13 @@ using Microsoft.VisualStudio.Shell.Interop;
 namespace MadsKristensen.OpenCommandLine
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", Version, IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", Vsix.Version, IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [ProvideOptionPage(typeof(Options), "Environment", "Command Line", 101, 104, true, new[] { "cmd", "powershell", "bash" }, ProvidesLocalizedCategoryName = false)]
     [Guid(GuidList.guidOpenCommandLinePkgString)]
     public sealed class OpenCommandLinePackage : Package
     {
-        public const string Version = "1.6";
         private static DTE2 _dte;
         public Package Instance;
 
@@ -28,7 +27,7 @@ namespace MadsKristensen.OpenCommandLine
             base.Initialize();
 
             _dte = GetService(typeof(DTE)) as DTE2;
-            Telemetry.Initialize(_dte, Version, "d6836c4a-0c01-4114-98fe-d4f34b9b9b50");
+            Telemetry.Initialize(_dte, Vsix.Version, "d6836c4a-0c01-4114-98fe-d4f34b9b9b50");
 
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 

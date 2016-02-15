@@ -4,11 +4,11 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using MadsKristensen.OpenCommandLine;
 
-[assembly: AssemblyTitle("Open Command Line")]
-[assembly: AssemblyDescription("Opens a command line at the root of the project. Support for all consoles such as CMD, PowerShell, Bash etc.")]
+[assembly: AssemblyTitle(Vsix.Name)]
+[assembly: AssemblyDescription(Vsix.Description)]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Mads Kristensen")]
-[assembly: AssemblyProduct("Open Command Line")]
+[assembly: AssemblyCompany(Vsix.Author)]
+[assembly: AssemblyProduct(Vsix.Name)]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -16,5 +16,5 @@ using MadsKristensen.OpenCommandLine;
 [assembly: CLSCompliant(false)]
 [assembly: NeutralResourcesLanguage("en-US")]
 
-[assembly: AssemblyVersion(OpenCommandLinePackage.Version)]
-[assembly: AssemblyFileVersion(OpenCommandLinePackage.Version)]
+[assembly: AssemblyVersion(Vsix.Version)]
+[assembly: AssemblyFileVersion(Vsix.Version)]
