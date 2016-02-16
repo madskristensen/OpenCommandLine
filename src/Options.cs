@@ -122,6 +122,7 @@ namespace MadsKristensen.OpenCommandLine
                 }
 
                 DefaultPresets["cmder"] = new Command("cmder.exe", "/START \"%folder%\"");
+                DefaultPresets["ConEmu"] = new Command("ConEmu64.exe", "/cmd PowerShell.exe");
                 DefaultPresets["Custom"] = new Command(string.Empty, string.Empty);
             }
 
