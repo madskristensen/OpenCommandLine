@@ -54,6 +54,7 @@ namespace MadsKristensen.OpenCommandLine
                 {"doskey",      "Edits command lines, recalls Windows commands, and creates macros."},
                 {"driverquery", "Displays current device driver status and properties."},
                 {"echo",        "Displays messages, or turns command echoing on or off."},
+                {"else",        "else."},
                 {"endlocal",    "Ends localization of environment changes in a batch file."},
                 {"erase",       "Deletes one or more files."},
                 {"exist",       "If exist detect file and folder existance"},
