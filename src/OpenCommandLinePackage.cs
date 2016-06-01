@@ -162,7 +162,16 @@ namespace MadsKristensen.OpenCommandLine
             if (Directory.Exists(toolsDir))
             {
                 string parent = Directory.GetParent(toolsDir).Parent.FullName;
-                path += ";" + Path.Combine(parent, @"IDE\Extensions\Microsoft\Web Tools\External");
+                string rc2Preview1Path = new DirectoryInfo(Path.Combine(parent, @"..\Web\External")).FullName;
+
+                if (Directory.Exists(rc2Preview1Path))
+                {
+                    path = ";" + rc2Preview1Path;
+                }
+                else
+                {
+                    path += ";" + Path.Combine(parent, @"IDE\Extensions\Microsoft\Web Tools\External");
+                }
             }
 
             start.UseShellExecute = false;
