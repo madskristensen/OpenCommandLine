@@ -166,7 +166,7 @@ namespace MadsKristensen.OpenCommandLine
 
                 if (Directory.Exists(rc2Preview1Path))
                 {
-                    path = ";" + rc2Preview1Path;
+                    path += ";" + rc2Preview1Path;
                 }
                 else
                 {
