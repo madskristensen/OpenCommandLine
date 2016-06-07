@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Linq;
 using MadsKristensen.OpenCommandLine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -58,6 +59,11 @@ namespace Test
             Assert.AreEqual("\"foo 'test' bar\"", regex.Match("\"foo 'test' bar\"").Value);
             Assert.AreEqual("foo bar", regex.Match("echo foo bar").Value);
             Assert.AreEqual("", regex.Match(" test  \"hat  ").Value);
+
+            var matches = regex.Matches("test.exe -table \"t name\" -database \"dbase1\" -output \"output 1.txt\" -input no-quote.txt");
+            Assert.AreEqual("\"t name\"", matches.OfType<Match>().ElementAt(0).Value);
+            Assert.AreEqual("\"dbase1\"", matches.OfType<Match>().ElementAt(1).Value);
+            Assert.AreEqual("\"output 1.txt\"", matches.OfType<Match>().ElementAt(2).Value);
         }
 
         [TestMethod, TestCategory("Language")]
