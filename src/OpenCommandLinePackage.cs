@@ -14,7 +14,8 @@ namespace MadsKristensen.OpenCommandLine
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", Vsix.Version, IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionHasSingleProject)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects)]
     [ProvideOptionPage(typeof(Options), "Environment", "Command Line", 101, 104, true, new[] { "cmd", "powershell", "bash" }, ProvidesLocalizedCategoryName = false)]
     [Guid(GuidList.guidOpenCommandLinePkgString)]
     public sealed class OpenCommandLinePackage : Package
@@ -24,10 +25,7 @@ namespace MadsKristensen.OpenCommandLine
 
         protected override void Initialize()
         {
-            base.Initialize();
-
             _dte = GetService(typeof(DTE)) as DTE2;
-            Telemetry.Initialize(_dte, Vsix.Version, "d6836c4a-0c01-4114-98fe-d4f34b9b9b50");
 
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
@@ -84,7 +82,6 @@ namespace MadsKristensen.OpenCommandLine
             string path = item.FileNames[1];
             string folder = Path.GetDirectoryName(path);
 
-            Telemetry.TrackEvent("Execute file");
             StartProcess(folder, "cmd.exe", "/k \"" + Path.GetFileName(path) + "\"");
         }
 
@@ -102,7 +99,6 @@ namespace MadsKristensen.OpenCommandLine
             string folder = VsHelpers.GetFolderPath(options, _dte);
             string arguments = (options.Arguments ?? string.Empty).Replace("%folder%", folder);
 
-            Telemetry.TrackEvent("Open custom");
             StartProcess(folder, options.Command, arguments);
         }
 
@@ -111,13 +107,11 @@ namespace MadsKristensen.OpenCommandLine
             string installDir = VsHelpers.GetInstallDirectory(this);
             string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
 
-            Telemetry.TrackEvent("Open cmd");
             SetupProcess("cmd.exe", "/k \"" + devPromptFile + "\"");
         }
 
         private void OpenPowershell(object sender, EventArgs e)
         {
-            Telemetry.TrackEvent("Open PowerShell");
             SetupProcess("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
         }
 
@@ -149,7 +143,7 @@ namespace MadsKristensen.OpenCommandLine
             }
             catch (Exception ex)
             {
-                Telemetry.TrackException(ex);
+                Debug.Write(ex);
             }
         }
 
