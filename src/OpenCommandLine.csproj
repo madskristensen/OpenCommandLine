@@ -140,30 +140,21 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classify\CmdClassifier.cs" />
-    <Compile Include="Classify\CmdClassifierProvider.cs" />
-    <Compile Include="Classify\CmdLanguage.cs" />
-    <Compile Include="Completion\CmdCreationListener.cs" />
-    <Compile Include="Completion\CmdCompletionController.cs" />
-    <Compile Include="Completion\CmdCompletionSourceProvider.cs" />
-    <Compile Include="Completion\CmdCompletionSource.cs" />
     <Compile Include="ContentType\CmdContentTypeDefinition.cs" />
     <Compile Include="Guids.cs" />
+    <Compile Include="OpenCommandLine.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenCommandLine.vsct</DependentUpon>
+    </Compile>
     <Compile Include="OpenCommandLinePackage.cs" />
     <Compile Include="Options.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuickInfo\CmdQuickInfo.cs" />
-    <Compile Include="QuickInfo\QuickInfoController.cs" />
-    <Compile Include="QuickInfo\QuickInfoControllerProvider.cs" />
-    <Compile Include="QuickInfo\QuickInfoSourceProvider.cs" />
     <Compile Include="source.extension.cs">
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Compile>
-    <Compile Include="TypeThrough\ProvisionalText.cs" />
-    <Compile Include="TypeThrough\TypeThroughController.cs" />
-    <Compile Include="TypeThrough\TypeThroughControllerProvider.cs" />
     <Compile Include="Helpers\VsHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -183,6 +174,8 @@
   <ItemGroup>
     <VSCTCompile Include="OpenCommandLine.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <Generator>VsctGenerator</Generator>
+      <LastGenOutput>OpenCommandLine.cs</LastGenOutput>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>

@@ -17,7 +17,7 @@ namespace MadsKristensen.OpenCommandLine
     [ProvideAutoLoad(UIContextGuids80.SolutionHasSingleProject)]
     [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects)]
     [ProvideOptionPage(typeof(Options), "Environment", "Command Line", 101, 104, true, new[] { "cmd", "powershell", "bash" }, ProvidesLocalizedCategoryName = false)]
-    [Guid(GuidList.guidOpenCommandLinePkgString)]
+    [Guid(PackageGuids.guidOpenCommandLinePkgString)]
     public sealed class OpenCommandLinePackage : Package
     {
         private static DTE2 _dte;
@@ -29,24 +29,24 @@ namespace MadsKristensen.OpenCommandLine
 
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
-            CommandID cmdCustom = new CommandID(GuidList.guidOpenCommandLineCmdSet, (int)PkgCmdIDList.cmdidOpenCommandLine);
+            CommandID cmdCustom = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCommandLine);
             OleMenuCommand customItem = new OleMenuCommand(OpenCustom, cmdCustom);
             customItem.BeforeQueryStatus += BeforeQueryStatus;
             mcs.AddCommand(customItem);
 
-            CommandID cmdCmd = new CommandID(GuidList.guidOpenCommandLineCmdSet, (int)PkgCmdIDList.cmdidOpenCmd);
+            CommandID cmdCmd = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCmd);
             MenuCommand cmdItem = new MenuCommand(OpenCmd, cmdCmd);
             mcs.AddCommand(cmdItem);
 
-            CommandID cmdPowershell = new CommandID(GuidList.guidOpenCommandLineCmdSet, (int)PkgCmdIDList.cmdidOpenPowershell);
+            CommandID cmdPowershell = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenPowershell);
             MenuCommand powershellItem = new MenuCommand(OpenPowershell, cmdPowershell);
             mcs.AddCommand(powershellItem);
 
-            CommandID cmdOptions = new CommandID(GuidList.guidOpenCommandLineCmdSet, (int)PkgCmdIDList.cmdidOpenOptions);
+            CommandID cmdOptions = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenOptions);
             MenuCommand optionsItem = new MenuCommand((s, e) => { ShowOptionPage(typeof(Options)); }, cmdOptions);
             mcs.AddCommand(optionsItem);
 
-            CommandID cmdExe = new CommandID(GuidList.guidOpenCommandLineCmdSet, (int)PkgCmdIDList.cmdExecuteCmd);
+            CommandID cmdExe = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdExecuteCmd);
             OleMenuCommand exeItem = new OleMenuCommand(ExecuteFile, cmdExe);
             exeItem.BeforeQueryStatus += BeforeExeQuery;
             mcs.AddCommand(exeItem);

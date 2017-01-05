@@ -30,19 +30,6 @@ You may change this shortcut in the Options Window under Environment -> Keyboard
 
 Look for the command ProjectAndSolutionContextMenus.Project.OpenCommandLine.Default
 
-### Syntax highlighter
-
-Full colorization for batch files (.cmd and .bat) in the Visual Studio
-editor.
-
-![Batch file colorizer](screenshots/classifier.png)
-
-### Intellisense
-
-Intellisense is provided for variables.
-
-![Intellisense keywords](screenshots/intellisense.png)
-
 ### Execute batch file
 
 You can easily execute any .cmd or .bat file. For files in your solution,
