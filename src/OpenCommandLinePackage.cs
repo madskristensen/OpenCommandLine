@@ -59,10 +59,7 @@ namespace MadsKristensen.OpenCommandLine
             var item = VsHelpers.GetProjectItem(_dte);
 
             if (item == null || item.FileCount == 0)
-            {
-                button.Enabled = button.Visible = false;
                 return;
-            }
 
             string path = item.FileNames[1];
 
@@ -133,6 +130,7 @@ namespace MadsKristensen.OpenCommandLine
                 ProcessStartInfo start = new ProcessStartInfo(command, arguments);
                 start.WorkingDirectory = workingDirectory;
                 start.LoadUserProfile = true;
+                start.UseShellExecute = false;
 
                 ModifyPathVariable(start);
 
@@ -151,24 +149,27 @@ namespace MadsKristensen.OpenCommandLine
         {
             string path = ".\\node_modules\\.bin" + ";" + start.EnvironmentVariables["PATH"];
 
-            string toolsDir = Environment.GetEnvironmentVariable("VS140COMNTOOLS");
+            var process = System.Diagnostics.Process.GetCurrentProcess();
+            string ideDir = Path.GetDirectoryName(process.MainModule.FileName);
 
-            if (Directory.Exists(toolsDir))
+            if (Directory.Exists(ideDir))
             {
-                string parent = Directory.GetParent(toolsDir).Parent.FullName;
-                string rc2Preview1Path = new DirectoryInfo(Path.Combine(parent, @"..\Web\External")).FullName;
+                string parent = Directory.GetParent(ideDir).Parent.FullName;
+
+                string rc2Preview1Path = new DirectoryInfo(Path.Combine(parent, @"Web\External")).FullName;
 
                 if (Directory.Exists(rc2Preview1Path))
                 {
                     path += ";" + rc2Preview1Path;
+                    path += ";" + rc2Preview1Path + "\\git";
                 }
                 else
                 {
-                    path += ";" + Path.Combine(parent, @"IDE\Extensions\Microsoft\Web Tools\External");
+                    path += ";" + Path.Combine(ideDir, @"Extensions\Microsoft\Web Tools\External");
+                    path += ";" + Path.Combine(ideDir, @"Extensions\Microsoft\Web Tools\External\git");
                 }
             }
 
-            start.UseShellExecute = false;
             start.EnvironmentVariables["PATH"] = path;
         }
     }
