@@ -67,8 +67,8 @@ namespace MadsKristensen.OpenCommandLine
                 return;
 
             string[] allowed = { ".CMD", ".BAT" };
-            string ext = Path.GetExtension(path).ToUpperInvariant();
-            bool isEnabled = allowed.Contains(ext) && File.Exists(path);
+            string ext = Path.GetExtension(path);
+            bool isEnabled = allowed.Contains(ext, StringComparer.OrdinalIgnoreCase) && File.Exists(path);
 
             button.Enabled = button.Visible = isEnabled;
         }
