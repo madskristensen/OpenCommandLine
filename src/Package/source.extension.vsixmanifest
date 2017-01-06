@@ -10,12 +10,14 @@
     <PreviewImage>Resources\preview.png</PreviewImage>
     <Tags>Solution Explorer, cmd, powershell, bash, post-git, cmder, prompt, console, conemu</Tags>
   </Metadata>
-  <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
+  <Installation InstalledByMsi="false">
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="12.0" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="14.0" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="15.0" />
   </Installation>
-  <Dependencies>
-    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-  </Dependencies>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />
+  </Prerequisites>
   <Assets>
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="OpenCommandLine" Path="|OpenCommandLine;PkgdefProjectOutputGroup|" />
   </Assets>
