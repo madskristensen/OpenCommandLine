@@ -3,7 +3,7 @@
   <Import Project="..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props" Condition="Exists('..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props')" />
   <Import Project="..\..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.12-pre\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props" Condition="Exists('..\..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.12-pre\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props')" />
   <ItemGroup>
-    <FilesToSign Include="$(OutDir)\OpenCommandLine.vsix">
+    <FilesToSign Include="$(OutDir)\Package.vsix">
       <Authenticode>VsixSHA2</Authenticode>
     </FilesToSign>
   </ItemGroup>
@@ -27,7 +27,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Package</RootNamespace>
-    <AssemblyName>OpenCommandLine</AssemblyName>
+    <AssemblyName>Package</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
