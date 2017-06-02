@@ -65,7 +65,10 @@ namespace MadsKristensen.OpenCommandLine
 
         [Category("Console")]
         [DisplayName("Command arguments")]
-        [Description("Any arguments to pass to the command.\n%folder% parameter pass to argument current file path.")]
+        [Description(@"Any arguments to pass to the command.\n
+%folder% parameter pass to argument current file path.\n
+%configuration% parameter pass to argument current build configuration.\n
+%platform% parameter pass to argument current build platform.")]
         [DefaultValue("")]
         public string Arguments
         {

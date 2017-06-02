@@ -96,6 +96,12 @@ namespace MadsKristensen.OpenCommandLine
             string folder = VsHelpers.GetFolderPath(options, _dte);
             string arguments = (options.Arguments ?? string.Empty).Replace("%folder%", folder);
 
+            string confName = VsHelpers.GetSolutionConfigurationName(_dte);
+            arguments = arguments.Replace("%configuration%", confName);
+
+            string confPlatform = VsHelpers.GetSolutionConfigurationPlatformName(_dte);
+            arguments = arguments.Replace("%platform%", confPlatform);
+
             StartProcess(folder, options.Command, arguments);
         }
 
