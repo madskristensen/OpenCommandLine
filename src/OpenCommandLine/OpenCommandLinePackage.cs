@@ -66,7 +66,7 @@ namespace MadsKristensen.OpenCommandLine
             if (!VsHelpers.IsValidFileName(path))
                 return;
 
-            string[] allowed = { ".CMD", ".BAT" };
+            string[] allowed = { ".CMD", ".BAT", ".PS1" };
             string ext = Path.GetExtension(path);
             bool isEnabled = allowed.Contains(ext, StringComparer.OrdinalIgnoreCase) && File.Exists(path);
 
@@ -79,7 +79,16 @@ namespace MadsKristensen.OpenCommandLine
             string path = item.FileNames[1];
             string folder = Path.GetDirectoryName(path);
 
-            StartProcess(folder, "cmd.exe", "/k \"" + Path.GetFileName(path) + "\"");
+            string ext = Path.GetExtension(path);
+
+            if (!string.IsNullOrEmpty(ext) && ext.ToLower() == ".ps1")
+            {
+                StartProcess(folder, "powershell.exe", "-ExecutionPolicy Bypass -NoExit -File \"" + Path.GetFileName(path) + "\"");
+            }
+            else
+            {
+                StartProcess(folder, "cmd.exe", "/k \"" + Path.GetFileName(path) + "\"");
+            }
         }
 
         private void BeforeQueryStatus(object sender, EventArgs e)
