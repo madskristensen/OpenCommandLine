@@ -34,6 +34,7 @@ namespace MadsKristensen.OpenCommandLine
         public const int cmdidOpenPowershell = 0x0300;
         public const int cmdidOpenOptions = 0x0400;
         public const int cmdExecuteCmd = 0x0500;
+        public const int cmdidOpenCmdInOutput = 0x0600;
         public const int @default = 0x0001;
         public const int powershell = 0x0002;
         public const int cmd = 0x0003;

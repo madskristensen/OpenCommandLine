@@ -50,6 +50,10 @@ namespace MadsKristensen.OpenCommandLine
             OleMenuCommand exeItem = new OleMenuCommand(ExecuteFile, cmdExe);
             exeItem.BeforeQueryStatus += BeforeExeQuery;
             mcs.AddCommand(exeItem);
+            
+            CommandID cmdCmdInOutput = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCmdInOutput);
+            MenuCommand cmdInOutput = new MenuCommand(OpenCmdInOutput, cmdCmdInOutput);
+            mcs.AddCommand( cmdInOutput );
         }
 
         void BeforeExeQuery(object sender, EventArgs e)
@@ -125,6 +129,10 @@ namespace MadsKristensen.OpenCommandLine
         private void OpenPowershell(object sender, EventArgs e)
         {
             SetupProcess("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
+        }
+
+        private void OpenCmdInOutput(object sender, EventArgs e)
+        {
         }
 
         private void SetupProcess(string command, string arguments)
