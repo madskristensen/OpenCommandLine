@@ -202,7 +202,7 @@ namespace MadsKristensen.OpenCommandLine
 
         public static string GetSolutionConfigurationName(DTE2 dte)
         {
-            return dte.Solution.SolutionBuild.ActiveConfiguration.Name;
+            return dte.Solution.SolutionBuild.ActiveConfiguration?.Name;
         }
 
         public static string GetSolutionConfigurationPlatformName(DTE2 dte)
