@@ -50,10 +50,10 @@ namespace MadsKristensen.OpenCommandLine
             OleMenuCommand exeItem = new OleMenuCommand(ExecuteFile, cmdExe);
             exeItem.BeforeQueryStatus += BeforeExeQuery;
             mcs.AddCommand(exeItem);
-            
+
             CommandID cmdCmdInOutput = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCmdInOutput);
             MenuCommand cmdInOutput = new MenuCommand(OpenCmdInOutput, cmdCmdInOutput);
-            mcs.AddCommand( cmdInOutput );
+            mcs.AddCommand(cmdInOutput);
         }
 
         void BeforeExeQuery(object sender, EventArgs e)
@@ -103,10 +103,9 @@ namespace MadsKristensen.OpenCommandLine
             button.Text = options.FriendlyName;
         }
 
-        private void OpenCustom(object sender, EventArgs e)
+        private void OpenCustomInFolder(string folder)
         {
             Options options = GetDialogPage(typeof(Options)) as Options;
-            string folder = VsHelpers.GetFolderPath(options, _dte);
             string arguments = (options.Arguments ?? string.Empty).Replace("%folder%", folder);
 
             string confName = VsHelpers.GetSolutionConfigurationName(_dte);
@@ -116,6 +115,14 @@ namespace MadsKristensen.OpenCommandLine
             arguments = arguments.Replace("%platform%", confPlatform);
 
             StartProcess(folder, options.Command, arguments);
+        }
+
+        private void OpenCustom(object sender, EventArgs e)
+        {
+            Options options = GetDialogPage(typeof(Options)) as Options;
+            string folder = VsHelpers.GetFolderPath(options, _dte);
+
+            OpenCustomInFolder(folder);
         }
 
         private void OpenCmd(object sender, EventArgs e)
@@ -133,6 +140,10 @@ namespace MadsKristensen.OpenCommandLine
 
         private void OpenCmdInOutput(object sender, EventArgs e)
         {
+            string outDirectory = "";
+            if (!Directory.Exists(outDirectory)) return;
+
+            OpenCustomInFolder(outDirectory);
         }
 
         private void SetupProcess(string command, string arguments)
