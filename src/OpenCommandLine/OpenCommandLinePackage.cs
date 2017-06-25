@@ -140,7 +140,7 @@ namespace MadsKristensen.OpenCommandLine
 
         private void OpenCmdInOutput(object sender, EventArgs e)
         {
-            string outDirectory = "";
+            string outDirectory = VsHelpers.GetOutputPath(_dte);
             if (!Directory.Exists(outDirectory)) return;
 
             OpenCustomInFolder(outDirectory);
