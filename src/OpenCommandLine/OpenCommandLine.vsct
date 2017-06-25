@@ -45,7 +45,7 @@
               <Icon guid="guidImages" id="cmd" />
               <Strings>
                 <CommandName>Open Command Line In Output</CommandName>
-                <ButtonText>CMD In Output</ButtonText>
+                <ButtonText>Cmd In Output</ButtonText>
               </Strings>
             </Button>
             <Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" priority="0x0100" type="Button">
