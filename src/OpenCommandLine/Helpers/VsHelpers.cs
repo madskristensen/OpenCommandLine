@@ -147,10 +147,16 @@ namespace MadsKristensen.OpenCommandLine
             var project = GetSelectedProject(dte);
             if (project == null) return null;
 
+            if (project.Kind == VsProjectKindPython)
+            {
+                var startupFile = project.Properties.Item("StartupFile").Value.ToString();
+                return Path.GetDirectoryName(startupFile);
+            }
+
             // ConfigurationManager is null for virtual folder in solution
             var activeConfigurationProperties = project.ConfigurationManager?.ActiveConfiguration.Properties;
 
-            // e.g. Python project
+            // Unknow 'custom' project like Python etc.
             //
             // TODO: this is a bug in VS2017
             // https://developercommunity.visualstudio.com/content/problem/44682/activeconfigurationproperties-returns-null.html
@@ -289,5 +295,7 @@ namespace MadsKristensen.OpenCommandLine
             var configuration2 = dte.Solution.SolutionBuild.ActiveConfiguration as SolutionConfiguration2;
             return configuration2 != null ? configuration2.PlatformName : null;
         }
+
+        private static string VsProjectKindPython = "{888888a0-9f3d-457c-b088-3a5042f75d52}";
     }
 }
