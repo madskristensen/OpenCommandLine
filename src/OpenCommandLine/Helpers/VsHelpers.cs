@@ -150,15 +150,15 @@ namespace MadsKristensen.OpenCommandLine
             // ConfigurationManager is null for virtual folder in solution
             var activeConfigurationProperties = project.ConfigurationManager?.ActiveConfiguration.Properties;
 
+            // e.g. Python project
+            //
             // TODO: this is a bug in VS2017
             // https://developercommunity.visualstudio.com/content/problem/44682/activeconfigurationproperties-returns-null.html
             // I don't want to use VCProject because every version of VS reqiures a corresponding version file in reference
+            //
             if (activeConfigurationProperties == null) return null;
 
-            var outputPath = activeConfigurationProperties?.Item("OutputPath").Value.ToString();
-
-            // e.g. Python project (opening a folder where the startup file will be better?)
-            if (outputPath == null) return null;
+            var outputPath = activeConfigurationProperties.Item("OutputPath").Value.ToString();
 
             // C++ project - always
             // C#/JavaScript/etc project with absolute path in 'Output path'
