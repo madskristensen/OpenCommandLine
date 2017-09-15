@@ -118,6 +118,7 @@ namespace MadsKristensen.OpenCommandLine
                 DefaultPresets["PowerShell ISE"] = new Command("powershell_ise.exe");
                 DefaultPresets["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")");
                 DefaultPresets["Git Bash"] = new Command(@"C:\Program Files\Git\git-bash.exe");
+                DefaultPresets["Babun"] = new Command(@"%UserProfile%\.babun\cygwin\bin\mintty.exe", "/bin/env CHERE_INVOKING=1 /bin/zsh.exe");
 
                 string GitHubForWindowsPath = Path.Combine(Environment.GetEnvironmentVariable("LocalAppData"), "GitHub", "GitHub.appref-ms");
                 if (File.Exists(GitHubForWindowsPath))
