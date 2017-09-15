@@ -40,6 +40,14 @@
                     <ButtonText>Default</ButtonText>
                 </Strings>
             </Button>
+            <Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmdInOutput" priority="0x0100" type="Button">
+              <Parent guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" />
+              <Icon guid="guidImages" id="cmd" />
+              <Strings>
+                <CommandName>Open Command Line In Output</CommandName>
+                <ButtonText>Cmd In Output</ButtonText>
+              </Strings>
+            </Button>
             <Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" priority="0x0100" type="Button">
                 <Parent guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" />
                 <Icon guid="guidImages" id="cmd" />
@@ -85,6 +93,7 @@
         <KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdExecuteCmd" mod1="Alt Shift" key1="5" editor="guidVSStd97"/>
         <KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" mod1="Alt Shift" key1="VK_OEM_COMMA" editor="guidVSStd97"/>
         <KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenPowershell" mod1="Alt Shift" key1="VK_OEM_PERIOD" editor="guidVSStd97"/>
+        <KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmdInOutput" mod1="Alt Shift" key1="VK_SPACE" editor="guidVSStd97"/>
     </KeyBindings>
 
     <CommandPlacements>
@@ -114,6 +123,7 @@
             <IDSymbol name="cmdidOpenPowershell" value="0x0300" />
             <IDSymbol name="cmdidOpenOptions" value="0x0400" />
             <IDSymbol name="cmdExecuteCmd" value="0x0500" />
+            <IDSymbol name="cmdidOpenCmdInOutput" value="0x0600" />
         </GuidSymbol>
 
         <GuidSymbol name="guidImages" value="{bc10dceb-1833-4dac-bc42-286a81241664}" >

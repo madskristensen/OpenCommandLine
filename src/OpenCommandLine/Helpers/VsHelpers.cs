@@ -48,26 +48,15 @@ namespace MadsKristensen.OpenCommandLine
                 else if (window.Type == vsWindowType.vsWindowTypeSolutionExplorer)
                 {
                     // if solution explorer is active, use the path of the first selected item
-                    UIHierarchy hierarchy = window.Object as UIHierarchy;
-                    if (hierarchy != null && hierarchy.SelectedItems != null)
+                    var hierarchy = window.Object as UIHierarchy;
+                    var projectItem = GetSelectedProjectItem(hierarchy);
+                    if (projectItem != null && projectItem.FileCount > 0)
                     {
-                        UIHierarchyItem[] hierarchyItems = hierarchy.SelectedItems as UIHierarchyItem[];
-                        if (hierarchyItems != null && hierarchyItems.Length > 0)
-                        {
-                            UIHierarchyItem hierarchyItem = hierarchyItems[0] as UIHierarchyItem;
-                            if (hierarchyItem != null)
-                            {
-                                ProjectItem projectItem = hierarchyItem.Object as ProjectItem;
-                                if (projectItem != null && projectItem.FileCount > 0)
-                                {
-                                    if (Directory.Exists(projectItem.FileNames[1]))
-                                        return projectItem.FileNames[1];
+                        if (Directory.Exists(projectItem.FileNames[1]))
+                            return projectItem.FileNames[1];
 
-                                    if (IsValidFileName(projectItem.FileNames[1]))
-                                        return Path.GetDirectoryName(projectItem.FileNames[1]);
-                                }
-                            }
-                        }
+                        if (IsValidFileName(projectItem.FileNames[1]))
+                            return Path.GetDirectoryName(projectItem.FileNames[1]);
                     }
                 }
             }
@@ -137,6 +126,102 @@ namespace MadsKristensen.OpenCommandLine
             return null;
         }
 
+        private static UIHierarchyItem GetSelectedHierarchyItem(UIHierarchy hierarchy)
+        {
+            var hierarchyItems = hierarchy?.SelectedItems as UIHierarchyItem[];
+            if (hierarchyItems != null && hierarchyItems.Length > 0)
+            {
+                return hierarchyItems[0];
+            }
+            return null;
+        }
+
+        private static ProjectItem GetSelectedProjectItem(UIHierarchy hierarchy)
+        {
+            var hierarchyItem = GetSelectedHierarchyItem(hierarchy);
+            return hierarchyItem?.Object as ProjectItem;
+        }
+
+        public static string GetOutputPath(DTE2 dte)
+        {
+            var project = GetSelectedProject(dte);
+            if (project == null) return null;
+
+            if (project.Kind == VsProjectKindPython)
+            {
+                var startupFile = project.Properties.Item("StartupFile").Value.ToString();
+                return Path.GetDirectoryName(startupFile);
+            }
+
+            // ConfigurationManager is null for virtual folder in solution
+            var activeConfigurationProperties = project.ConfigurationManager?.ActiveConfiguration.Properties;
+
+            // Unknow 'custom' project like Python etc.
+            //
+            // TODO: this is a bug in VS2017
+            // https://developercommunity.visualstudio.com/content/problem/44682/activeconfigurationproperties-returns-null.html
+            // I don't want to use VCProject because every version of VS reqiures a corresponding version file in reference
+            //
+            if (activeConfigurationProperties == null) return null;
+
+            var outputPath = activeConfigurationProperties.Item("OutputPath").Value.ToString();
+
+            // C++ project - always
+            // C#/JavaScript/etc project with absolute path in 'Output path'
+            if (Path.IsPathRooted(outputPath))
+            {
+                return outputPath;
+            }
+
+            // C#/JavavScript/etc project with relative path in 'Output path'
+            try
+            {
+                var fullPathObject = project.Properties.Item("FullPath");
+                if (fullPathObject != null)
+                {
+                    var fullPath = fullPathObject.Value.ToString();
+                    // e.g. JavaScript - fullPath is path to project file
+                    if (File.Exists(fullPath)) // maybe FileAttributes?
+                    {
+                        fullPath = Path.GetDirectoryName(fullPath);
+                    }
+                    var outputDir = Path.Combine(fullPath, outputPath);
+                    return outputDir = Path.GetFullPath(outputDir);
+                }
+            }
+            catch (ArgumentException)
+            { }
+
+            return null;
+        }
+
+        private static Project GetSelectedProject(DTE2 dte)
+        {
+            Window2 window = dte.ActiveWindow as Window2;
+
+            if (window != null)
+            {
+                if (window.Type == vsWindowType.vsWindowTypeDocument)
+                {
+                    return dte.ActiveDocument?.ProjectItem?.ContainingProject;
+                }
+
+                if (window.Type == vsWindowType.vsWindowTypeSolutionExplorer)
+                {
+                    var hierarchy = window.Object as UIHierarchy;
+                    var hierarchyItem = GetSelectedHierarchyItem(hierarchy);
+                    var project = hierarchyItem?.Object as Project;
+                    if (project != null)
+                    {
+                        return project;
+                    }
+                    // e.g. file/virtual foler in project
+                    var projectItem = hierarchyItem?.Object as ProjectItem;
+                    return projectItem?.ContainingProject;
+                }
+            }
+            return null;
+        }
 
         public static string GetInstallDirectory(IServiceProvider serviceProvider)
         {
@@ -202,7 +287,7 @@ namespace MadsKristensen.OpenCommandLine
 
         public static string GetSolutionConfigurationName(DTE2 dte)
         {
-            return dte.Solution.SolutionBuild.ActiveConfiguration.Name;
+            return dte.Solution.SolutionBuild.ActiveConfiguration?.Name;
         }
 
         public static string GetSolutionConfigurationPlatformName(DTE2 dte)
@@ -210,5 +295,7 @@ namespace MadsKristensen.OpenCommandLine
             var configuration2 = dte.Solution.SolutionBuild.ActiveConfiguration as SolutionConfiguration2;
             return configuration2 != null ? configuration2.PlatformName : null;
         }
+
+        private static string VsProjectKindPython = "{888888a0-9f3d-457c-b088-3a5042f75d52}";
     }
 }
