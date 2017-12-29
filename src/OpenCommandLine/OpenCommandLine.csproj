@@ -71,6 +71,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualStudio.ComponentModelHost, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=12.0.0.0">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -87,11 +88,15 @@
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0">
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.VisualStudio.CommandBars">
@@ -115,7 +120,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentType\CmdContentTypeDefinition.cs" />
+    <Compile Include="CustomAction.cs" />
+    <Compile Include="DynamicItemMenuCommand.cs" />
     <Compile Include="Guids.cs" />
+    <Compile Include="IStoredSettingsProvider.cs" />
     <Compile Include="OpenCommandLine.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -125,11 +133,15 @@
     <Compile Include="Options.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OptionsDialogPageControl.xaml.cs">
+      <DependentUpon>OptionsDialogPageControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="source.extension.cs">
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Compile>
     <Compile Include="Helpers\VsHelpers.cs" />
+    <Compile Include="StoredSettingsProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\LICENSE">
@@ -151,6 +163,7 @@
       <ResourceName>Menus.ctmenu</ResourceName>
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>OpenCommandLine.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +185,12 @@
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="OptionsDialogPageControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>

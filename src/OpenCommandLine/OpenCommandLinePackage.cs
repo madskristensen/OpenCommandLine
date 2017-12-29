@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -20,6 +22,7 @@ namespace MadsKristensen.OpenCommandLine
     [Guid(PackageGuids.guidOpenCommandLinePkgString)]
     public sealed class OpenCommandLinePackage : Package
     {
+        private IStoredSettingsProvider _storedSettingsProvider;
         private static DTE2 _dte;
         public Package Instance;
 
@@ -27,12 +30,20 @@ namespace MadsKristensen.OpenCommandLine
         {
             _dte = GetService(typeof(DTE)) as DTE2;
 
+            var componentModel = (IComponentModel)GetService(typeof(SComponentModel));
+            _storedSettingsProvider = componentModel.DefaultExportProvider.GetExportedValue<IStoredSettingsProvider>();
+
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
             CommandID cmdCustom = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCommandLine);
             OleMenuCommand customItem = new OleMenuCommand(OpenCustom, cmdCustom);
             customItem.BeforeQueryStatus += BeforeQueryStatus;
             mcs.AddCommand(customItem);
+
+            CommandID cmdCustomDynamic = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCommandLineDynamicStart);
+            OleMenuCommand customItemDynamic = new DynamicItemMenuCommand(OpenCustomDynamic, cmdCustomDynamic, () => _storedSettingsProvider.CustomActionsLength);
+            customItemDynamic.BeforeQueryStatus += BeforeQueryStatusDynamic;
+            mcs.AddCommand(customItemDynamic);
 
             CommandID cmdCmd = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCmd);
             MenuCommand cmdItem = new MenuCommand(OpenCmd, cmdCmd);
@@ -94,16 +105,26 @@ namespace MadsKristensen.OpenCommandLine
         private void BeforeQueryStatus(object sender, EventArgs e)
         {
             OleMenuCommand button = (OleMenuCommand)sender;
-            Options options = GetDialogPage(typeof(Options)) as Options;
 
-            button.Text = options.FriendlyName;
+            button.Text = _storedSettingsProvider.FriendlyName;
+        }
+
+        private void BeforeQueryStatusDynamic(object sender, EventArgs e)
+        {
+            DynamicItemMenuCommand button = (DynamicItemMenuCommand)sender;
+
+            var index = button.MatchedCommandId == 0 ? 0 : (button.MatchedCommandId - button.CommandID.ID);
+
+            button.Text = _storedSettingsProvider.GetCustomAction(index).FriendlyName;
+            button.Enabled = button.Visible = true;
+
+            button.MatchedCommandId = 0;
         }
 
         private void OpenCustom(object sender, EventArgs e)
         {
-            Options options = GetDialogPage(typeof(Options)) as Options;
-            string folder = VsHelpers.GetFolderPath(options, _dte);
-            string arguments = (options.Arguments ?? string.Empty).Replace("%folder%", folder);
+            string folder = VsHelpers.GetFolderPath(_storedSettingsProvider, _dte);
+            string arguments = (_storedSettingsProvider.Arguments ?? string.Empty).Replace("%folder%", folder);
 
             string confName = VsHelpers.GetSolutionConfigurationName(_dte);
             arguments = arguments.Replace("%configuration%", confName);
@@ -111,7 +132,25 @@ namespace MadsKristensen.OpenCommandLine
             string confPlatform = VsHelpers.GetSolutionConfigurationPlatformName(_dte);
             arguments = arguments.Replace("%platform%", confPlatform);
 
-            StartProcess(folder, options.Command, arguments);
+            StartProcess(folder, _storedSettingsProvider.Command, arguments);
+        }
+
+        private void OpenCustomDynamic(object sender, EventArgs e)
+        {
+            DynamicItemMenuCommand button = (DynamicItemMenuCommand)sender;
+
+            var customAction = _storedSettingsProvider.GetCustomAction(button.MatchedCommandId == 0 ? 0 : (button.MatchedCommandId - button.CommandID.ID));
+
+            string folder = VsHelpers.GetFolderPath(_storedSettingsProvider, _dte);
+            string arguments = (customAction.Arguments ?? string.Empty).Replace("%folder%", folder);
+
+            string confName = VsHelpers.GetSolutionConfigurationName(_dte);
+            arguments = arguments.Replace("%configuration%", confName);
+
+            string confPlatform = VsHelpers.GetSolutionConfigurationPlatformName(_dte);
+            arguments = arguments.Replace("%platform%", confPlatform);
+
+            StartProcess(folder, customAction.Command, arguments);
         }
 
         private void OpenCmd(object sender, EventArgs e)
@@ -130,7 +169,7 @@ namespace MadsKristensen.OpenCommandLine
         private void SetupProcess(string command, string arguments)
         {
             Options options = GetDialogPage(typeof(Options)) as Options;
-            string folder = VsHelpers.GetFolderPath(options, _dte);
+            string folder = VsHelpers.GetFolderPath(_storedSettingsProvider, _dte);
 
             StartProcess(folder, command, arguments);
         }

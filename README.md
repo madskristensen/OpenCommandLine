@@ -24,7 +24,7 @@ Explorer, then a console will open at the root of the .sln file.
 
 ![Open Command Line](screenshots/context-menu.png)
 
-You can access the command by hitting **ALT+Space** as well.
+You can access the main command by hitting **ALT+Space** as well.
 
 You may change this shortcut in the Options Window under Environment -> Keyboard
 

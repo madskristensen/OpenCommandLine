@@ -23,5 +23,6 @@
   </Dependencies>
   <Assets>
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="OpenCommandLine" Path="|OpenCommandLine;PkgdefProjectOutputGroup|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="OpenCommandLine" Path="|OpenCommandLine|" />
   </Assets>
 </PackageManifest>

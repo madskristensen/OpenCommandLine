@@ -2,171 +2,102 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Windows;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 
 namespace MadsKristensen.OpenCommandLine
 {
-    class Options : DialogPage
+    internal class Options : UIElementDialogPage
     {
-        public static Dictionary<string, Command> DefaultPresets = new Dictionary<string, Command>();
-        private bool _isLoading, _isChanging;
+        private OptionsDialogPageControl _optionsDialogControl;
+        private IStoredSettingsProvider _storedSettingsProvider;
 
-        string _preset;
+        protected override UIElement Child => _optionsDialogControl ?? (_optionsDialogControl = new OptionsDialogPageControl(GetDefaultPresets()));
 
-        [Category("Command Preset")]
-        [DisplayName("Select preset")]
-        [Description("Select one of the predefined command configurations")]
-        [DefaultValue("cmd")]
-        [TypeConverter(typeof(CommandTypeConverter))]
-        public string Preset
+        protected override void OnActivate(CancelEventArgs e)
         {
-            get { return _preset; }
-            set
+            base.OnActivate(e);
+
+            _storedSettingsProvider = GetSettingProvider();
+
+            _optionsDialogControl.CustomActions.Clear();
+            for (int i = 0; i < _storedSettingsProvider.CustomActionsLength; i++)
             {
-                _preset = value;
-
-                if (!_isLoading && DefaultPresets.ContainsKey(value))
-                {
-                    _isChanging = true;
-
-                    Command command = DefaultPresets[value];
-                    Command = command.Name;
-                    Arguments = command.Arguments;
-                    FriendlyName = "Default (" + value + ")";
-
-                    _isChanging = false;
-                }
-            }
-        }
-
-        [Category("Command Preset")]
-        [DisplayName("Friendly name")]
-        [Description("Specify the friendly name for the default command")]
-        [DefaultValue("Default (cmd)")]
-        public string FriendlyName { get; set; }
-
-        string _command;
-
-        [Category("Console")]
-        [DisplayName("Command")]
-        [Description("The command or filepath to an executable such as cmd.exe")]
-        [DefaultValue("cmd.exe")]
-        public string Command
-        {
-            get { return _command; }
-            set
-            {
-                _command = value;
-                SetCustom();
-            }
-        }
-
-        string _arguments;
-
-        [Category("Console")]
-        [DisplayName("Command arguments")]
-        [Description(@"Any arguments to pass to the command.\n
-%folder% parameter pass to argument current file path.\n
-%configuration% parameter pass to argument current build configuration.\n
-%platform% parameter pass to argument current build platform.")]
-        [DefaultValue("")]
-        public string Arguments
-        {
-            get { return _arguments; }
-            set
-            {
-                _arguments = value;
-                SetCustom();
-            }
-        }
-
-        [Category("Settings")]
-        [DisplayName("Always open at solution level")]
-        [Description("Always open command prompt at the solution level.")]
-        [DefaultValue(false)]
-        public bool OpenSlnLevel { get; set; }
-
-        [Category("Settings")]
-        [DisplayName("Open files at project level")]
-        [Description("Opening a command line when a document is active will open it at the project level.")]
-        [DefaultValue(false)]
-        public bool OpenProjectLevel { get; set; }
-
-        public override void LoadSettingsFromStorage()
-        {
-            _isLoading = true;
-
-            base.LoadSettingsFromStorage();
-
-            if (string.IsNullOrEmpty(Command))
-                Command = "cmd.exe";
-
-            if (string.IsNullOrEmpty(FriendlyName))
-                FriendlyName = "Default (cmd)";
-
-            if (string.IsNullOrEmpty(Preset))
-                Preset = "cmd";
-
-            if (DefaultPresets.Count == 0)
-            {
-                string installDir = VsHelpers.GetInstallDirectory(ServiceProvider.GlobalProvider);
-                string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
-
-                DefaultPresets["cmd"] = new Command("cmd.exe");
-                DefaultPresets["Dev Cmd Prompt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\"");
-                DefaultPresets["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
-                DefaultPresets["PowerShell ISE"] = new Command("powershell_ise.exe");
-                DefaultPresets["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")");
-                DefaultPresets["Git Bash"] = new Command(@"C:\Program Files\Git\git-bash.exe");
-                DefaultPresets["Babun"] = new Command(@"%UserProfile%\.babun\cygwin\bin\mintty.exe", "/bin/env CHERE_INVOKING=1 /bin/zsh.exe");
-
-                string GitHubForWindowsPath = Path.Combine(Environment.GetEnvironmentVariable("LocalAppData"), "GitHub", "GitHub.appref-ms");
-                if (File.Exists(GitHubForWindowsPath))
-                {
-                    DefaultPresets["GitHub Console"] = new Command(@"%LOCALAPPDATA%\GitHub\GitHub.appref-ms", "-open-shell");
-                }
-
-                DefaultPresets["cmder"] = new Command("cmder.exe", "/START \"%folder%\"");
-                DefaultPresets["ConEmu"] = new Command("ConEmu64.exe", "/cmd PowerShell.exe");
-                DefaultPresets["Custom"] = new Command(string.Empty, string.Empty);
+                _optionsDialogControl.CustomActions.Add(_storedSettingsProvider.GetCustomAction(i));
             }
 
-            _isLoading = false;
+            _optionsDialogControl.Preset = _storedSettingsProvider.Preset;
+            _optionsDialogControl.FriendlyName = _storedSettingsProvider.FriendlyName;
+            _optionsDialogControl.Command = _storedSettingsProvider.Command;
+            _optionsDialogControl.Arguments = _storedSettingsProvider.Arguments;
+
+            _optionsDialogControl.OpenSlnLevelCheckBox.IsChecked = _storedSettingsProvider.OpenSlnLevel;
+            _optionsDialogControl.OpenProjLevelCheckBox.IsChecked = _storedSettingsProvider.OpenProjectLevel;
         }
 
-        private void SetCustom()
+        protected override void OnApply(PageApplyEventArgs args)
         {
-            if (!_isChanging && !_isLoading)
-                _preset = "Custom";
-        }
-    }
+            if (args.ApplyBehavior == ApplyKind.Apply)
+            {
+                _storedSettingsProvider.Preset = _optionsDialogControl.Preset;
+                _storedSettingsProvider.FriendlyName = _optionsDialogControl.FriendlyName;
+                _storedSettingsProvider.Command = _optionsDialogControl.Command;
+                _storedSettingsProvider.Arguments = _optionsDialogControl.Arguments;
 
-    class CommandTypeConverter : StringConverter
-    {
-        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
-        {
-            return true;
+                _storedSettingsProvider.SetCustomActions(_optionsDialogControl.CustomActions.ToArray());
+
+                _storedSettingsProvider.OpenSlnLevel = _optionsDialogControl.OpenSlnLevelCheckBox.IsChecked.GetValueOrDefault(false);
+                _storedSettingsProvider.OpenProjectLevel = _optionsDialogControl.OpenProjLevelCheckBox.IsChecked.GetValueOrDefault(false);
+            }
+
+            base.OnApply(args);
         }
 
-        public override bool IsValid(ITypeDescriptorContext context, object value)
+        private IStoredSettingsProvider GetSettingProvider()
         {
-            return Options.DefaultPresets.ContainsKey(value.ToString());
+            var componentModel = (IComponentModel)Site.GetService(typeof(SComponentModel));
+            return componentModel.DefaultExportProvider.GetExportedValue<IStoredSettingsProvider>();
         }
 
-        public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+        private IDictionary<string, Command> GetDefaultPresets()
         {
-            return new StandardValuesCollection(Options.DefaultPresets.Keys);
-        }
-    }
+            string installDir = VsHelpers.GetInstallDirectory(ServiceProvider.GlobalProvider);
+            string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
 
-    class Command
-    {
-        public Command(string command, string arguments = "")
-        {
-            this.Name = command;
-            this.Arguments = arguments;
+            var defaultPresets = new Dictionary<string, Command>();
+
+            defaultPresets["cmd"] = new Command("cmd.exe");
+            defaultPresets["Dev Cmd Prompt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\"");
+            defaultPresets["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
+            defaultPresets["PowerShell ISE"] = new Command("powershell_ise.exe");
+            defaultPresets["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")");
+            defaultPresets["Git Bash"] = new Command(@"C:\Program Files\Git\git-bash.exe");
+            defaultPresets["Babun"] = new Command(@"%UserProfile%\.babun\cygwin\bin\mintty.exe", "/bin/env CHERE_INVOKING=1 /bin/zsh.exe");
+
+            string gitHubForWindowsPath = Path.Combine(Environment.GetEnvironmentVariable("LocalAppData"), "GitHub", "GitHub.appref-ms");
+            if (File.Exists(gitHubForWindowsPath))
+            {
+                defaultPresets["GitHub Console"] = new Command(@"%LOCALAPPDATA%\GitHub\GitHub.appref-ms", "-open-shell");
+            }
+
+            defaultPresets["cmder"] = new Command("cmder.exe", "/START \"%folder%\"");
+            defaultPresets["ConEmu"] = new Command("ConEmu64.exe", "/cmd PowerShell.exe");
+            defaultPresets["Custom"] = new Command(string.Empty, string.Empty);
+
+            return defaultPresets;
         }
-        public string Name { get; set; }
-        public string Arguments { get; set; }
+
+        public class Command
+        {
+            public Command(string command, string arguments = "")
+            {
+                CommandName = command;
+                Arguments = arguments;
+            }
+            public string CommandName { get; set; }
+            public string Arguments { get; set; }
+        }
     }
 }

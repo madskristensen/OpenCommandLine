@@ -22,10 +22,13 @@
             <Group guid="guidOpenCommandLineCmdSet" id="CustomMenuGroup" priority="0x0100">
                 <Parent guid="guidOpenCommandLineCmdSet" id="FlyoutMenu"/>
             </Group>
-            <Group guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" priority="0x0200">
+            <Group guid="guidOpenCommandLineCmdSet" id="CustomMenuGroupDynamic" priority="0x0200">
+              <Parent guid="guidOpenCommandLineCmdSet" id="FlyoutMenu"/>
+            </Group>
+            <Group guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" priority="0x0300">
                 <Parent guid="guidOpenCommandLineCmdSet" id="FlyoutMenu"/>
             </Group>
-            <Group guid="guidOpenCommandLineCmdSet" id="OptionsMenuGroup" priority="0x0300">
+            <Group guid="guidOpenCommandLineCmdSet" id="OptionsMenuGroup" priority="0x0400">
                 <Parent guid="guidOpenCommandLineCmdSet" id="FlyoutMenu"/>
             </Group>
         </Groups>
@@ -39,6 +42,18 @@
                     <CommandName>Open Command Line</CommandName>
                     <ButtonText>Default</ButtonText>
                 </Strings>
+            </Button>
+            <Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenCommandLineDynamicStart" priority="0x0100" type="Button">
+              <Parent guid="guidOpenCommandLineCmdSet" id="CustomMenuGroupDynamic" />
+              <CommandFlag>DynamicItemStart</CommandFlag>
+              <CommandFlag>DefaultInvisible</CommandFlag>
+              <CommandFlag>DefaultDisabled</CommandFlag>
+              <CommandFlag>DynamicVisibility</CommandFlag>
+              <CommandFlag>TextChanges</CommandFlag>
+              <Strings>
+                <CommandName>Open Command Line Dynamic</CommandName>
+                <ButtonText></ButtonText>
+              </Strings>
             </Button>
             <Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" priority="0x0100" type="Button">
                 <Parent guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" />
@@ -56,7 +71,7 @@
                     <ButtonText>PowerShell</ButtonText>
                 </Strings>
             </Button>
-            <Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenOptions" priority="0x0200" type="Button">
+            <Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenOptions" priority="0x0100" type="Button">
                 <Parent guid="guidOpenCommandLineCmdSet" id="OptionsMenuGroup" />
                 <Strings>
                     <CommandName>Open Command Line Options</CommandName>
@@ -107,9 +122,11 @@
             <IDSymbol name="FlyoutMenu" value="0x1000" />
             <IDSymbol name="ContextMenuGroup" value="0x1020" />
             <IDSymbol name="CustomMenuGroup" value="0x1030" />
+            <IDSymbol name="CustomMenuGroupDynamic" value="0x1031" />
             <IDSymbol name="DefaultMenuGroup" value="0x1040" />
             <IDSymbol name="OptionsMenuGroup" value="0x10450" />
             <IDSymbol name="cmdidOpenCommandLine" value="0x0100" />
+            <IDSymbol name="cmdidOpenCommandLineDynamicStart" value="0x0101" />
             <IDSymbol name="cmdidOpenCmd" value="0x0200" />
             <IDSymbol name="cmdidOpenPowershell" value="0x0300" />
             <IDSymbol name="cmdidOpenOptions" value="0x0400" />

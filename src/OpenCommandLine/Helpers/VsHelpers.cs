@@ -11,10 +11,10 @@ namespace MadsKristensen.OpenCommandLine
 {
     static class VsHelpers
     {
-        public static string GetFolderPath(Options options, DTE2 dte)
+        public static string GetFolderPath(IStoredSettingsProvider settings, DTE2 dte)
         {
             // If option to always open at sln level is chosen, use that.
-            if (options.OpenSlnLevel && dte.Solution != null && !string.IsNullOrEmpty(dte.Solution.FullName))
+            if (settings.OpenSlnLevel && dte.Solution != null && !string.IsNullOrEmpty(dte.Solution.FullName))
                 return Path.GetDirectoryName(dte.Solution.FullName);
 
             Window2 window = dte.ActiveWindow as Window2;
@@ -27,7 +27,7 @@ namespace MadsKristensen.OpenCommandLine
                     Document doc = dte.ActiveDocument;
                     if (doc != null && IsValidFileName(doc.FullName))
                     {
-                        if (options.OpenProjectLevel)
+                        if (settings.OpenProjectLevel)
                         {
                             ProjectItem item = dte.Solution.FindProjectItem(doc.FullName);
 
@@ -195,7 +195,7 @@ namespace MadsKristensen.OpenCommandLine
                 return false;
 
             Uri pathUri;
-            Boolean isValidUri = Uri.TryCreate(fileName, UriKind.Absolute, out pathUri);
+            var isValidUri = Uri.TryCreate(fileName, UriKind.Absolute, out pathUri);
 
             return isValidUri && pathUri != null && pathUri.IsLoopback;
         }
