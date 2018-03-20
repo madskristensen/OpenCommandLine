@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace MadsKristensen.OpenCommandLine
@@ -132,11 +133,11 @@ namespace MadsKristensen.OpenCommandLine
         }
 
 
-        public static string GetInstallDirectory(IServiceProvider serviceProvider)
+        public static string GetInstallDirectory()
         {
             string installDirectory = null;
 
-            var shell = (IVsShell)serviceProvider.GetService(typeof(SVsShell));
+            var shell = (IVsShell)Package.GetGlobalService(typeof(SVsShell));
             if (shell != null)
             {
                 shell.GetProperty((int)__VSSPROPID.VSSPROPID_InstallDirectory, out object installDirectoryObj);

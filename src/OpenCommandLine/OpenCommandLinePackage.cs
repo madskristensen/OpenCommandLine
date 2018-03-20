@@ -4,30 +4,33 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Task = System.Threading.Tasks.Task;
 
 namespace MadsKristensen.OpenCommandLine
 {
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading =true)]
     [InstalledProductRegistration("#110", "#112", Vsix.Version, IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionHasSingleProject)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionHasSingleProject, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideOptionPage(typeof(Options), "Environment", "Command Line", 101, 104, true, new[] { "cmd", "powershell", "bash" }, ProvidesLocalizedCategoryName = false)]
     [Guid(PackageGuids.guidOpenCommandLinePkgString)]
-    public sealed class OpenCommandLinePackage : Package
+    public sealed class OpenCommandLinePackage : AsyncPackage
     {
         private static DTE2 _dte;
         public Package Instance;
 
-        protected override void Initialize()
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            _dte = GetService(typeof(DTE)) as DTE2;
+            _dte = await GetServiceAsync(typeof(DTE)) as DTE2;
+            var mcs = await GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
 
-            var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
 
             var cmdCustom = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCommandLine);
             var customItem = new OleMenuCommand(OpenCustom, cmdCustom);
@@ -116,7 +119,7 @@ namespace MadsKristensen.OpenCommandLine
 
         private void OpenCmd(object sender, EventArgs e)
         {
-            string installDir = VsHelpers.GetInstallDirectory(this);
+            string installDir = VsHelpers.GetInstallDirectory();
             string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
 
             SetupProcess("cmd.exe", "/k \"" + devPromptFile + "\"");

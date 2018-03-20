@@ -109,7 +109,7 @@ namespace MadsKristensen.OpenCommandLine
 
             if (DefaultPresets.Count == 0)
             {
-                string installDir = VsHelpers.GetInstallDirectory(ServiceProvider.GlobalProvider);
+                string installDir = VsHelpers.GetInstallDirectory();
                 string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
 
                 DefaultPresets["cmd"] = new Command("cmd.exe");
