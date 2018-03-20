@@ -27,34 +27,34 @@ namespace MadsKristensen.OpenCommandLine
         {
             _dte = GetService(typeof(DTE)) as DTE2;
 
-            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
-            CommandID cmdCustom = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCommandLine);
-            OleMenuCommand customItem = new OleMenuCommand(OpenCustom, cmdCustom);
+            var cmdCustom = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCommandLine);
+            var customItem = new OleMenuCommand(OpenCustom, cmdCustom);
             customItem.BeforeQueryStatus += BeforeQueryStatus;
             mcs.AddCommand(customItem);
 
-            CommandID cmdCmd = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCmd);
-            MenuCommand cmdItem = new MenuCommand(OpenCmd, cmdCmd);
+            var cmdCmd = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCmd);
+            var cmdItem = new MenuCommand(OpenCmd, cmdCmd);
             mcs.AddCommand(cmdItem);
 
-            CommandID cmdPowershell = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenPowershell);
-            MenuCommand powershellItem = new MenuCommand(OpenPowershell, cmdPowershell);
+            var cmdPowershell = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenPowershell);
+            var powershellItem = new MenuCommand(OpenPowershell, cmdPowershell);
             mcs.AddCommand(powershellItem);
 
-            CommandID cmdOptions = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenOptions);
-            MenuCommand optionsItem = new MenuCommand((s, e) => { ShowOptionPage(typeof(Options)); }, cmdOptions);
+            var cmdOptions = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenOptions);
+            var optionsItem = new MenuCommand((s, e) => { ShowOptionPage(typeof(Options)); }, cmdOptions);
             mcs.AddCommand(optionsItem);
 
-            CommandID cmdExe = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdExecuteCmd);
-            OleMenuCommand exeItem = new OleMenuCommand(ExecuteFile, cmdExe);
+            var cmdExe = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdExecuteCmd);
+            var exeItem = new OleMenuCommand(ExecuteFile, cmdExe);
             exeItem.BeforeQueryStatus += BeforeExeQuery;
             mcs.AddCommand(exeItem);
         }
 
         void BeforeExeQuery(object sender, EventArgs e)
         {
-            OleMenuCommand button = (OleMenuCommand)sender;
+            var button = (OleMenuCommand)sender;
             button.Enabled = button.Visible = false;
             var item = VsHelpers.GetProjectItem(_dte);
 
@@ -84,15 +84,15 @@ namespace MadsKristensen.OpenCommandLine
 
         private void BeforeQueryStatus(object sender, EventArgs e)
         {
-            OleMenuCommand button = (OleMenuCommand)sender;
-            Options options = GetDialogPage(typeof(Options)) as Options;
+            var button = (OleMenuCommand)sender;
+            var options = GetDialogPage(typeof(Options)) as Options;
 
             button.Text = options.FriendlyName;
         }
 
         private void OpenCustom(object sender, EventArgs e)
         {
-            Options options = GetDialogPage(typeof(Options)) as Options;
+            var options = GetDialogPage(typeof(Options)) as Options;
             string folder = VsHelpers.GetFolderPath(options, _dte);
             string arguments = (options.Arguments ?? string.Empty).Replace("%folder%", folder);
 
@@ -114,7 +114,7 @@ namespace MadsKristensen.OpenCommandLine
 
         private void SetupProcess(string command, string arguments)
         {
-            Options options = GetDialogPage(typeof(Options)) as Options;
+            var options = GetDialogPage(typeof(Options)) as Options;
             string folder = VsHelpers.GetFolderPath(options, _dte);
 
             StartProcess(folder, command, arguments);
@@ -127,7 +127,7 @@ namespace MadsKristensen.OpenCommandLine
                 command = Environment.ExpandEnvironmentVariables(command ?? string.Empty);
                 arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
 
-                ProcessStartInfo start = new ProcessStartInfo(command, arguments);
+                var start = new ProcessStartInfo(command, arguments);
                 start.WorkingDirectory = workingDirectory;
                 start.LoadUserProfile = true;
                 start.UseShellExecute = false;
