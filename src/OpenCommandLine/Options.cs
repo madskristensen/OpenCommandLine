@@ -65,7 +65,10 @@ namespace MadsKristensen.OpenCommandLine
 
         [Category("Console")]
         [DisplayName("Command arguments")]
-        [Description("Any arguments to pass to the command.\n%folder% parameter pass to argument current file path.")]
+        [Description(@"Any arguments to pass to the command.\n
+%folder% parameter pass to argument current file path.\n
+%configuration% parameter pass to argument current build configuration.\n
+%platform% parameter pass to argument current build platform.")]
         [DefaultValue("")]
         public string Arguments
         {
@@ -112,8 +115,10 @@ namespace MadsKristensen.OpenCommandLine
                 DefaultPresets["cmd"] = new Command("cmd.exe");
                 DefaultPresets["Dev Cmd Prompt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\"");
                 DefaultPresets["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
+                DefaultPresets["PowerShell ISE"] = new Command("powershell_ise.exe");
                 DefaultPresets["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")");
                 DefaultPresets["Git Bash"] = new Command(@"C:\Program Files\Git\git-bash.exe");
+                DefaultPresets["Babun"] = new Command(@"%UserProfile%\.babun\cygwin\bin\mintty.exe", "/bin/env CHERE_INVOKING=1 /bin/zsh.exe");
 
                 string GitHubForWindowsPath = Path.Combine(Environment.GetEnvironmentVariable("LocalAppData"), "GitHub", "GitHub.appref-ms");
                 if (File.Exists(GitHubForWindowsPath))

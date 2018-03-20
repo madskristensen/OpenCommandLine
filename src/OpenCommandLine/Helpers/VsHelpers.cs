@@ -189,5 +189,16 @@ namespace MadsKristensen.OpenCommandLine
 
             return isValidUri && pathUri != null && pathUri.IsLoopback;
         }
+
+        public static string GetSolutionConfigurationName(DTE2 dte)
+        {
+            return dte.Solution.SolutionBuild.ActiveConfiguration.Name;
+        }
+
+        public static string GetSolutionConfigurationPlatformName(DTE2 dte)
+        {
+            var configuration2 = dte.Solution.SolutionBuild.ActiveConfiguration as SolutionConfiguration2;
+            return configuration2 != null ? configuration2.PlatformName : null;
+        }
     }
 }
