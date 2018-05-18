@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-  <Metadata>
-    <Identity Id="f4ab1e64-5d35-4f06-bad9-bf414f4b3bbb" Version="2.1" Language="en-US" Publisher="Mads Kristensen" />
-    <DisplayName>Open Command Line</DisplayName>
-    <Description xml:space="preserve">Opens a command line at the root of the project. Support for all consoles such as CMD, PowerShell, Bash etc. Provides syntax highlighting, Intellisense and execution of .cmd and .bat files.</Description>
-    <MoreInfo>https://github.com/madskristensen/OpenCommandLine</MoreInfo>
-    <License>Resources\LICENSE</License>
-    <Icon>Resources\icon.png</Icon>
-    <PreviewImage>Resources\preview.png</PreviewImage>
-    <Tags>Solution Explorer, cmd, powershell, bash, post-git, cmder, prompt, console, conemu</Tags>
-  </Metadata>
-  <Installation InstalledByMsi="false">
-    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="14.0" />
-    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="15.0" />
-  </Installation>
-  <Prerequisites>
-    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />
-  </Prerequisites>
-  <Assets>
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-  </Assets>
+    <Metadata>
+        <Identity Id="f4ab1e64-5d35-4f06-bad9-bf414f4b3bbb" Version="2.2" Language="en-US" Publisher="Mads Kristensen" />
+        <DisplayName>Open Command Line</DisplayName>
+        <Description xml:space="preserve">Opens a command line at the root of the project. Support for all consoles such as CMD, PowerShell, Bash etc. Provides syntax highlighting, Intellisense and execution of .cmd and .bat files.</Description>
+        <MoreInfo>https://github.com/madskristensen/OpenCommandLine</MoreInfo>
+        <License>Resources\LICENSE</License>
+        <Icon>Resources\icon.png</Icon>
+        <PreviewImage>Resources\preview.png</PreviewImage>
+        <Tags>Solution Explorer, cmd, powershell, bash, post-git, cmder, prompt, console, conemu</Tags>
+    </Metadata>
+    <Installation InstalledByMsi="false">
+        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="14.0" />
+        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="15.0" />
+    </Installation>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />
+    </Prerequisites>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    </Assets>
 </PackageManifest>
