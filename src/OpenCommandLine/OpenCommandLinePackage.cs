@@ -5,38 +5,41 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Task = System.Threading.Tasks.Task;
 
 namespace MadsKristensen.OpenCommandLine
 {
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration("#110", "#112", Vsix.Version, IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionHasSingleProject)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionHasSingleProject, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideOptionPage(typeof(Options), "Environment", "Command Line", 101, 104, true, new[] { "cmd", "powershell", "bash" }, ProvidesLocalizedCategoryName = false)]
     [Guid(PackageGuids.guidOpenCommandLinePkgString)]
-    public sealed class OpenCommandLinePackage : Package
+    public sealed class OpenCommandLinePackage : AsyncPackage
     {
         private IStoredSettingsProvider _storedSettingsProvider;
         private static DTE2 _dte;
         public Package Instance;
 
-        protected override void Initialize()
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            _dte = GetService(typeof(DTE)) as DTE2;
+            _dte = await GetServiceAsync(typeof(DTE)) as DTE2;
+            var mcs = await GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
 
             var componentModel = (IComponentModel)GetService(typeof(SComponentModel));
             _storedSettingsProvider = componentModel.DefaultExportProvider.GetExportedValue<IStoredSettingsProvider>();
 
-            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-
-            CommandID cmdCustom = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCommandLine);
-            OleMenuCommand customItem = new OleMenuCommand(OpenCustom, cmdCustom);
+            var cmdCustom = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCommandLine);
+            var customItem = new OleMenuCommand(OpenCustom, cmdCustom);
             customItem.BeforeQueryStatus += BeforeQueryStatus;
             mcs.AddCommand(customItem);
 
@@ -45,27 +48,27 @@ namespace MadsKristensen.OpenCommandLine
             customItemDynamic.BeforeQueryStatus += BeforeQueryStatusDynamic;
             mcs.AddCommand(customItemDynamic);
 
-            CommandID cmdCmd = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCmd);
-            MenuCommand cmdItem = new MenuCommand(OpenCmd, cmdCmd);
+            var cmdCmd = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCmd);
+            var cmdItem = new MenuCommand(OpenCmd, cmdCmd);
             mcs.AddCommand(cmdItem);
 
-            CommandID cmdPowershell = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenPowershell);
-            MenuCommand powershellItem = new MenuCommand(OpenPowershell, cmdPowershell);
+            var cmdPowershell = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenPowershell);
+            var powershellItem = new MenuCommand(OpenPowershell, cmdPowershell);
             mcs.AddCommand(powershellItem);
 
-            CommandID cmdOptions = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenOptions);
-            MenuCommand optionsItem = new MenuCommand((s, e) => { ShowOptionPage(typeof(Options)); }, cmdOptions);
+            var cmdOptions = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenOptions);
+            var optionsItem = new MenuCommand((s, e) => { ShowOptionPage(typeof(Options)); }, cmdOptions);
             mcs.AddCommand(optionsItem);
 
-            CommandID cmdExe = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdExecuteCmd);
-            OleMenuCommand exeItem = new OleMenuCommand(ExecuteFile, cmdExe);
+            var cmdExe = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdExecuteCmd);
+            var exeItem = new OleMenuCommand(ExecuteFile, cmdExe);
             exeItem.BeforeQueryStatus += BeforeExeQuery;
             mcs.AddCommand(exeItem);
         }
 
         void BeforeExeQuery(object sender, EventArgs e)
         {
-            OleMenuCommand button = (OleMenuCommand)sender;
+            var button = (OleMenuCommand)sender;
             button.Enabled = button.Visible = false;
             var item = VsHelpers.GetProjectItem(_dte);
 
@@ -104,7 +107,8 @@ namespace MadsKristensen.OpenCommandLine
 
         private void BeforeQueryStatus(object sender, EventArgs e)
         {
-            OleMenuCommand button = (OleMenuCommand)sender;
+            var button = (OleMenuCommand)sender;
+            var options = GetDialogPage(typeof(Options)) as Options;
 
             button.Text = _storedSettingsProvider.FriendlyName;
         }
@@ -123,6 +127,7 @@ namespace MadsKristensen.OpenCommandLine
 
         private void OpenCustom(object sender, EventArgs e)
         {
+            var options = GetDialogPage(typeof(Options)) as Options;
             string folder = VsHelpers.GetFolderPath(_storedSettingsProvider, _dte);
             string arguments = (_storedSettingsProvider.Arguments ?? string.Empty).Replace("%folder%", folder);
 
@@ -155,7 +160,7 @@ namespace MadsKristensen.OpenCommandLine
 
         private void OpenCmd(object sender, EventArgs e)
         {
-            string installDir = VsHelpers.GetInstallDirectory(this);
+            string installDir = VsHelpers.GetInstallDirectory();
             string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
 
             SetupProcess("cmd.exe", "/k \"" + devPromptFile + "\"");
@@ -181,7 +186,7 @@ namespace MadsKristensen.OpenCommandLine
                 command = Environment.ExpandEnvironmentVariables(command ?? string.Empty);
                 arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
 
-                ProcessStartInfo start = new ProcessStartInfo(command, arguments);
+                var start = new ProcessStartInfo(command, arguments);
                 start.WorkingDirectory = workingDirectory;
                 start.LoadUserProfile = true;
                 start.UseShellExecute = false;

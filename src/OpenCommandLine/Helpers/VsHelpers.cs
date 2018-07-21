@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace MadsKristensen.OpenCommandLine
@@ -17,9 +18,7 @@ namespace MadsKristensen.OpenCommandLine
             if (settings.OpenSlnLevel && dte.Solution != null && !string.IsNullOrEmpty(dte.Solution.FullName))
                 return Path.GetDirectoryName(dte.Solution.FullName);
 
-            Window2 window = dte.ActiveWindow as Window2;
-
-            if (window != null)
+            if (dte.ActiveWindow is Window2 window)
             {
                 if (window.Type == vsWindowType.vsWindowTypeDocument)
                 {
@@ -48,17 +47,13 @@ namespace MadsKristensen.OpenCommandLine
                 else if (window.Type == vsWindowType.vsWindowTypeSolutionExplorer)
                 {
                     // if solution explorer is active, use the path of the first selected item
-                    UIHierarchy hierarchy = window.Object as UIHierarchy;
-                    if (hierarchy != null && hierarchy.SelectedItems != null)
+                    if (window.Object is UIHierarchy hierarchy && hierarchy.SelectedItems != null)
                     {
-                        UIHierarchyItem[] hierarchyItems = hierarchy.SelectedItems as UIHierarchyItem[];
-                        if (hierarchyItems != null && hierarchyItems.Length > 0)
+                        if (hierarchy.SelectedItems is UIHierarchyItem[] hierarchyItems && hierarchyItems.Length > 0)
                         {
-                            UIHierarchyItem hierarchyItem = hierarchyItems[0] as UIHierarchyItem;
-                            if (hierarchyItem != null)
+                            if (hierarchyItems[0] is UIHierarchyItem hierarchyItem)
                             {
-                                ProjectItem projectItem = hierarchyItem.Object as ProjectItem;
-                                if (projectItem != null && projectItem.FileCount > 0)
+                                if (hierarchyItem.Object is ProjectItem projectItem && projectItem.FileCount > 0)
                                 {
                                     if (Directory.Exists(projectItem.FileNames[1]))
                                         return projectItem.FileNames[1];
@@ -124,9 +119,8 @@ namespace MadsKristensen.OpenCommandLine
         {
             try
             {
-                Array activeSolutionProjects = dte.ActiveSolutionProjects as Array;
 
-                if (activeSolutionProjects != null && activeSolutionProjects.Length > 0)
+                if (dte.ActiveSolutionProjects is Array activeSolutionProjects && activeSolutionProjects.Length > 0)
                     return activeSolutionProjects.GetValue(0) as Project;
             }
             catch (Exception ex)
@@ -138,15 +132,14 @@ namespace MadsKristensen.OpenCommandLine
         }
 
 
-        public static string GetInstallDirectory(IServiceProvider serviceProvider)
+        public static string GetInstallDirectory()
         {
             string installDirectory = null;
 
-            IVsShell shell = (IVsShell)serviceProvider.GetService(typeof(SVsShell));
+            var shell = (IVsShell)Package.GetGlobalService(typeof(SVsShell));
             if (shell != null)
             {
-                object installDirectoryObj = null;
-                shell.GetProperty((int)__VSSPROPID.VSSPROPID_InstallDirectory, out installDirectoryObj);
+                shell.GetProperty((int)__VSSPROPID.VSSPROPID_InstallDirectory, out object installDirectoryObj);
                 if (installDirectoryObj != null)
                 {
                     installDirectory = installDirectoryObj as string;
@@ -158,9 +151,8 @@ namespace MadsKristensen.OpenCommandLine
 
         public static ProjectItem GetProjectItem(DTE2 dte)
         {
-            Window2 window = dte.ActiveWindow as Window2;
 
-            if (window == null)
+            if (!(dte.ActiveWindow is Window2 window))
                 return null;
 
             if (window.Type == vsWindowType.vsWindowTypeDocument)
@@ -182,9 +174,8 @@ namespace MadsKristensen.OpenCommandLine
 
             foreach (UIHierarchyItem selItem in items)
             {
-                ProjectItem item = selItem.Object as ProjectItem;
 
-                if (item != null)
+                if (selItem.Object is ProjectItem item)
                     yield return item;
             }
         }
@@ -194,8 +185,7 @@ namespace MadsKristensen.OpenCommandLine
             if (string.IsNullOrWhiteSpace(fileName))
                 return false;
 
-            Uri pathUri;
-            var isValidUri = Uri.TryCreate(fileName, UriKind.Absolute, out pathUri);
+            bool isValidUri = Uri.TryCreate(fileName, UriKind.Absolute, out Uri pathUri);
 
             return isValidUri && pathUri != null && pathUri.IsLoopback;
         }

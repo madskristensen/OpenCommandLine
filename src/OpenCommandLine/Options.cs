@@ -63,7 +63,7 @@ namespace MadsKristensen.OpenCommandLine
 
         private IDictionary<string, Command> GetDefaultPresets()
         {
-            string installDir = VsHelpers.GetInstallDirectory(ServiceProvider.GlobalProvider);
+            string installDir = VsHelpers.GetInstallDirectory();
             string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
 
             var defaultPresets = new Dictionary<string, Command>();

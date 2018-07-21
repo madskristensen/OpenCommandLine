@@ -77,7 +77,7 @@ namespace MadsKristensen.OpenCommandLine
         {
             get
             {
-                return bool.Parse(_writableSettingsStore.GetString(CollectionName, nameof(OpenSlnLevel), string.Empty));
+                return bool.Parse(_writableSettingsStore.GetString(CollectionName, nameof(OpenSlnLevel), "false"));
             }
             set
             {
@@ -89,7 +89,7 @@ namespace MadsKristensen.OpenCommandLine
         {
             get
             {
-                return bool.Parse(_writableSettingsStore.GetString(CollectionName, nameof(OpenProjectLevel), string.Empty));
+                return bool.Parse(_writableSettingsStore.GetString(CollectionName, nameof(OpenProjectLevel), "false"));
             }
             set
             {
@@ -115,7 +115,7 @@ namespace MadsKristensen.OpenCommandLine
 
             if (!string.IsNullOrEmpty(val))
             {
-                var customAction = val.Split(new[] {"##"}, StringSplitOptions.None);
+                var customAction = val.Split(new[] { "##" }, StringSplitOptions.None);
                 return new CustomAction(customAction[0], customAction[1], customAction[2], customAction[3]);
             }
 
