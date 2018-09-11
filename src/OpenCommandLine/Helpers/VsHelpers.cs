@@ -14,6 +14,8 @@ namespace MadsKristensen.OpenCommandLine
     {
         public static string GetFolderPath(Options options, DTE2 dte)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             // If option to always open at sln level is chosen, use that.
             if (options.OpenSlnLevel && dte.Solution != null && !string.IsNullOrEmpty(dte.Solution.FullName))
                 return Path.GetDirectoryName(dte.Solution.FullName);
@@ -70,7 +72,7 @@ namespace MadsKristensen.OpenCommandLine
 
             Project project = GetActiveProject(dte);
 
-            if (project != null && !project.Kind.Equals(ProjectKinds.vsProjectKindSolutionFolder, StringComparison.OrdinalIgnoreCase))
+            if (project != null && !project.Kind.Equals("{66A26720-8FB5-11D2-AA7E-00C04F688DDE}", StringComparison.OrdinalIgnoreCase)) //ProjectKinds.vsProjectKindSolutionFolder
                 return project.GetRootFolder();
 
             if (dte.Solution != null && !string.IsNullOrEmpty(dte.Solution.FullName))
@@ -81,6 +83,8 @@ namespace MadsKristensen.OpenCommandLine
 
         public static string GetRootFolder(this Project project)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (string.IsNullOrEmpty(project.FullName))
                 return null;
 
@@ -118,6 +122,8 @@ namespace MadsKristensen.OpenCommandLine
 
         private static Project GetActiveProject(DTE2 dte)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             try
             {
 
@@ -135,6 +141,8 @@ namespace MadsKristensen.OpenCommandLine
 
         public static string GetInstallDirectory()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             string installDirectory = null;
 
             var shell = (IVsShell)Package.GetGlobalService(typeof(SVsShell));
@@ -152,6 +160,7 @@ namespace MadsKristensen.OpenCommandLine
 
         public static ProjectItem GetProjectItem(DTE2 dte)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (!(dte.ActiveWindow is Window2 window))
                 return null;
@@ -171,6 +180,8 @@ namespace MadsKristensen.OpenCommandLine
 
         private static IEnumerable<ProjectItem> GetSelectedItems(DTE2 dte)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var items = (Array)dte.ToolWindows.SolutionExplorer.SelectedItems;
 
             foreach (UIHierarchyItem selItem in items)
@@ -193,13 +204,16 @@ namespace MadsKristensen.OpenCommandLine
 
         public static string GetSolutionConfigurationName(DTE2 dte)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             return dte.Solution.SolutionBuild.ActiveConfiguration.Name;
         }
 
         public static string GetSolutionConfigurationPlatformName(DTE2 dte)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var configuration2 = dte.Solution.SolutionBuild.ActiveConfiguration as SolutionConfiguration2;
-            return configuration2 != null ? configuration2.PlatformName : null;
+            return configuration2?.PlatformName;
         }
     }
 }

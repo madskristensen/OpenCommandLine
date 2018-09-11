@@ -163,8 +163,8 @@ namespace MadsKristensen.OpenCommandLine
     {
         public Command(string command, string arguments = "")
         {
-            this.Name = command;
-            this.Arguments = arguments;
+            Name = command;
+            Arguments = arguments;
         }
         public string Name { get; set; }
         public string Arguments { get; set; }
