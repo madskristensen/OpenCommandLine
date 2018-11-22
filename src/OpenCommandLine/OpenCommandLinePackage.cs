@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -32,6 +33,7 @@ namespace MadsKristensen.OpenCommandLine
         {
             _dte = await GetServiceAsync(typeof(DTE)) as DTE2;
             var mcs = await GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+            Assumes.Present(mcs);
 
             await JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -68,9 +70,11 @@ namespace MadsKristensen.OpenCommandLine
 
         void BeforeExeQuery(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var button = (OleMenuCommand)sender;
             button.Enabled = button.Visible = false;
-            var item = VsHelpers.GetProjectItem(_dte);
+            ProjectItem item = VsHelpers.GetProjectItem(_dte);
 
             if (item == null || item.FileCount == 0)
                 return;
@@ -89,7 +93,9 @@ namespace MadsKristensen.OpenCommandLine
 
         private void ExecuteFile(object sender, EventArgs e)
         {
-            var item = VsHelpers.GetProjectItem(_dte);
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            ProjectItem item = VsHelpers.GetProjectItem(_dte);
             string path = item.FileNames[1];
             string folder = Path.GetDirectoryName(path);
 
@@ -186,10 +192,12 @@ namespace MadsKristensen.OpenCommandLine
                 command = Environment.ExpandEnvironmentVariables(command ?? string.Empty);
                 arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
 
-                var start = new ProcessStartInfo(command, arguments);
-                start.WorkingDirectory = workingDirectory;
-                start.LoadUserProfile = true;
-                start.UseShellExecute = false;
+                var start = new ProcessStartInfo(command, arguments)
+                {
+                    WorkingDirectory = workingDirectory,
+                    LoadUserProfile = true,
+                    UseShellExecute = false
+                };
 
                 ModifyPathVariable(start);
 

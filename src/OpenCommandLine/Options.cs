@@ -88,16 +88,16 @@ namespace MadsKristensen.OpenCommandLine
 
             return defaultPresets;
         }
+    }
 
-        public class Command
+    class Command
+    {
+        public Command(string command, string arguments = "")
         {
-            public Command(string command, string arguments = "")
-            {
-                CommandName = command;
-                Arguments = arguments;
-            }
-            public string CommandName { get; set; }
-            public string Arguments { get; set; }
+            Name = command;
+            Arguments = arguments;
         }
+        public string Name { get; set; }
+        public string Arguments { get; set; }
     }
 }

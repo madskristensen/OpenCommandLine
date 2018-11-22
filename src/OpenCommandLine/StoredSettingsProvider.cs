@@ -9,7 +9,7 @@ namespace MadsKristensen.OpenCommandLine
     [Export(typeof(IStoredSettingsProvider))]
     public class StoredSettingsProvider : IStoredSettingsProvider
     {
-        private const string CollectionName = "DialogPage\\MadsKristensen.OpenCommandLine.Options";
+        private const string CollectionName = "MadsKristensen.OpenCommandLine.Options";
 
         private readonly WritableSettingsStore _writableSettingsStore;
 

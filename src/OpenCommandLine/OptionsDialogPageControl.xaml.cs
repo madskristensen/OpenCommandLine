@@ -13,12 +13,12 @@ namespace MadsKristensen.OpenCommandLine
     /// </summary>
     public partial class OptionsDialogPageControl : UserControl, INotifyPropertyChanged
     {
-        private readonly IDictionary<string, Options.Command> _defaultPresets;
+        private readonly IDictionary<string, Command> _defaultPresets;
 
         public ObservableCollection<string> Presets { get; }
         public ObservableCollection<CustomAction> CustomActions { get; }
 
-        internal OptionsDialogPageControl(IDictionary<string, Options.Command> defaultPresets)
+        internal OptionsDialogPageControl(IDictionary<string, Command> defaultPresets)
         {
             _defaultPresets = defaultPresets;
             Presets = new ObservableCollection<string>(defaultPresets.Keys);
@@ -160,7 +160,7 @@ namespace MadsKristensen.OpenCommandLine
                 var preset = _defaultPresets[newVal];
 
                 FriendlyName = $"Default ({newVal})";
-                Command = preset.CommandName;
+                Command = preset.Name;
                 Arguments = preset.Arguments;
             }
         }
@@ -196,7 +196,7 @@ namespace MadsKristensen.OpenCommandLine
                 var preset = _defaultPresets[newVal];
 
                 DynamicFriendlyName = $"{newVal}";
-                DynamicCommand = preset.CommandName;
+                DynamicCommand = preset.Name;
                 DynamicArguments = preset.Arguments;
             }
         }
@@ -205,7 +205,7 @@ namespace MadsKristensen.OpenCommandLine
         {
             var defaultPreset = _defaultPresets.First();
 
-            var newAction = new CustomAction(defaultPreset.Key, $"{defaultPreset.Key}", defaultPreset.Value.CommandName, defaultPreset.Value.Arguments);
+            var newAction = new CustomAction(defaultPreset.Key, $"{defaultPreset.Key}", defaultPreset.Value.Name, defaultPreset.Value.Arguments);
 
             CustomActions.Add(newAction);
             CustomAction = newAction;
