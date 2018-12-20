@@ -114,6 +114,7 @@ namespace MadsKristensen.OpenCommandLine
 
                 DefaultPresets["cmd"] = new Command("cmd.exe");
                 DefaultPresets["Dev Cmd Prompt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\"");
+                DefaultPresets["PowerShellCore"] = new Command("pwsh.exe", "-ExecutionPolicy Bypass -NoExit");
                 DefaultPresets["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
                 DefaultPresets["PowerShell ISE"] = new Command("powershell_ise.exe");
                 DefaultPresets["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")");
