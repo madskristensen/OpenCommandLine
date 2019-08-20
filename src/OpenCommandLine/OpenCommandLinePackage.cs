@@ -2,12 +2,10 @@
 using EnvDTE80;
 using Microsoft;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Task = System.Threading.Tasks.Task;
@@ -17,9 +15,12 @@ namespace MadsKristensen.OpenCommandLine
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration(Vsix.Name, Vsix.Version, Vsix.Version)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionHasSingleProject, PackageAutoLoadFlags.BackgroundLoad)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideOptionPage(typeof(Options), "Environment", "Command Line", 101, 104, true, new[] { "cmd", "powershell", "bash" }, ProvidesLocalizedCategoryName = false)]
+    [ProvideUIContextRule(PackageGuids.guidBatFileRuleString,
+        name: "Supported Files",
+        expression: "scripts",
+        termNames: new[] { "scripts" },
+        termValues: new[] { "HierSingleSelectionName:.(cmd|bat|ps1)$" })]
     [Guid(PackageGuids.guidOpenCommandLinePkgString)]
     public sealed class OpenCommandLinePackage : AsyncPackage
     {
@@ -28,11 +29,11 @@ namespace MadsKristensen.OpenCommandLine
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+
             _dte = await GetServiceAsync(typeof(DTE)) as DTE2;
             var mcs = await GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
             Assumes.Present(mcs);
-
-            await JoinableTaskFactory.SwitchToMainThreadAsync();
 
             var cmdCustom = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdidOpenCommandLine);
             var customItem = new OleMenuCommand(OpenCustom, cmdCustom);
@@ -52,36 +53,11 @@ namespace MadsKristensen.OpenCommandLine
             mcs.AddCommand(optionsItem);
 
             var cmdExe = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdExecuteCmd);
-            var exeItem = new OleMenuCommand(ExecuteFile, cmdExe);
-            exeItem.BeforeQueryStatus += BeforeExeQuery;
+            var exeItem = new OleMenuCommand(ExecuteFile, cmdExe)
+            {
+                Supported = false
+            };
             mcs.AddCommand(exeItem);
-        }
-
-        private void BeforeExeQuery(object sender, EventArgs e)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            var button = (OleMenuCommand)sender;
-            button.Enabled = button.Visible = false;
-            ProjectItem item = VsHelpers.GetProjectItem(_dte);
-
-            if (item == null || item.FileCount == 0)
-            {
-                return;
-            }
-
-            string path = item.FileNames[1];
-
-            if (!VsHelpers.IsValidFileName(path))
-            {
-                return;
-            }
-
-            string[] allowed = { ".CMD", ".BAT", ".PS1" };
-            string ext = Path.GetExtension(path);
-            bool isEnabled = allowed.Contains(ext, StringComparer.OrdinalIgnoreCase) && File.Exists(path);
-
-            button.Enabled = button.Visible = isEnabled;
         }
 
         private void ExecuteFile(object sender, EventArgs e)
