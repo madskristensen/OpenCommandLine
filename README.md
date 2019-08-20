@@ -10,8 +10,7 @@ or get the
 
 ## Supported consoles
 
-The Open Command Line extension supports all types of consoles like cmd, PowerShell,
-Bash and more. You can easily configure which to use by setting the paths and arguments
+The Open Command Line extension supports all types of consoles like cmd, PowerShell, Bash and more. You can easily configure which to use by setting the paths and arguments
 in the Options.
 
 ![Open Command Line](screenshots/options.png)
