@@ -1,21 +1,21 @@
-﻿using System;
+﻿using EnvDTE;
+using EnvDTE80;
+using Microsoft;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using EnvDTE;
-using EnvDTE80;
-using Microsoft;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
 namespace MadsKristensen.OpenCommandLine
 {
-    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading =true)]
-    [InstalledProductRegistration("#110", "#112", Vsix.Version, IconResourceID = 400)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [InstalledProductRegistration(Vsix.Name, Vsix.Version, Vsix.Version)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(UIContextGuids80.SolutionHasSingleProject, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects, PackageAutoLoadFlags.BackgroundLoad)]
@@ -57,7 +57,7 @@ namespace MadsKristensen.OpenCommandLine
             mcs.AddCommand(exeItem);
         }
 
-        void BeforeExeQuery(object sender, EventArgs e)
+        private void BeforeExeQuery(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -66,12 +66,16 @@ namespace MadsKristensen.OpenCommandLine
             ProjectItem item = VsHelpers.GetProjectItem(_dte);
 
             if (item == null || item.FileCount == 0)
+            {
                 return;
+            }
 
             string path = item.FileNames[1];
 
             if (!VsHelpers.IsValidFileName(path))
+            {
                 return;
+            }
 
             string[] allowed = { ".CMD", ".BAT", ".PS1" };
             string ext = Path.GetExtension(path);
