@@ -1,17 +1,16 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Shell;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using Microsoft.VisualStudio.Shell;
 
 namespace MadsKristensen.OpenCommandLine
 {
-    class Options : DialogPage
+    internal class Options : DialogPage
     {
         public static Dictionary<string, Command> DefaultPresets = new Dictionary<string, Command>();
         private bool _isLoading, _isChanging;
-
-        string _preset;
+        private string _preset;
 
         [Category("Command Preset")]
         [DisplayName("Select preset")]
@@ -20,7 +19,7 @@ namespace MadsKristensen.OpenCommandLine
         [TypeConverter(typeof(CommandTypeConverter))]
         public string Preset
         {
-            get { return _preset; }
+            get => _preset;
             set
             {
                 _preset = value;
@@ -45,7 +44,7 @@ namespace MadsKristensen.OpenCommandLine
         [DefaultValue("Default (cmd)")]
         public string FriendlyName { get; set; }
 
-        string _command;
+        private string _command;
 
         [Category("Console")]
         [DisplayName("Command")]
@@ -53,7 +52,7 @@ namespace MadsKristensen.OpenCommandLine
         [DefaultValue("cmd.exe")]
         public string Command
         {
-            get { return _command; }
+            get => _command;
             set
             {
                 _command = value;
@@ -61,7 +60,7 @@ namespace MadsKristensen.OpenCommandLine
             }
         }
 
-        string _arguments;
+        private string _arguments;
 
         [Category("Console")]
         [DisplayName("Command arguments")]
@@ -72,7 +71,7 @@ namespace MadsKristensen.OpenCommandLine
         [DefaultValue("")]
         public string Arguments
         {
-            get { return _arguments; }
+            get => _arguments;
             set
             {
                 _arguments = value;
@@ -94,18 +93,26 @@ namespace MadsKristensen.OpenCommandLine
 
         public override void LoadSettingsFromStorage()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             _isLoading = true;
 
             base.LoadSettingsFromStorage();
 
             if (string.IsNullOrEmpty(Command))
+            {
                 Command = "cmd.exe";
+            }
 
             if (string.IsNullOrEmpty(FriendlyName))
+            {
                 FriendlyName = "Default (cmd)";
+            }
 
             if (string.IsNullOrEmpty(Preset))
+            {
                 Preset = "cmd";
+            }
 
             if (DefaultPresets.Count == 0)
             {
@@ -138,11 +145,13 @@ namespace MadsKristensen.OpenCommandLine
         private void SetCustom()
         {
             if (!_isChanging && !_isLoading)
+            {
                 _preset = "Custom";
+            }
         }
     }
 
-    class CommandTypeConverter : StringConverter
+    internal class CommandTypeConverter : StringConverter
     {
         public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
         {
@@ -160,7 +169,7 @@ namespace MadsKristensen.OpenCommandLine
         }
     }
 
-    class Command
+    internal class Command
     {
         public Command(string command, string arguments = "")
         {

@@ -1,16 +1,16 @@
-﻿using System;
+﻿using EnvDTE;
+using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using EnvDTE;
-using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace MadsKristensen.OpenCommandLine
 {
-    static class VsHelpers
+    internal static class VsHelpers
     {
         public static string GetFolderPath(Options options, DTE2 dte)
         {
@@ -18,8 +18,9 @@ namespace MadsKristensen.OpenCommandLine
 
             // If option to always open at sln level is chosen, use that.
             if (options.OpenSlnLevel && dte.Solution != null && !string.IsNullOrEmpty(dte.Solution.FullName))
+            {
                 return Path.GetDirectoryName(dte.Solution.FullName);
-
+            }
 
             if (dte.ActiveWindow is Window2 window)
             {
@@ -38,7 +39,9 @@ namespace MadsKristensen.OpenCommandLine
                                 string folder = item.ContainingProject.GetRootFolder();
 
                                 if (!string.IsNullOrEmpty(folder))
+                                {
                                     return folder;
+                                }
                             }
                         }
                         else
@@ -59,10 +62,14 @@ namespace MadsKristensen.OpenCommandLine
                                 if (hierarchyItem.Object is ProjectItem projectItem && projectItem.FileCount > 0)
                                 {
                                     if (Directory.Exists(projectItem.FileNames[1]))
+                                    {
                                         return projectItem.FileNames[1];
+                                    }
 
                                     if (IsValidFileName(projectItem.FileNames[1]))
+                                    {
                                         return Path.GetDirectoryName(projectItem.FileNames[1]);
+                                    }
                                 }
                             }
                         }
@@ -73,10 +80,14 @@ namespace MadsKristensen.OpenCommandLine
             Project project = GetActiveProject(dte);
 
             if (project != null && !project.Kind.Equals("{66A26720-8FB5-11D2-AA7E-00C04F688DDE}", StringComparison.OrdinalIgnoreCase)) //ProjectKinds.vsProjectKindSolutionFolder
+            {
                 return project.GetRootFolder();
+            }
 
             if (dte.Solution != null && !string.IsNullOrEmpty(dte.Solution.FullName))
+            {
                 return Path.GetDirectoryName(dte.Solution.FullName);
+            }
 
             return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         }
@@ -86,7 +97,9 @@ namespace MadsKristensen.OpenCommandLine
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (string.IsNullOrEmpty(project.FullName))
+            {
                 return null;
+            }
 
             string fullPath;
 
@@ -109,13 +122,19 @@ namespace MadsKristensen.OpenCommandLine
             }
 
             if (string.IsNullOrEmpty(fullPath))
+            {
                 return File.Exists(project.FullName) ? Path.GetDirectoryName(project.FullName) : null;
+            }
 
             if (Directory.Exists(fullPath))
+            {
                 return fullPath;
+            }
 
             if (File.Exists(fullPath))
+            {
                 return Path.GetDirectoryName(fullPath);
+            }
 
             return null;
         }
@@ -128,7 +147,9 @@ namespace MadsKristensen.OpenCommandLine
             {
 
                 if (dte.ActiveSolutionProjects is Array activeSolutionProjects && activeSolutionProjects.Length > 0)
+                {
                     return activeSolutionProjects.GetValue(0) as Project;
+                }
             }
             catch (Exception ex)
             {
@@ -163,7 +184,9 @@ namespace MadsKristensen.OpenCommandLine
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (!(dte.ActiveWindow is Window2 window))
+            {
                 return null;
+            }
 
             if (window.Type == vsWindowType.vsWindowTypeDocument)
             {
@@ -188,14 +211,18 @@ namespace MadsKristensen.OpenCommandLine
             {
 
                 if (selItem.Object is ProjectItem item)
+                {
                     yield return item;
+                }
             }
         }
 
         public static bool IsValidFileName(string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName))
+            {
                 return false;
+            }
 
             bool isValidUri = Uri.TryCreate(fileName, UriKind.Absolute, out Uri pathUri);
 
@@ -206,7 +233,7 @@ namespace MadsKristensen.OpenCommandLine
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            return dte.Solution.SolutionBuild.ActiveConfiguration.Name;
+            return dte.Solution?.SolutionBuild?.ActiveConfiguration?.Name;
         }
 
         public static string GetSolutionConfigurationPlatformName(DTE2 dte)

@@ -114,6 +114,8 @@ namespace MadsKristensen.OpenCommandLine
 
         private void OpenCustom(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var options = GetDialogPage(typeof(Options)) as Options;
             string folder = VsHelpers.GetFolderPath(options, _dte);
             string arguments = (options.Arguments ?? string.Empty).Replace("%folder%", folder);
@@ -129,6 +131,8 @@ namespace MadsKristensen.OpenCommandLine
 
         private void OpenCmd(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             string installDir = VsHelpers.GetInstallDirectory();
             string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
 
@@ -137,11 +141,15 @@ namespace MadsKristensen.OpenCommandLine
 
         private void OpenPowershell(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             SetupProcess("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
         }
 
         private void SetupProcess(string command, string arguments)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var options = GetDialogPage(typeof(Options)) as Options;
             string folder = VsHelpers.GetFolderPath(options, _dte);
 
