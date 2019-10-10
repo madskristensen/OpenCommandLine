@@ -76,7 +76,18 @@ namespace MadsKristensen.OpenCommandLine
             }
             else
             {
-                StartProcess(folder, "cmd.exe", "/k \"" + Path.GetFileName(path) + "\"");
+                var options = GetDialogPage(typeof(Options)) as Options;
+                string arguments = (options.Arguments ?? string.Empty).Replace("%folder%", folder);
+
+                string confName = VsHelpers.GetSolutionConfigurationName(_dte);
+                arguments = arguments.Replace("%configuration%", confName);
+
+                string confPlatform = VsHelpers.GetSolutionConfigurationPlatformName(_dte);
+                arguments = arguments.Replace("%platform%", confPlatform);
+
+                arguments = arguments.Replace("%file%", Path.GetFileName(path));
+
+                StartProcess(folder, options.Command, arguments);
             }
         }
 
@@ -101,6 +112,8 @@ namespace MadsKristensen.OpenCommandLine
 
             string confPlatform = VsHelpers.GetSolutionConfigurationPlatformName(_dte);
             arguments = arguments.Replace("%platform%", confPlatform);
+
+            arguments = arguments.Replace("%file%", string.Empty);
 
             StartProcess(folder, options.Command, arguments);
         }
