@@ -12,7 +12,7 @@
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[15.0,17.0)" />
-    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[15.0,17.0)">
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[17.0,18.0)">
       <ProductArchitecture>amd64</ProductArchitecture>
     </InstallationTarget>
   </Installation>
