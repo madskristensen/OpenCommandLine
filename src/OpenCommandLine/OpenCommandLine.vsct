@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <Extern href="stdidcmd.h"/>
@@ -9,6 +9,14 @@
     <Menus>
       <Menu guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_FOLDER_EXPLORE" />
+        <Strings>
+          <ButtonText>Open Command Line</ButtonText>
+        </Strings>
+      </Menu>
+
+      <!-- Workspace (Open Folder) flyout menu -->
+      <Menu guid="guidOpenCommandLineCmdSet" id="WorkspaceFlyoutMenu" priority="0x0200" type="Menu">
+        <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceMenuGroup" />
         <Strings>
           <ButtonText>Open Command Line</ButtonText>
         </Strings>
@@ -27,6 +35,20 @@
       </Group>
       <Group guid="guidOpenCommandLineCmdSet" id="OptionsMenuGroup" priority="0x0300">
         <Parent guid="guidOpenCommandLineCmdSet" id="FlyoutMenu"/>
+      </Group>
+
+      <!-- Workspace (Open Folder) groups -->
+      <Group guid="guidOpenCommandLineCmdSet" id="WorkspaceMenuGroup" priority="0x0500">
+        <Parent guid="guidWorkspaceExplorerToolWindowPackageCmdSet" id="idmWSE_ContextMenu"/>
+      </Group>
+      <Group guid="guidOpenCommandLineCmdSet" id="WorkspaceCustomMenuGroup" priority="0x0100">
+        <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceFlyoutMenu"/>
+      </Group>
+      <Group guid="guidOpenCommandLineCmdSet" id="WorkspaceDefaultMenuGroup" priority="0x0200">
+        <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceFlyoutMenu"/>
+      </Group>
+      <Group guid="guidOpenCommandLineCmdSet" id="WorkspaceOptionsMenuGroup" priority="0x0300">
+        <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceFlyoutMenu"/>
       </Group>
     </Groups>
 
@@ -95,6 +117,20 @@
     <CommandPlacement guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
       <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_OPEN"/>
     </CommandPlacement>
+
+    <!-- Place buttons in Workspace flyout menu -->
+    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="cmdidOpenCommandLine" priority="0x0100">
+      <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceCustomMenuGroup"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" priority="0x0100">
+      <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceDefaultMenuGroup"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="cmdidOpenPowershell" priority="0x0200">
+      <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceDefaultMenuGroup"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="cmdidOpenOptions" priority="0x0200">
+      <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceOptionsMenuGroup"/>
+    </CommandPlacement>
   </CommandPlacements>
 
   <VisibilityConstraints>
@@ -118,12 +154,24 @@
       <IDSymbol name="cmdidOpenPowershell" value="0x0300" />
       <IDSymbol name="cmdidOpenOptions" value="0x0400" />
       <IDSymbol name="cmdExecuteCmd" value="0x0500" />
+
+      <!-- Workspace (Open Folder) symbols -->
+      <IDSymbol name="WorkspaceFlyoutMenu" value="0x2000" />
+      <IDSymbol name="WorkspaceMenuGroup" value="0x2010" />
+      <IDSymbol name="WorkspaceCustomMenuGroup" value="0x2020" />
+      <IDSymbol name="WorkspaceDefaultMenuGroup" value="0x2030" />
+      <IDSymbol name="WorkspaceOptionsMenuGroup" value="0x2040" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{bc10dceb-1833-4dac-bc42-286a81241664}" >
       <IDSymbol name="defaulted" value="1" />
       <IDSymbol name="powershell" value="2" />
       <IDSymbol name="cmd" value="3" />
+    </GuidSymbol>
+
+    <!-- Workspace Explorer (Open Folder) GUIDs -->
+    <GuidSymbol name="guidWorkspaceExplorerToolWindowPackageCmdSet" value="{cfb400f1-5c60-4f3c-856e-180d28def0b7}">
+      <IDSymbol name="idmWSE_ContextMenu" value="0x0002"/>
     </GuidSymbol>
   </Symbols>
 

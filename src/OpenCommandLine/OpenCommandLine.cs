@@ -24,6 +24,9 @@ namespace MadsKristensen.OpenCommandLine
 
         public const string guidImagesString = "bc10dceb-1833-4dac-bc42-286a81241664";
         public static Guid guidImages = new Guid(guidImagesString);
+
+        public const string guidWorkspaceExplorerToolWindowPackageCmdSetString = "cfb400f1-5c60-4f3c-856e-180d28def0b7";
+        public static Guid guidWorkspaceExplorerToolWindowPackageCmdSet = new Guid(guidWorkspaceExplorerToolWindowPackageCmdSetString);
     }
 
     /// <summary>
@@ -41,8 +44,14 @@ namespace MadsKristensen.OpenCommandLine
         public const int cmdidOpenPowershell = 0x0300;
         public const int cmdidOpenOptions = 0x0400;
         public const int cmdExecuteCmd = 0x0500;
+        public const int WorkspaceFlyoutMenu = 0x2000;
+        public const int WorkspaceMenuGroup = 0x2010;
+        public const int WorkspaceCustomMenuGroup = 0x2020;
+        public const int WorkspaceDefaultMenuGroup = 0x2030;
+        public const int WorkspaceOptionsMenuGroup = 0x2040;
         public const int defaulted = 0x0001;
         public const int powershell = 0x0002;
         public const int cmd = 0x0003;
+        public const int idmWSE_ContextMenu = 0x0002;
     }
 }

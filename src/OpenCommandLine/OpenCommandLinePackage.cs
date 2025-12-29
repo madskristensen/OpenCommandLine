@@ -25,9 +25,6 @@ namespace MadsKristensen.OpenCommandLine
     {
         private static DTE2 _dte;
 
-        /// <summary>
-        /// Gets the singleton instance of the package.
-        /// </summary>
         public static OpenCommandLinePackage Instance { get; private set; }
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
@@ -58,11 +55,14 @@ namespace MadsKristensen.OpenCommandLine
             mcs.AddCommand(optionsItem);
 
             var cmdExe = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.cmdExecuteCmd);
-            var exeItem = new OleMenuCommand(ExecuteFile, cmdExe)
-            {
-                Supported = false
-            };
+            var exeItem = new OleMenuCommand(ExecuteFile, cmdExe) { Supported = false };
             mcs.AddCommand(exeItem);
+
+            // Workspace flyout menu visibility handler
+            var workspaceMenuId = new CommandID(PackageGuids.guidOpenCommandLineCmdSet, PackageIds.WorkspaceFlyoutMenu);
+            var workspaceMenuItem = new OleMenuCommand((s, e) => { }, workspaceMenuId);
+            workspaceMenuItem.BeforeQueryStatus += WorkspaceMenuBeforeQueryStatus;
+            mcs.AddCommand(workspaceMenuItem);
         }
 
         protected override void Dispose(bool disposing)
@@ -72,7 +72,6 @@ namespace MadsKristensen.OpenCommandLine
                 _dte = null;
                 Instance = null;
             }
-
             base.Dispose(disposing);
         }
 
@@ -81,32 +80,83 @@ namespace MadsKristensen.OpenCommandLine
             ThreadHelper.ThrowIfNotOnUIThread();
 
             ProjectItem item = VsHelpers.GetProjectItem(_dte);
-            if (item == null)
-            {
-                return;
-            }
+            if (item == null) return;
 
             string path = item.FileNames[1];
             string folder = Path.GetDirectoryName(path);
-
+            string fileName = Path.GetFileName(path);
             string ext = Path.GetExtension(path);
 
-            if (!string.IsNullOrEmpty(ext) && ext.ToLower() == ".ps1")
+            var options = GetDialogPage(typeof(Options)) as Options;
+            string command = options?.Command;
+            string baseArgs = options?.Arguments ?? string.Empty;
+
+            baseArgs = baseArgs.Replace("%folder%", folder);
+            string confName = VsHelpers.GetSolutionConfigurationName(_dte);
+            baseArgs = baseArgs.Replace("%configuration%", confName ?? "");
+            string confPlatform = VsHelpers.GetSolutionConfigurationPlatformName(_dte);
+            baseArgs = baseArgs.Replace("%platform%", confPlatform ?? "");
+
+            string execArgs;
+            if (IsWindowsTerminal(command))
             {
-                CommandLineLauncher.StartProcess(folder, "powershell.exe", "-ExecutionPolicy Bypass -NoExit -File \"" + Path.GetFileName(path) + "\"");
+                if (!string.IsNullOrEmpty(ext) && ext.Equals(".ps1", StringComparison.OrdinalIgnoreCase))
+                    execArgs = $"{baseArgs} powershell.exe -ExecutionPolicy Bypass -NoExit -File \"{fileName}\"".Trim();
+                else
+                    execArgs = $"{baseArgs} cmd.exe /k \"{fileName}\"".Trim();
+            }
+            else if (IsPowerShell(command))
+            {
+                execArgs = $"-ExecutionPolicy Bypass -NoExit -Command \"& '.\\{fileName}'\"";
+            }
+            else if (string.IsNullOrEmpty(command) || command.IndexOf("cmd", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                execArgs = $"/k \"{fileName}\"";
+                command = "cmd.exe";
             }
             else
             {
-                CommandLineLauncher.StartProcess(folder, "cmd.exe", "/k \"" + Path.GetFileName(path) + "\"");
+                if (!string.IsNullOrEmpty(ext) && ext.Equals(".ps1", StringComparison.OrdinalIgnoreCase))
+                {
+                    CommandLineLauncher.StartProcess(folder, "powershell.exe", $"-ExecutionPolicy Bypass -NoExit -File \"{fileName}\"");
+                    return;
+                }
+                else
+                {
+                    CommandLineLauncher.StartProcess(folder, "cmd.exe", $"/k \"{fileName}\"");
+                    return;
+                }
             }
+
+            CommandLineLauncher.StartProcess(folder, command, execArgs);
+        }
+
+        private static bool IsWindowsTerminal(string command)
+        {
+            if (string.IsNullOrEmpty(command)) return false;
+            return command.IndexOf("wt", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private static bool IsPowerShell(string command)
+        {
+            if (string.IsNullOrEmpty(command)) return false;
+            return command.IndexOf("powershell", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   command.IndexOf("pwsh", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private void BeforeQueryStatus(object sender, EventArgs e)
         {
             var button = (OleMenuCommand)sender;
             var options = GetDialogPage(typeof(Options)) as Options;
-
             button.Text = options.FriendlyName;
+        }
+
+        private void WorkspaceMenuBeforeQueryStatus(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var menu = (OleMenuCommand)sender;
+            string selectedPath = VsHelpers.GetSelectedItemPath();
+            menu.Visible = string.IsNullOrEmpty(selectedPath) || !File.Exists(selectedPath);
         }
 
         private void OpenCustom(object sender, EventArgs e)
@@ -129,27 +179,22 @@ namespace MadsKristensen.OpenCommandLine
         private void OpenCmd(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-
             string installDir = VsHelpers.GetInstallDirectory();
             string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
-
             SetupProcess("cmd.exe", "/k \"" + devPromptFile + "\"");
         }
 
         private void OpenPowershell(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-
             SetupProcess("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
         }
 
         private void SetupProcess(string command, string arguments)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-
             var options = GetDialogPage(typeof(Options)) as Options;
             string folder = VsHelpers.GetFolderPath(options, _dte);
-
             CommandLineLauncher.StartProcess(folder, command, arguments);
         }
     }
