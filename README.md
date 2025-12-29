@@ -1,44 +1,72 @@
-## Open Command Line
-### A Visual Studio extension
+# Open Command Line
 
-[![Build status](https://ci.appveyor.com/api/projects/status/1jah71aylecjbkeh?svg=true)](https://ci.appveyor.com/project/madskristensen/opencommandline)
+[![Build](https://github.com/madskristensen/OpenCommandLine/actions/workflows/build.yaml/badge.svg)](https://github.com/madskristensen/OpenCommandLine/actions/workflows/build.yaml)
 
-Download from the
-[Visual Studio Gallery](https://visualstudiogallery.msdn.microsoft.com/4e84e2cf-2d6b-472a-b1e2-b84932511379)
-or get the
-[nightly build](http://vsixgallery.com/extension/f4ab1e64-5d35-4f06-bad9-bf414f4b3bbb/)
+Download from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.OpenCommandLine)
+or get the [CI build](https://www.vsixgallery.com/extension/f4ab1e64-5d35-4f06-bad9-bf414f4b3bbb/)
 
-## Supported consoles
+Opens a command line at the root of the project or solution. Supports all popular consoles including CMD, PowerShell, Windows Terminal, Git Bash, and many more. Also provides syntax highlighting, IntelliSense, and execution of `.cmd`, `.bat`, and `.ps1` files.
 
-The Open Command Line extension supports all types of consoles like cmd, PowerShell, Windows Terminal, Bash and more. You can easily configure which to use by setting the paths and arguments
-in the Options.
+## Features
 
-![Open Command Line](screenshots/options.png)
+### Open Command Line from Context Menu
 
-### How it works
+Right-click on any project, solution, folder, or file in Solution Explorer to open a command line at that location.
 
-This extension adds a new command to the project context menu that will open
-a command prompt on the project's path. If the solution node is selection in Solution
-Explorer, then a console will open at the root of the .sln file.
+![Context Menu](screenshots/context-menu.png)
 
-![Open Command Line](screenshots/context-menu.png)
+### Keyboard Shortcuts
 
-You can access the command by hitting **ALT+Space** as well.
+| Shortcut | Command |
+|----------|---------|
+| `Alt+Space` | Open default command line |
+| `Alt+Shift+,` | Open Developer Command Prompt |
+| `Alt+Shift+.` | Open PowerShell |
+| `Alt+Shift+5` | Execute current batch/script file |
 
-You may change this shortcut in the Options Window under Environment -> Keyboard
+You can customize these shortcuts in **Tools → Options → Environment → Keyboard**. Search for commands starting with `ProjectAndSolutionContextMenus.Project.OpenCommandLine`.
 
-Look for the command ProjectAndSolutionContextMenus.Project.OpenCommandLine.Default
+### Built-in Presets
 
-### Execute batch file
+The extension comes with presets for popular command line tools:
 
-You can easily execute any .cmd or .bat file. For files in your solution,
-a context-menu button shows up.
+- **cmd** - Windows Command Prompt
+- **Developer Command Prompt** - VS Developer Command Prompt with build tools in PATH
+- **PowerShell** - Windows PowerShell
+- **PowerShell Core** - Cross-platform PowerShell (pwsh.exe)
+- **PowerShell ISE** - PowerShell Integrated Scripting Environment
+- **Windows Terminal** - Modern Windows Terminal
+- **Git Bash** - Git for Windows Bash shell
+- **posh-git** - PowerShell with Git integration
+- **cmder** - Portable console emulator
+- **ConEmu** - Windows console emulator
+- **Babun** - Cygwin-based shell
+- **Custom** - Configure your own command and arguments
 
-![Execute batch file](screenshots/execute-context-menu.png)
+### Configurable Options
 
-Alternatively, the keyboard shortcut `Shift+Alt+5` can be used when
-editing a batch file. This makes it really easy and fast to execute
-any batch file - even ones that are not part of your project.
+Open **Tools → Options → Environment → Command Line** to configure:
+
+![Options](screenshots/options.png)
+
+- **Select preset** - Choose from built-in presets or create a custom configuration
+- **Friendly name** - Display name shown in the context menu
+- **Command** - Path to the executable
+- **Command arguments** - Arguments passed to the command
+  - `%folder%` - Current folder path
+  - `%configuration%` - Active build configuration (Debug/Release)
+  - `%platform%` - Active build platform (x86/x64/AnyCPU)
+- **Always open at solution level** - Always open at the solution root regardless of selection
+- **Open files at project level** - Open at project root when a document is active
+
+### Execute Script Files
+
+Execute `.cmd`, `.bat`, and `.ps1` files directly from the context menu or with `Alt+Shift+5`.
+
+![Execute Script](screenshots/execute-context-menu.png)
+
+PowerShell scripts run with `-ExecutionPolicy Bypass` for convenience.
 
 ## License
+
 [Apache 2.0](LICENSE)
