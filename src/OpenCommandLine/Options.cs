@@ -145,6 +145,18 @@ namespace MadsKristensen.OpenCommandLine
         [DefaultValue(false)]
         public bool OpenProjectLevel { get; set; }
 
+        [Category("Settings")]
+        [DisplayName("Open at Git repository root")]
+        [Description("Always open command prompt at the Git repository root folder.")]
+        [DefaultValue(false)]
+        public bool OpenGitRepoLevel { get; set; }
+
+        [Category("Settings")]
+        [DisplayName("Run as Administrator")]
+        [Description("Open the command prompt with elevated (Administrator) privileges.")]
+        [DefaultValue(false)]
+        public bool RunAsAdministrator { get; set; }
+
         public override void LoadSettingsFromStorage()
         {
             ThreadHelper.ThrowIfNotOnUIThread();

@@ -1,5 +1,5 @@
 [marketplace]: https://marketplace.visualstudio.com/items?itemName=MadsKristensen.OpenCommandLine64
-[vsixgallery]: https://www.vsixgallery.com/extension/f4ab1e64-5d35-4f06-bad9-bf414f4b3bbb/
+[vsixgallery]: https://www.vsixgallery.com/extension/a7b534ac-949b-40f9-a795-deb511823941
 [repo]: https://github.com/madskristensen/OpenCommandLine
 
 # Open Command Line
@@ -65,6 +65,8 @@ Open **Tools → Options → Environment → Command Line** to configure:
   - `%platform%` - Active build platform (x86/x64/AnyCPU)
 - **Always open at solution level** - Always open at the solution root regardless of selection
 - **Open files at project level** - Open at project root when a document is active
+- **Open at Git repository root** - Always open at the Git repository root folder
+- **Run as Administrator** - Launch terminals with elevated (Administrator) privileges
 
 ### Execute Script Files
 

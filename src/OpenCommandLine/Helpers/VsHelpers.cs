@@ -23,6 +23,27 @@ namespace MadsKristensen.OpenCommandLine
                 return Path.GetDirectoryName(dte.Solution.FullName);
             }
 
+            // If option to open at Git repository root is chosen, find the repo root
+            if (options.OpenGitRepoLevel)
+            {
+                string basePath = GetBaseFolderPath(options, dte);
+                string gitRoot = GetGitRepositoryRoot(basePath);
+                if (!string.IsNullOrEmpty(gitRoot))
+                {
+                    return gitRoot;
+                }
+            }
+
+            return GetBaseFolderPath(options, dte);
+        }
+
+        /// <summary>
+        /// Gets the base folder path without applying Git repository root logic.
+        /// </summary>
+        private static string GetBaseFolderPath(Options options, DTE2 dte)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             // Always try to get the selected folder path first (works for both solution and Open Folder mode)
             // This handles context menu invocations where user right-clicked on a specific folder
             string selectedPath = GetSelectedItemPath();
@@ -430,6 +451,49 @@ namespace MadsKristensen.OpenCommandLine
             arguments = arguments.Replace("%platform%", GetSolutionConfigurationPlatformName(dte) ?? string.Empty);
 
             return arguments;
+        }
+
+        /// <summary>
+        /// Finds the Git repository root by walking up the directory tree looking for a .git folder.
+        /// </summary>
+        public static string GetGitRepositoryRoot(string startPath)
+        {
+            if (string.IsNullOrEmpty(startPath))
+                return null;
+
+            try
+            {
+                string currentPath = startPath;
+
+                // If startPath is a file, start from its directory
+                if (File.Exists(currentPath))
+                {
+                    currentPath = Path.GetDirectoryName(currentPath);
+                }
+
+                while (!string.IsNullOrEmpty(currentPath))
+                {
+                    string gitPath = Path.Combine(currentPath, ".git");
+
+                    // .git can be a directory (normal repo) or a file (worktree/submodule)
+                    if (Directory.Exists(gitPath) || File.Exists(gitPath))
+                    {
+                        return currentPath;
+                    }
+
+                    DirectoryInfo parent = Directory.GetParent(currentPath);
+                    if (parent == null)
+                        break;
+
+                    currentPath = parent.FullName;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex.Message);
+            }
+
+            return null;
         }
     }
 }

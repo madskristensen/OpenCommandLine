@@ -11,11 +11,11 @@
         <Tags>Solution Explorer, cmd, powershell, execute</Tags>
     </Metadata>
     <Installation InstalledByMsi="false">
-        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[17.0,)">
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,)">
             <ProductArchitecture>amd64</ProductArchitecture>
         </InstallationTarget>
-        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[17.0,)">
-            <ProductArchitecture>amd64</ProductArchitecture>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,)">
+            <ProductArchitecture>arm64</ProductArchitecture>
         </InstallationTarget>
     </Installation>
     <Prerequisites>

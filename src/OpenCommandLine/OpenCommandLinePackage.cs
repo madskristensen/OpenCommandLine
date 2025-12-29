@@ -90,6 +90,7 @@ namespace MadsKristensen.OpenCommandLine
             var options = GetDialogPage(typeof(Options)) as Options;
             string command = options?.Command;
             string baseArgs = VsHelpers.ReplaceArgumentPlaceholders(options?.Arguments, folder, _dte);
+            bool runAsAdmin = options?.RunAsAdministrator ?? false;
 
             string execArgs;
             if (CommandLineLauncher.IsWindowsTerminal(command))
@@ -114,22 +115,22 @@ namespace MadsKristensen.OpenCommandLine
             {
                 if (!string.IsNullOrEmpty(ext) && ext.Equals(".ps1", StringComparison.OrdinalIgnoreCase))
                 {
-                    CommandLineLauncher.StartProcess(folder, "powershell.exe", $"-ExecutionPolicy Bypass -NoExit -File \"{fileName}\"");
+                    CommandLineLauncher.StartProcess(folder, "powershell.exe", $"-ExecutionPolicy Bypass -NoExit -File \"{fileName}\"", runAsAdmin);
                     return;
                 }
                 else if (!string.IsNullOrEmpty(ext) && ext.Equals(".nu", StringComparison.OrdinalIgnoreCase))
                 {
-                    CommandLineLauncher.StartProcess(folder, "nu.exe", $"\"{fileName}\"");
+                    CommandLineLauncher.StartProcess(folder, "nu.exe", $"\"{fileName}\"", runAsAdmin);
                     return;
                 }
                 else
                 {
-                    CommandLineLauncher.StartProcess(folder, "cmd.exe", $"/k \"{fileName}\"");
+                    CommandLineLauncher.StartProcess(folder, "cmd.exe", $"/k \"{fileName}\"", runAsAdmin);
                     return;
                 }
             }
 
-            CommandLineLauncher.StartProcess(folder, command, execArgs);
+            CommandLineLauncher.StartProcess(folder, command, execArgs, runAsAdmin);
         }
 
         private void BeforeQueryStatus(object sender, EventArgs e)
@@ -155,7 +156,7 @@ namespace MadsKristensen.OpenCommandLine
             string folder = VsHelpers.GetFolderPath(options, _dte);
             string arguments = VsHelpers.ReplaceArgumentPlaceholders(options.Arguments, folder, _dte);
 
-            CommandLineLauncher.StartProcess(folder, options.Command, arguments);
+            CommandLineLauncher.StartProcess(folder, options.Command, arguments, options.RunAsAdministrator);
         }
 
         private void OpenCmd(object sender, EventArgs e)
@@ -177,7 +178,7 @@ namespace MadsKristensen.OpenCommandLine
             ThreadHelper.ThrowIfNotOnUIThread();
             var options = GetDialogPage(typeof(Options)) as Options;
             string folder = VsHelpers.GetFolderPath(options, _dte);
-            CommandLineLauncher.StartProcess(folder, command, arguments);
+            CommandLineLauncher.StartProcess(folder, command, arguments, options.RunAsAdministrator);
         }
     }
 }

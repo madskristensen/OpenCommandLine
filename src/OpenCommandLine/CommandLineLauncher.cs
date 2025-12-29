@@ -92,7 +92,7 @@ namespace MadsKristensen.OpenCommandLine
         /// <summary>
         /// Starts a command line process in the specified working directory.
         /// </summary>
-        public static void StartProcess(string workingDirectory, string command, string arguments)
+        public static void StartProcess(string workingDirectory, string command, string arguments, bool runAsAdministrator = false)
         {
             try
             {
@@ -101,8 +101,10 @@ namespace MadsKristensen.OpenCommandLine
                 arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
 
                 // Windows Terminal (wt.exe) is a modern Windows app that requires shell execution
-                bool useShellExecute = IsWindowsTerminal(command) &&
-                                       !command.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
+                // Running as administrator also requires shell execution with the "runas" verb
+                bool useShellExecute = runAsAdministrator || 
+                                       (IsWindowsTerminal(command) &&
+                                        !command.EndsWith(".exe", StringComparison.OrdinalIgnoreCase));
 
                 var start = new ProcessStartInfo(command, arguments)
                 {
@@ -110,6 +112,11 @@ namespace MadsKristensen.OpenCommandLine
                     LoadUserProfile = true,
                     UseShellExecute = useShellExecute
                 };
+
+                if (runAsAdministrator)
+                {
+                    start.Verb = "runas";
+                }
 
                 if (!useShellExecute)
                 {
