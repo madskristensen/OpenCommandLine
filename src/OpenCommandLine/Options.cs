@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,9 +8,51 @@ namespace MadsKristensen.OpenCommandLine
 {
     internal class Options : DialogPage
     {
-        public static Dictionary<string, Command> DefaultPresets = new Dictionary<string, Command>();
+        private static Dictionary<string, Command> _defaultPresets;
         private bool _isLoading, _isChanging;
         private string _preset;
+
+        public static Dictionary<string, Command> DefaultPresets
+        {
+            get
+            {
+                if (_defaultPresets == null)
+                {
+                    InitializePresets();
+                }
+                return _defaultPresets;
+            }
+        }
+
+        private static void InitializePresets()
+        {
+            _defaultPresets = new Dictionary<string, Command>();
+
+            string installDir = VsHelpers.GetInstallDirectory();
+            string devPromptFile = installDir != null 
+                ? Path.Combine(installDir, @"..\Tools\VsDevCmd.bat") 
+                : "";
+
+            _defaultPresets["cmd"] = new Command("cmd.exe");
+            _defaultPresets["Dev Cmd Prompt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\"");
+            _defaultPresets["PowerShellCore"] = new Command("pwsh.exe", "-ExecutionPolicy Bypass -NoExit");
+            _defaultPresets["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
+            _defaultPresets["PowerShell ISE"] = new Command("powershell_ise.exe");
+            _defaultPresets["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")");
+            _defaultPresets["Git Bash"] = new Command(@"C:\Program Files\Git\git-bash.exe");
+            _defaultPresets["Babun"] = new Command(@"%UserProfile%\.babun\cygwin\bin\mintty.exe", "/bin/env CHERE_INVOKING=1 /bin/zsh.exe");
+
+            string GitHubForWindowsPath = Path.Combine(Environment.GetEnvironmentVariable("LocalAppData") ?? "", "GitHub", "GitHub.appref-ms");
+            if (File.Exists(GitHubForWindowsPath))
+            {
+                _defaultPresets["GitHub Console"] = new Command(@"%LOCALAPPDATA%\GitHub\GitHub.appref-ms", "-open-shell");
+            }
+
+            _defaultPresets["cmder"] = new Command("cmder.exe", "/START \"%folder%\"");
+            _defaultPresets["ConEmu"] = new Command("ConEmu64.exe", "/cmd PowerShell.exe");
+            _defaultPresets["Windows Terminal"] = new Command("wt.exe", "-d \"%folder%\"");
+            _defaultPresets["Custom"] = new Command(string.Empty, string.Empty);
+        }
 
         [Category("Command Preset")]
         [DisplayName("Select preset")]
@@ -112,32 +154,6 @@ namespace MadsKristensen.OpenCommandLine
             if (string.IsNullOrEmpty(Preset))
             {
                 Preset = "cmd";
-            }
-
-            if (DefaultPresets.Count == 0)
-            {
-                string installDir = VsHelpers.GetInstallDirectory();
-                string devPromptFile = Path.Combine(installDir, @"..\Tools\VsDevCmd.bat");
-
-                DefaultPresets["cmd"] = new Command("cmd.exe");
-                DefaultPresets["Dev Cmd Prompt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\"");
-                DefaultPresets["PowerShellCore"] = new Command("pwsh.exe", "-ExecutionPolicy Bypass -NoExit");
-                DefaultPresets["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
-                DefaultPresets["PowerShell ISE"] = new Command("powershell_ise.exe");
-                DefaultPresets["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")");
-                DefaultPresets["Git Bash"] = new Command(@"C:\Program Files\Git\git-bash.exe");
-                DefaultPresets["Babun"] = new Command(@"%UserProfile%\.babun\cygwin\bin\mintty.exe", "/bin/env CHERE_INVOKING=1 /bin/zsh.exe");
-
-                string GitHubForWindowsPath = Path.Combine(Environment.GetEnvironmentVariable("LocalAppData"), "GitHub", "GitHub.appref-ms");
-                if (File.Exists(GitHubForWindowsPath))
-                {
-                    DefaultPresets["GitHub Console"] = new Command(@"%LOCALAPPDATA%\GitHub\GitHub.appref-ms", "-open-shell");
-                }
-
-                DefaultPresets["cmder"] = new Command("cmder.exe", "/START \"%folder%\"");
-                DefaultPresets["ConEmu"] = new Command("ConEmu64.exe", "/cmd PowerShell.exe");
-                DefaultPresets["Windows Terminal"] = new Command("wt", "-d %folder%");
-                DefaultPresets["Custom"] = new Command(string.Empty, string.Empty);
             }
 
             _isLoading = false;

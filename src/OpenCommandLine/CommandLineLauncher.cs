@@ -19,14 +19,22 @@ namespace MadsKristensen.OpenCommandLine
                 command = Environment.ExpandEnvironmentVariables(command ?? string.Empty);
                 arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
 
+                // Windows Terminal (wt.exe) is a modern Windows app that requires shell execution
+                bool useShellExecute = command.IndexOf("wt.exe", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                       command.IndexOf("wt", StringComparison.OrdinalIgnoreCase) >= 0 && 
+                                       !command.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
+
                 var start = new ProcessStartInfo(command, arguments)
                 {
                     WorkingDirectory = workingDirectory,
                     LoadUserProfile = true,
-                    UseShellExecute = false
+                    UseShellExecute = useShellExecute
                 };
 
-                ModifyPathVariable(start);
+                if (!useShellExecute)
+                {
+                    ModifyPathVariable(start);
+                }
 
                 using (Process.Start(start))
                 {
