@@ -33,7 +33,7 @@ namespace MadsKristensen.OpenCommandLine
         /// </summary>
         public static bool IsCmd(string command)
         {
-            return string.IsNullOrEmpty(command) || 
+            return string.IsNullOrEmpty(command) ||
                    command.IndexOf("cmd", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
@@ -101,7 +101,7 @@ namespace MadsKristensen.OpenCommandLine
                 arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
 
                 // Windows Terminal (wt.exe) is a modern Windows app that requires shell execution
-                bool useShellExecute = IsWindowsTerminal(command) && 
+                bool useShellExecute = IsWindowsTerminal(command) &&
                                        !command.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
 
                 var start = new ProcessStartInfo(command, arguments)

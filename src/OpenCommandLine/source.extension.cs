@@ -14,7 +14,7 @@ namespace MadsKristensen.OpenCommandLine
         public const string Language = "en-US";
         public const string Version = "2.6.999";
         public const string Author = "Mads Kristensen";
-        public const string Tags = "Solution Explorer, cmd, powershell, bash, post-git, cmder, prompt, console, conemu";
+        public const string Tags = "Solution Explorer, cmd, powershell, execute";
         public const bool IsPreview = false;
     }
 }

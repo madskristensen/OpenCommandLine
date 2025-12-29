@@ -1,178 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <Extern href="stdidcmd.h"/>
-  <Extern href="vsshlids.h"/>
+	<Extern href="stdidcmd.h"/>
+	<Extern href="vsshlids.h"/>
+	<Include href="KnownImageIds.vsct"/>
 
-  <Commands package="guidOpenCommandLinePkg">
+	<Commands package="guidOpenCommandLinePkg">
 
-    <Menus>
-      <Menu guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_FOLDER_EXPLORE" />
-        <Strings>
-          <ButtonText>Open Command Line</ButtonText>
-        </Strings>
-      </Menu>
+		<Menus>
+			<Menu guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
+				<Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_FOLDER_EXPLORE" />
+				<Strings>
+					<ButtonText>Open Command Line</ButtonText>
+					<CanonicalName>.OpenCommandLine.OpenCommandLine</CanonicalName>
+				</Strings>
+			</Menu>
 
-      <!-- Workspace (Open Folder) flyout menu -->
-      <Menu guid="guidOpenCommandLineCmdSet" id="WorkspaceFlyoutMenu" priority="0x0200" type="Menu">
-        <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceMenuGroup" />
-        <Strings>
-          <ButtonText>Open Command Line</ButtonText>
-        </Strings>
-      </Menu>
-    </Menus>
+			<!-- Workspace (Open Folder) flyout menu -->
+			<Menu guid="guidOpenCommandLineCmdSet" id="WorkspaceFlyoutMenu" priority="0x0200" type="Menu">
+				<Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceMenuGroup" />
+				<Strings>
+					<ButtonText>Open Command Line</ButtonText>
+					<CanonicalName>.OpenCommandLine.OpenCommandLine</CanonicalName>
+				</Strings>
+			</Menu>
+		</Menus>
 
-    <Groups>
-      <Group guid="guidOpenCommandLineCmdSet" id="ContextMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
-      </Group>
-      <Group guid="guidOpenCommandLineCmdSet" id="CustomMenuGroup" priority="0x0100">
-        <Parent guid="guidOpenCommandLineCmdSet" id="FlyoutMenu"/>
-      </Group>
-      <Group guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" priority="0x0200">
-        <Parent guid="guidOpenCommandLineCmdSet" id="FlyoutMenu"/>
-      </Group>
-      <Group guid="guidOpenCommandLineCmdSet" id="OptionsMenuGroup" priority="0x0300">
-        <Parent guid="guidOpenCommandLineCmdSet" id="FlyoutMenu"/>
-      </Group>
+		<Groups>
+			<Group guid="guidOpenCommandLineCmdSet" id="ContextMenuGroup" priority="0x0600">
+				<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
+			</Group>
+			<Group guid="guidOpenCommandLineCmdSet" id="CustomMenuGroup" priority="0x0100">
+				<Parent guid="guidOpenCommandLineCmdSet" id="FlyoutMenu"/>
+			</Group>
+			<Group guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" priority="0x0200">
+				<Parent guid="guidOpenCommandLineCmdSet" id="FlyoutMenu"/>
+			</Group>
+			<Group guid="guidOpenCommandLineCmdSet" id="OptionsMenuGroup" priority="0x0300">
+				<Parent guid="guidOpenCommandLineCmdSet" id="FlyoutMenu"/>
+			</Group>
 
-      <!-- Workspace (Open Folder) groups -->
-      <Group guid="guidOpenCommandLineCmdSet" id="WorkspaceMenuGroup" priority="0x0500">
-        <Parent guid="guidWorkspaceExplorerToolWindowPackageCmdSet" id="idmWSE_ContextMenu"/>
-      </Group>
-      <Group guid="guidOpenCommandLineCmdSet" id="WorkspaceCustomMenuGroup" priority="0x0100">
-        <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceFlyoutMenu"/>
-      </Group>
-      <Group guid="guidOpenCommandLineCmdSet" id="WorkspaceDefaultMenuGroup" priority="0x0200">
-        <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceFlyoutMenu"/>
-      </Group>
-      <Group guid="guidOpenCommandLineCmdSet" id="WorkspaceOptionsMenuGroup" priority="0x0300">
-        <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceFlyoutMenu"/>
-      </Group>
-    </Groups>
+			<!-- Workspace (Open Folder) groups -->
+			<Group guid="guidOpenCommandLineCmdSet" id="WorkspaceMenuGroup" priority="0x0500">
+				<Parent guid="guidWorkspaceExplorerToolWindowPackageCmdSet" id="idmWSE_ContextMenu"/>
+			</Group>
+			<Group guid="guidOpenCommandLineCmdSet" id="WorkspaceCustomMenuGroup" priority="0x0100">
+				<Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceFlyoutMenu"/>
+			</Group>
+			<Group guid="guidOpenCommandLineCmdSet" id="WorkspaceDefaultMenuGroup" priority="0x0200">
+				<Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceFlyoutMenu"/>
+			</Group>
+			<Group guid="guidOpenCommandLineCmdSet" id="WorkspaceOptionsMenuGroup" priority="0x0300">
+				<Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceFlyoutMenu"/>
+			</Group>
+		</Groups>
 
-    <Buttons>
-      <Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenCommandLine" priority="0x0100" type="Button">
-        <Parent guid="guidOpenCommandLineCmdSet" id="CustomMenuGroup" />
-        <Icon guid="guidImages" id="defaulted" />
-        <CommandFlag>TextChanges</CommandFlag>
-        <Strings>
-          <CommandName>Open Command Line</CommandName>
-          <ButtonText>Default</ButtonText>
-        </Strings>
-      </Button>
-      <Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" priority="0x0100" type="Button">
-        <Parent guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" />
-        <Icon guid="guidImages" id="cmd" />
-        <Strings>
-          <CommandName>Open Developer Command Prompt</CommandName>
-          <ButtonText>Developer Command Prompt</ButtonText>
-        </Strings>
-      </Button>
-      <Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenPowershell" priority="0x0200" type="Button">
-        <Parent guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" />
-        <Icon guid="guidImages" id="powershell" />
-        <Strings>
-          <CommandName>Open PowerShell</CommandName>
-          <ButtonText>PowerShell</ButtonText>
-        </Strings>
-      </Button>
-      <Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenOptions" priority="0x0200" type="Button">
-        <Parent guid="guidOpenCommandLineCmdSet" id="OptionsMenuGroup" />
-        <Strings>
-          <CommandName>Open Command Line Options</CommandName>
-          <ButtonText>Settings...</ButtonText>
-        </Strings>
-      </Button>
-      <Button guid="guidOpenCommandLineCmdSet" id="cmdExecuteCmd" priority="0x0700" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_OPEN"/>
-        <Icon guid="guidImages" id="cmd" />
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <Strings>
-          <ButtonText>Execute File</ButtonText>
-        </Strings>
-      </Button>
-    </Buttons>
+		<Buttons>
+			<Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenCommandLine" priority="0x0100" type="Button">
+				<Parent guid="guidOpenCommandLineCmdSet" id="CustomMenuGroup" />
+				<Icon guid="ImageCatalogGuid" id="Console" />
+				<CommandFlag>IconIsMoniker</CommandFlag>
+				<CommandFlag>TextChanges</CommandFlag>
+				<Strings>
+					<CommandName>Open Command Line</CommandName>
+					<ButtonText>Default</ButtonText>
+					<CanonicalName>.OpenCommandLine.OpenDefault</CanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" priority="0x0100" type="Button">
+				<Parent guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" />
+				<Icon guid="guidImages" id="cmd" />
+				<Strings>
+					<CommandName>Open Developer Command Prompt</CommandName>
+					<ButtonText>Developer Command Prompt</ButtonText>
+					<CanonicalName>.OpenCommandLine.DeveloperCommandPrompt</CanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenPowershell" priority="0x0200" type="Button">
+				<Parent guid="guidOpenCommandLineCmdSet" id="DefaultMenuGroup" />
+				<Icon guid="guidImages" id="powershell" />
+				<Strings>
+					<CommandName>Open PowerShell</CommandName>
+					<ButtonText>PowerShell</ButtonText>
+					<CanonicalName>.OpenCommandLine.OpenPowerShell</CanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenOptions" priority="0x0200" type="Button">
+				<Parent guid="guidOpenCommandLineCmdSet" id="OptionsMenuGroup" />
+				<Strings>
+					<CommandName>Open Command Line Options</CommandName>
+					<ButtonText>Settings...</ButtonText>
+					<CanonicalName>.OpenCommandLine.Settings</CanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="guidOpenCommandLineCmdSet" id="cmdExecuteCmd" priority="0x0700" type="Button">
+				<Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_OPEN"/>
+				<Icon guid="ImageCatalogGuid" id="Run" />
+				<CommandFlag>IconIsMoniker</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Execute File</ButtonText>
+					<CanonicalName>.OpenCommandLine.ExecuteFile</CanonicalName>
+				</Strings>
+			</Button>
+		</Buttons>
 
-    <Bitmaps>
-      <Bitmap guid="guidImages" href="Resources\buttons.png" usedList="defaulted, powershell, cmd"/>
-    </Bitmaps>
-  </Commands>
+		<Bitmaps>
+			<Bitmap guid="guidImages" href="Resources\buttons.png" usedList="defaulted, powershell, cmd"/>
+		</Bitmaps>
+	</Commands>
 
-  <KeyBindings>
-    <KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenCommandLine" mod1="Alt" key1="VK_SPACE" editor="guidVSStd97"/>
-    <KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdExecuteCmd" mod1="Alt Shift" key1="5" editor="guidVSStd97"/>
-    <KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" mod1="Alt Shift" key1="VK_OEM_COMMA" editor="guidVSStd97"/>
-    <KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenPowershell" mod1="Alt Shift" key1="VK_OEM_PERIOD" editor="guidVSStd97"/>
-  </KeyBindings>
+	<KeyBindings>
+		<KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenCommandLine" mod1="Alt" key1="VK_SPACE" editor="guidVSStd97"/>
+		<KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdExecuteCmd" mod1="Alt Shift" key1="5" editor="guidVSStd97"/>
+		<KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" mod1="Alt Shift" key1="VK_OEM_COMMA" editor="guidVSStd97"/>
+		<KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenPowershell" mod1="Alt Shift" key1="VK_OEM_PERIOD" editor="guidVSStd97"/>
+	</KeyBindings>
 
-  <CommandPlacements>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
-      <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_EXPLORE"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
-      <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_SOLUTION_EXPLORE"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
-      <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_OPEN"/>
-    </CommandPlacement>
+	<CommandPlacements>
+		<CommandPlacement guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
+			<Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_EXPLORE"/>
+		</CommandPlacement>
+		<CommandPlacement guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
+			<Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_SOLUTION_EXPLORE"/>
+		</CommandPlacement>
+		<CommandPlacement guid="guidOpenCommandLineCmdSet" id="FlyoutMenu" priority="0x0600">
+			<Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_OPEN"/>
+		</CommandPlacement>
 
-    <!-- Place buttons in Workspace flyout menu -->
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="cmdidOpenCommandLine" priority="0x0100">
-      <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceCustomMenuGroup"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" priority="0x0100">
-      <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceDefaultMenuGroup"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="cmdidOpenPowershell" priority="0x0200">
-      <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceDefaultMenuGroup"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidOpenCommandLineCmdSet" id="cmdidOpenOptions" priority="0x0200">
-      <Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceOptionsMenuGroup"/>
-    </CommandPlacement>
-  </CommandPlacements>
+		<!-- Place buttons in Workspace flyout menu -->
+		<CommandPlacement guid="guidOpenCommandLineCmdSet" id="cmdidOpenCommandLine" priority="0x0100">
+			<Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceCustomMenuGroup"/>
+		</CommandPlacement>
+		<CommandPlacement guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" priority="0x0100">
+			<Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceDefaultMenuGroup"/>
+		</CommandPlacement>
+		<CommandPlacement guid="guidOpenCommandLineCmdSet" id="cmdidOpenPowershell" priority="0x0200">
+			<Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceDefaultMenuGroup"/>
+		</CommandPlacement>
+		<CommandPlacement guid="guidOpenCommandLineCmdSet" id="cmdidOpenOptions" priority="0x0200">
+			<Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceOptionsMenuGroup"/>
+		</CommandPlacement>
+	</CommandPlacements>
 
-  <VisibilityConstraints>
-    <VisibilityItem guid="guidOpenCommandLineCmdSet" id="cmdExecuteCmd" context="guidBatFileRule" />
-  </VisibilityConstraints>
+	<VisibilityConstraints>
+		<VisibilityItem guid="guidOpenCommandLineCmdSet" id="cmdExecuteCmd" context="guidBatFileRule" />
+	</VisibilityConstraints>
 
-  <Symbols>
-    <!-- This is the package guid. -->
-    <GuidSymbol name="guidOpenCommandLinePkg" value="{f4ab1e64-5d35-4f06-bad9-bf414f4b3bbb}" />
+	<Symbols>
+		<!-- This is the package guid. -->
+		<GuidSymbol name="guidOpenCommandLinePkg" value="{f4ab1e64-5d35-4f06-bad9-bf414f4b3bbb}" />
 
-    <GuidSymbol name="guidBatFileRule" value="{a549bda6-9370-43c1-821d-967560c031fc}" />
+		<GuidSymbol name="guidBatFileRule" value="{a549bda6-9370-43c1-821d-967560c031fc}" />
 
-    <GuidSymbol name="guidOpenCommandLineCmdSet" value="{59c8a2ef-e017-4f2d-93ee-ca161749897d}">
-      <IDSymbol name="FlyoutMenu" value="0x1000" />
-      <IDSymbol name="ContextMenuGroup" value="0x1020" />
-      <IDSymbol name="CustomMenuGroup" value="0x1030" />
-      <IDSymbol name="DefaultMenuGroup" value="0x1040" />
-      <IDSymbol name="OptionsMenuGroup" value="0x10450" />
-      <IDSymbol name="cmdidOpenCommandLine" value="0x0100" />
-      <IDSymbol name="cmdidOpenCmd" value="0x0200" />
-      <IDSymbol name="cmdidOpenPowershell" value="0x0300" />
-      <IDSymbol name="cmdidOpenOptions" value="0x0400" />
-      <IDSymbol name="cmdExecuteCmd" value="0x0500" />
+		<GuidSymbol name="guidOpenCommandLineCmdSet" value="{59c8a2ef-e017-4f2d-93ee-ca161749897d}">
+			<IDSymbol name="FlyoutMenu" value="0x1000" />
+			<IDSymbol name="ContextMenuGroup" value="0x1020" />
+			<IDSymbol name="CustomMenuGroup" value="0x1030" />
+			<IDSymbol name="DefaultMenuGroup" value="0x1040" />
+			<IDSymbol name="OptionsMenuGroup" value="0x10450" />
+			<IDSymbol name="cmdidOpenCommandLine" value="0x0100" />
+			<IDSymbol name="cmdidOpenCmd" value="0x0200" />
+			<IDSymbol name="cmdidOpenPowershell" value="0x0300" />
+			<IDSymbol name="cmdidOpenOptions" value="0x0400" />
+			<IDSymbol name="cmdExecuteCmd" value="0x0500" />
 
-      <!-- Workspace (Open Folder) symbols -->
-      <IDSymbol name="WorkspaceFlyoutMenu" value="0x2000" />
-      <IDSymbol name="WorkspaceMenuGroup" value="0x2010" />
-      <IDSymbol name="WorkspaceCustomMenuGroup" value="0x2020" />
-      <IDSymbol name="WorkspaceDefaultMenuGroup" value="0x2030" />
-      <IDSymbol name="WorkspaceOptionsMenuGroup" value="0x2040" />
-    </GuidSymbol>
+			<!-- Workspace (Open Folder) symbols -->
+			<IDSymbol name="WorkspaceFlyoutMenu" value="0x2000" />
+			<IDSymbol name="WorkspaceMenuGroup" value="0x2010" />
+			<IDSymbol name="WorkspaceCustomMenuGroup" value="0x2020" />
+			<IDSymbol name="WorkspaceDefaultMenuGroup" value="0x2030" />
+			<IDSymbol name="WorkspaceOptionsMenuGroup" value="0x2040" />
+		</GuidSymbol>
 
-    <GuidSymbol name="guidImages" value="{bc10dceb-1833-4dac-bc42-286a81241664}" >
-      <IDSymbol name="defaulted" value="1" />
-      <IDSymbol name="powershell" value="2" />
-      <IDSymbol name="cmd" value="3" />
-    </GuidSymbol>
+		<GuidSymbol name="guidImages" value="{bc10dceb-1833-4dac-bc42-286a81241664}" >
+			<IDSymbol name="defaulted" value="1" />
+			<IDSymbol name="powershell" value="2" />
+			<IDSymbol name="cmd" value="3" />
+		</GuidSymbol>
 
-    <!-- Workspace Explorer (Open Folder) GUIDs -->
-    <GuidSymbol name="guidWorkspaceExplorerToolWindowPackageCmdSet" value="{cfb400f1-5c60-4f3c-856e-180d28def0b7}">
-      <IDSymbol name="idmWSE_ContextMenu" value="0x0002"/>
-    </GuidSymbol>
-  </Symbols>
+		<!-- Workspace Explorer (Open Folder) GUIDs -->
+		<GuidSymbol name="guidWorkspaceExplorerToolWindowPackageCmdSet" value="{cfb400f1-5c60-4f3c-856e-180d28def0b7}">
+			<IDSymbol name="idmWSE_ContextMenu" value="0x0002"/>
+		</GuidSymbol>
+	</Symbols>
 
 </CommandTable>
