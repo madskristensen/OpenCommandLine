@@ -25,10 +25,10 @@ Right-click on any project, solution, folder, or file in Solution Explorer to op
 
 | Shortcut | Command |
 |----------|---------|
-| `Alt+Space` | Open default command line |
+| `Ctrl+Alt+.` | Open default command line |
 | `Alt+Shift+,` | Open Developer Command Prompt |
 | `Alt+Shift+.` | Open PowerShell |
-| `Alt+Shift+5` | Execute current batch/script file |
+| `Ctrl+Shift+X` | Execute current batch/script file |
 
 You can customize these shortcuts in **Tools → Options → Environment → Keyboard**. Search for commands starting with `ProjectAndSolutionContextMenus.Project.OpenCommandLine`.
 

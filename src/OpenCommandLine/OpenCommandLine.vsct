@@ -111,8 +111,8 @@
 	</Commands>
 
 	<KeyBindings>
-		<KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenCommandLine" mod1="Alt" key1="VK_SPACE" editor="guidVSStd97"/>
-		<KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdExecuteCmd" mod1="Alt Shift" key1="5" editor="guidVSStd97"/>
+		<KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenCommandLine" mod1="Control Alt" key1="VK_OEM_PERIOD" editor="guidVSStd97"/>
+		<KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdExecuteCmd" mod1="Control Shift" key1="X" editor="guidVSStd97"/>
 		<KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" mod1="Alt Shift" key1="VK_OEM_COMMA" editor="guidVSStd97"/>
 		<KeyBinding guid="guidOpenCommandLineCmdSet" id="cmdidOpenPowershell" mod1="Alt Shift" key1="VK_OEM_PERIOD" editor="guidVSStd97"/>
 	</KeyBindings>
