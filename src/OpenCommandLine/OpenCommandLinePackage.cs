@@ -89,27 +89,21 @@ namespace MadsKristensen.OpenCommandLine
 
             var options = GetDialogPage(typeof(Options)) as Options;
             string command = options?.Command;
-            string baseArgs = options?.Arguments ?? string.Empty;
-
-            baseArgs = baseArgs.Replace("%folder%", folder);
-            string confName = VsHelpers.GetSolutionConfigurationName(_dte);
-            baseArgs = baseArgs.Replace("%configuration%", confName ?? "");
-            string confPlatform = VsHelpers.GetSolutionConfigurationPlatformName(_dte);
-            baseArgs = baseArgs.Replace("%platform%", confPlatform ?? "");
+            string baseArgs = VsHelpers.ReplaceArgumentPlaceholders(options?.Arguments, folder, _dte);
 
             string execArgs;
-            if (IsWindowsTerminal(command))
+            if (CommandLineLauncher.IsWindowsTerminal(command))
             {
                 if (!string.IsNullOrEmpty(ext) && ext.Equals(".ps1", StringComparison.OrdinalIgnoreCase))
                     execArgs = $"{baseArgs} powershell.exe -ExecutionPolicy Bypass -NoExit -File \"{fileName}\"".Trim();
                 else
                     execArgs = $"{baseArgs} cmd.exe /k \"{fileName}\"".Trim();
             }
-            else if (IsPowerShell(command))
+            else if (CommandLineLauncher.IsPowerShell(command))
             {
                 execArgs = $"-ExecutionPolicy Bypass -NoExit -Command \"& '.\\{fileName}'\"";
             }
-            else if (string.IsNullOrEmpty(command) || command.IndexOf("cmd", StringComparison.OrdinalIgnoreCase) >= 0)
+            else if (CommandLineLauncher.IsCmd(command))
             {
                 execArgs = $"/k \"{fileName}\"";
                 command = "cmd.exe";
@@ -129,19 +123,6 @@ namespace MadsKristensen.OpenCommandLine
             }
 
             CommandLineLauncher.StartProcess(folder, command, execArgs);
-        }
-
-        private static bool IsWindowsTerminal(string command)
-        {
-            if (string.IsNullOrEmpty(command)) return false;
-            return command.IndexOf("wt", StringComparison.OrdinalIgnoreCase) >= 0;
-        }
-
-        private static bool IsPowerShell(string command)
-        {
-            if (string.IsNullOrEmpty(command)) return false;
-            return command.IndexOf("powershell", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                   command.IndexOf("pwsh", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private void BeforeQueryStatus(object sender, EventArgs e)
@@ -165,13 +146,7 @@ namespace MadsKristensen.OpenCommandLine
 
             var options = GetDialogPage(typeof(Options)) as Options;
             string folder = VsHelpers.GetFolderPath(options, _dte);
-            string arguments = (options.Arguments ?? string.Empty).Replace("%folder%", folder);
-
-            string confName = VsHelpers.GetSolutionConfigurationName(_dte);
-            arguments = arguments.Replace("%configuration%", confName);
-
-            string confPlatform = VsHelpers.GetSolutionConfigurationPlatformName(_dte);
-            arguments = arguments.Replace("%platform%", confPlatform);
+            string arguments = VsHelpers.ReplaceArgumentPlaceholders(options.Arguments, folder, _dte);
 
             CommandLineLauncher.StartProcess(folder, options.Command, arguments);
         }

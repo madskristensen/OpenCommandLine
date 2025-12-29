@@ -16,6 +16,8 @@ namespace MadsKristensen.OpenCommandLine
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 if (_defaultPresets == null)
                 {
                     InitializePresets();
@@ -26,7 +28,7 @@ namespace MadsKristensen.OpenCommandLine
 
         private static void InitializePresets()
         {
-            _defaultPresets = new Dictionary<string, Command>();
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             string installDir = VsHelpers.GetInstallDirectory();
             string devPromptFile = installDir != null 
@@ -36,27 +38,30 @@ namespace MadsKristensen.OpenCommandLine
                 ? Path.Combine(installDir, @"..\Tools\Launch-VsDevShell.ps1")
                 : "";
 
-            _defaultPresets["cmd"] = new Command("cmd.exe");
-            _defaultPresets["Dev Cmd Prompt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\"");
-            _defaultPresets["Dev PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit -File \"" + launchDevShellPs1 + "\"");
-            _defaultPresets["PowerShellCore"] = new Command("pwsh.exe", "-ExecutionPolicy Bypass -NoExit");
-            _defaultPresets["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
-            _defaultPresets["PowerShell ISE"] = new Command("powershell_ise.exe");
-            _defaultPresets["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")");
-            _defaultPresets["Git Bash"] = new Command(@"C:\Program Files\Git\git-bash.exe");
-            _defaultPresets["Babun"] = new Command(@"%UserProfile%\.babun\cygwin\bin\mintty.exe", "/bin/env CHERE_INVOKING=1 /bin/zsh.exe");
+            _defaultPresets = new Dictionary<string, Command>
+            {
+                ["cmd"] = new Command("cmd.exe"),
+                ["Dev Cmd Prompt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\""),
+                ["Dev PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit -File \"" + launchDevShellPs1 + "\""),
+                ["PowerShellCore"] = new Command("pwsh.exe", "-ExecutionPolicy Bypass -NoExit"),
+                ["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit"),
+                ["PowerShell ISE"] = new Command("powershell_ise.exe"),
+                ["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")"),
+                ["Git Bash"] = new Command(@"C:\Program Files\Git\git-bash.exe"),
+                ["Babun"] = new Command(@"%UserProfile%\.babun\cygwin\bin\mintty.exe", "/bin/env CHERE_INVOKING=1 /bin/zsh.exe"),
+                ["cmder"] = new Command("cmder.exe", "/START \"%folder%\""),
+                ["ConEmu"] = new Command("ConEmu64.exe", "/cmd PowerShell.exe"),
+                ["Windows Terminal"] = new Command("wt.exe", "-d \"%folder%\""),
+                ["Custom"] = new Command(string.Empty, string.Empty)
+            };
 
             string GitHubForWindowsPath = Path.Combine(Environment.GetEnvironmentVariable("LocalAppData") ?? "", "GitHub", "GitHub.appref-ms");
             if (File.Exists(GitHubForWindowsPath))
             {
                 _defaultPresets["GitHub Console"] = new Command(@"%LOCALAPPDATA%\GitHub\GitHub.appref-ms", "-open-shell");
             }
-
-            _defaultPresets["cmder"] = new Command("cmder.exe", "/START \"%folder%\"");
-            _defaultPresets["ConEmu"] = new Command("ConEmu64.exe", "/cmd PowerShell.exe");
-            _defaultPresets["Windows Terminal"] = new Command("wt.exe", "-d \"%folder%\"");
-            _defaultPresets["Custom"] = new Command(string.Empty, string.Empty);
         }
+
 
         [Category("Command Preset")]
         [DisplayName("Select preset")]
@@ -68,9 +73,11 @@ namespace MadsKristensen.OpenCommandLine
             get => _preset;
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 _preset = value;
 
-                if (!_isLoading && DefaultPresets.ContainsKey(value))
+                if (!_isLoading && !_isChanging && DefaultPresets.ContainsKey(value))
                 {
                     _isChanging = true;
 
@@ -181,23 +188,29 @@ namespace MadsKristensen.OpenCommandLine
 
         public override bool IsValid(ITypeDescriptorContext context, object value)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return Options.DefaultPresets.ContainsKey(value.ToString());
         }
 
         public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return new StandardValuesCollection(Options.DefaultPresets.Keys);
         }
     }
 
-    internal class Command
+    /// <summary>
+    /// Represents a command preset configuration.
+    /// </summary>
+    internal readonly struct Command
     {
-        public Command(string command, string arguments = "")
+        public Command(string name, string arguments = "")
         {
-            Name = command;
+            Name = name;
             Arguments = arguments;
         }
-        public string Name { get; set; }
-        public string Arguments { get; set; }
+
+        public string Name { get; }
+        public string Arguments { get; }
     }
 }

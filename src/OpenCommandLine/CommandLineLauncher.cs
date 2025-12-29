@@ -10,6 +10,34 @@ namespace MadsKristensen.OpenCommandLine
     internal static class CommandLineLauncher
     {
         /// <summary>
+        /// Determines whether the command is Windows Terminal.
+        /// </summary>
+        public static bool IsWindowsTerminal(string command)
+        {
+            if (string.IsNullOrEmpty(command)) return false;
+            return command.IndexOf("wt", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        /// <summary>
+        /// Determines whether the command is PowerShell (including pwsh).
+        /// </summary>
+        public static bool IsPowerShell(string command)
+        {
+            if (string.IsNullOrEmpty(command)) return false;
+            return command.IndexOf("powershell", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   command.IndexOf("pwsh", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        /// <summary>
+        /// Determines whether the command is cmd.exe.
+        /// </summary>
+        public static bool IsCmd(string command)
+        {
+            return string.IsNullOrEmpty(command) || 
+                   command.IndexOf("cmd", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        /// <summary>
         /// Starts a command line process in the specified working directory.
         /// </summary>
         public static void StartProcess(string workingDirectory, string command, string arguments)
@@ -20,8 +48,7 @@ namespace MadsKristensen.OpenCommandLine
                 arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
 
                 // Windows Terminal (wt.exe) is a modern Windows app that requires shell execution
-                bool useShellExecute = command.IndexOf("wt.exe", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                       command.IndexOf("wt", StringComparison.OrdinalIgnoreCase) >= 0 && 
+                bool useShellExecute = IsWindowsTerminal(command) && 
                                        !command.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
 
                 var start = new ProcessStartInfo(command, arguments)

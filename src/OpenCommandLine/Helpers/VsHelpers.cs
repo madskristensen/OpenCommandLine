@@ -414,5 +414,22 @@ namespace MadsKristensen.OpenCommandLine
             var configuration2 = dte.Solution.SolutionBuild.ActiveConfiguration as SolutionConfiguration2;
             return configuration2?.PlatformName;
         }
+
+        /// <summary>
+        /// Replaces common argument placeholders (%folder%, %configuration%, %platform%) with their values.
+        /// </summary>
+        public static string ReplaceArgumentPlaceholders(string arguments, string folder, DTE2 dte)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (string.IsNullOrEmpty(arguments))
+                return string.Empty;
+
+            arguments = arguments.Replace("%folder%", folder ?? string.Empty);
+            arguments = arguments.Replace("%configuration%", GetSolutionConfigurationName(dte) ?? string.Empty);
+            arguments = arguments.Replace("%platform%", GetSolutionConfigurationPlatformName(dte) ?? string.Empty);
+
+            return arguments;
+        }
     }
 }

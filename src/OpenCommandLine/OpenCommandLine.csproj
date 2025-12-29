@@ -70,8 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLineLauncher.cs" />
-    <Compile Include="ContentType\CmdContentTypeDefinition.cs" />
-    <Compile Include="Guids.cs" />
     <Compile Include="OpenCommandLine.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
