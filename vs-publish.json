@@ -1,6 +1,6 @@
 {
     "$schema": "http://json.schemastore.org/vsix-publish",
-    "categories": [ "coding", "productivity" ],
+    "categories": [ "other" ],
     "private": false,
     "identity": {
         "internalName": "OpenCommandLine64",
@@ -22,6 +22,10 @@
         {
             "pathOnDisk": "screenshots/options.png",
             "targetPath": "screenshots/options.png"
+        },
+        {
+            "pathOnDisk": "screenshots/execute-context-menu.png",
+            "targetPath": "screenshots/execute-context-menu.png"
         }
     ],
     "overview": "README.md",

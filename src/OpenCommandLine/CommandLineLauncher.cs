@@ -38,6 +38,58 @@ namespace MadsKristensen.OpenCommandLine
         }
 
         /// <summary>
+        /// Resolves a command to its native 64-bit path when running in a WoW64 environment.
+        /// This ensures PowerShell and cmd.exe launch as 64-bit even from a 32-bit process.
+        /// </summary>
+        private static string ResolveToNative64BitPath(string command)
+        {
+            if (string.IsNullOrEmpty(command))
+                return command;
+
+            // Only apply redirection on 64-bit Windows when potentially running in WoW64
+            if (!Environment.Is64BitOperatingSystem)
+                return command;
+
+            // Already running as 64-bit process, no redirection needed
+            if (Environment.Is64BitProcess)
+                return command;
+
+            // Check if this is a system executable that should use native 64-bit
+            string fileName = Path.GetFileName(command);
+            if (string.IsNullOrEmpty(fileName))
+                return command;
+
+            // List of executables to redirect to native 64-bit
+            bool shouldRedirect = fileName.Equals("powershell.exe", StringComparison.OrdinalIgnoreCase) ||
+                                  fileName.Equals("powershell_ise.exe", StringComparison.OrdinalIgnoreCase) ||
+                                  fileName.Equals("pwsh.exe", StringComparison.OrdinalIgnoreCase) ||
+                                  fileName.Equals("cmd.exe", StringComparison.OrdinalIgnoreCase);
+
+            if (!shouldRedirect)
+                return command;
+
+            // If command is just the filename (e.g., "powershell.exe"), use Sysnative path
+            if (fileName.Equals(command, StringComparison.OrdinalIgnoreCase))
+            {
+                string sysnativePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Sysnative", fileName);
+                if (File.Exists(sysnativePath))
+                    return sysnativePath;
+            }
+
+            // If command contains SysWOW64, redirect to Sysnative
+            string sysWow64 = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "SysWOW64");
+            if (command.StartsWith(sysWow64, StringComparison.OrdinalIgnoreCase))
+            {
+                string sysnative = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Sysnative");
+                string redirectedPath = sysnative + command.Substring(sysWow64.Length);
+                if (File.Exists(redirectedPath))
+                    return redirectedPath;
+            }
+
+            return command;
+        }
+
+        /// <summary>
         /// Starts a command line process in the specified working directory.
         /// </summary>
         public static void StartProcess(string workingDirectory, string command, string arguments)
@@ -45,6 +97,7 @@ namespace MadsKristensen.OpenCommandLine
             try
             {
                 command = Environment.ExpandEnvironmentVariables(command ?? string.Empty);
+                command = ResolveToNative64BitPath(command);
                 arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
 
                 // Windows Terminal (wt.exe) is a modern Windows app that requires shell execution
