@@ -32,9 +32,13 @@ namespace MadsKristensen.OpenCommandLine
             string devPromptFile = installDir != null 
                 ? Path.Combine(installDir, @"..\Tools\VsDevCmd.bat") 
                 : "";
+            string launchDevShellPs1 = installDir != null
+                ? Path.Combine(installDir, @"..\Tools\Launch-VsDevShell.ps1")
+                : "";
 
             _defaultPresets["cmd"] = new Command("cmd.exe");
             _defaultPresets["Dev Cmd Prompt"] = new Command("cmd.exe", "/k \"" + devPromptFile + "\"");
+            _defaultPresets["Dev PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit -File \"" + launchDevShellPs1 + "\"");
             _defaultPresets["PowerShellCore"] = new Command("pwsh.exe", "-ExecutionPolicy Bypass -NoExit");
             _defaultPresets["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit");
             _defaultPresets["PowerShell ISE"] = new Command("powershell_ise.exe");

@@ -65,11 +65,27 @@ namespace MadsKristensen.OpenCommandLine
             mcs.AddCommand(exeItem);
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _dte = null;
+                Instance = null;
+            }
+
+            base.Dispose(disposing);
+        }
+
         private void ExecuteFile(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
             ProjectItem item = VsHelpers.GetProjectItem(_dte);
+            if (item == null)
+            {
+                return;
+            }
+
             string path = item.FileNames[1];
             string folder = Path.GetDirectoryName(path);
 
