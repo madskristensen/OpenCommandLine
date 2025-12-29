@@ -1,19 +1,25 @@
+[marketplace]: https://marketplace.visualstudio.com/items?itemName=MadsKristensen.OpenCommandLine64
+[vsixgallery]: https://www.vsixgallery.com/extension/f4ab1e64-5d35-4f06-bad9-bf414f4b3bbb/
+[repo]: https://github.com/madskristensen/OpenCommandLine
+
 # Open Command Line
 
 [![Build](https://github.com/madskristensen/OpenCommandLine/actions/workflows/build.yaml/badge.svg)](https://github.com/madskristensen/OpenCommandLine/actions/workflows/build.yaml)
 
-Download from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.OpenCommandLine)
-or get the [CI build](https://www.vsixgallery.com/extension/f4ab1e64-5d35-4f06-bad9-bf414f4b3bbb/)
+Download this extension from the [Visual Studio Marketplace][marketplace]
+or get the [CI build][vsixgallery].
 
-Opens a command line at the root of the project or solution. Supports all popular consoles including CMD, PowerShell, Windows Terminal, Git Bash, and many more. Also provides syntax highlighting, IntelliSense, and execution of `.cmd`, `.bat`, and `.ps1` files.
+----------------------------------------
+
+Opens a command line at the root of the project, folder, or solution. Supports all popular consoles including CMD, PowerShell, Windows Terminal, Nushell, Git Bash, and many more. Also provides syntax highlighting, IntelliSense, and execution of `.cmd`, `.bat`, `.ps1`, and `.nu` files.
+
+![Context Menu](screenshots/context-menu.png)
 
 ## Features
 
-### Open Command Line from Context Menu
+### Context Menu Commands
 
 Right-click on any project, solution, folder, or file in Solution Explorer to open a command line at that location.
-
-![Context Menu](screenshots/context-menu.png)
 
 ### Keyboard Shortcuts
 
@@ -35,6 +41,7 @@ The extension comes with presets for popular command line tools:
 - **PowerShell** - Windows PowerShell
 - **PowerShell Core** - Cross-platform PowerShell (pwsh.exe)
 - **PowerShell ISE** - PowerShell Integrated Scripting Environment
+- **Nushell** - Modern shell with structured data support (nu.exe)
 - **Windows Terminal** - Modern Windows Terminal
 - **Git Bash** - Git for Windows Bash shell
 - **posh-git** - PowerShell with Git integration
@@ -61,11 +68,23 @@ Open **Tools → Options → Environment → Command Line** to configure:
 
 ### Execute Script Files
 
-Execute `.cmd`, `.bat`, and `.ps1` files directly from the context menu or with `Alt+Shift+5`.
+Execute `.cmd`, `.bat`, `.ps1`, and `.nu` files directly from the context menu or with `Alt+Shift+5`.
 
 ![Execute Script](screenshots/execute-context-menu.png)
 
 PowerShell scripts run with `-ExecutionPolicy Bypass` for convenience.
+
+## Requirements
+
+- Visual Studio 2022 (17.0 or later)
+
+## Contribute
+
+If you find this extension useful, please:
+
+- [Rate it on the Marketplace][marketplace]
+- [Report issues or request features][repo]
+- [Sponsor development](https://github.com/sponsors/madskristensen)
 
 ## License
 

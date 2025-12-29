@@ -46,6 +46,7 @@ namespace MadsKristensen.OpenCommandLine
                 ["PowerShellCore"] = new Command("pwsh.exe", "-ExecutionPolicy Bypass -NoExit"),
                 ["PowerShell"] = new Command("powershell.exe", "-ExecutionPolicy Bypass -NoExit"),
                 ["PowerShell ISE"] = new Command("powershell_ise.exe"),
+                ["Nushell"] = new Command("nu.exe"),
                 ["posh-git"] = new Command("powershell.exe", @"-ExecutionPolicy Bypass -NoExit -Command .(Resolve-Path ""$env:LOCALAPPDATA\GitHub\shell.ps1""); .(Resolve-Path ""$env:github_posh_git\profile.example.ps1"")"),
                 ["Git Bash"] = new Command(@"C:\Program Files\Git\git-bash.exe"),
                 ["Babun"] = new Command(@"%UserProfile%\.babun\cygwin\bin\mintty.exe", "/bin/env CHERE_INVOKING=1 /bin/zsh.exe"),

@@ -19,7 +19,7 @@ namespace MadsKristensen.OpenCommandLine
         name: "Supported Files",
         expression: "scripts",
         termNames: new[] { "scripts" },
-        termValues: new[] { "HierSingleSelectionName:.(cmd|bat|ps1)$" })]
+        termValues: new[] { "HierSingleSelectionName:.(cmd|bat|ps1|nu)$" })]
     [Guid(PackageGuids.guidOpenCommandLinePkgString)]
     public sealed class OpenCommandLinePackage : AsyncPackage
     {
@@ -96,6 +96,8 @@ namespace MadsKristensen.OpenCommandLine
             {
                 if (!string.IsNullOrEmpty(ext) && ext.Equals(".ps1", StringComparison.OrdinalIgnoreCase))
                     execArgs = $"{baseArgs} powershell.exe -ExecutionPolicy Bypass -NoExit -File \"{fileName}\"".Trim();
+                else if (!string.IsNullOrEmpty(ext) && ext.Equals(".nu", StringComparison.OrdinalIgnoreCase))
+                    execArgs = $"{baseArgs} nu.exe \"{fileName}\"".Trim();
                 else
                     execArgs = $"{baseArgs} cmd.exe /k \"{fileName}\"".Trim();
             }
@@ -113,6 +115,11 @@ namespace MadsKristensen.OpenCommandLine
                 if (!string.IsNullOrEmpty(ext) && ext.Equals(".ps1", StringComparison.OrdinalIgnoreCase))
                 {
                     CommandLineLauncher.StartProcess(folder, "powershell.exe", $"-ExecutionPolicy Bypass -NoExit -File \"{fileName}\"");
+                    return;
+                }
+                else if (!string.IsNullOrEmpty(ext) && ext.Equals(".nu", StringComparison.OrdinalIgnoreCase))
+                {
+                    CommandLineLauncher.StartProcess(folder, "nu.exe", $"\"{fileName}\"");
                     return;
                 }
                 else
