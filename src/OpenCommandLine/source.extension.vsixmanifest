@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="a7b534ac-949b-40f9-a795-deb511823941" Version="2.5.999" Language="en-US" Publisher="Mads Kristensen" />
+        <Identity Id="a7b534ac-949b-40f9-a795-deb511823941" Version="2.6.999" Language="en-US" Publisher="Mads Kristensen" />
         <DisplayName>Open Command Line</DisplayName>
         <Description xml:space="preserve">Opens a command line at the root of the project. Support for all consoles such as CMD, PowerShell, Bash etc. Provides syntax highlighting, Intellisense and execution of .cmd and .bat files.</Description>
         <MoreInfo>https://github.com/madskristensen/OpenCommandLine</MoreInfo>
@@ -14,9 +14,9 @@
         <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[17.0,)">
             <ProductArchitecture>amd64</ProductArchitecture>
         </InstallationTarget>
-		<InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[17.0,)">
-			<ProductArchitecture>amd64</ProductArchitecture>
-		</InstallationTarget>
+        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[17.0,)">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
     </Installation>
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />

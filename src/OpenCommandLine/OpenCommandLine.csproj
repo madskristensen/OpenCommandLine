@@ -69,6 +69,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandLineLauncher.cs" />
     <Compile Include="ContentType\CmdContentTypeDefinition.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="OpenCommandLine.cs">
@@ -127,6 +128,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
   </PropertyGroup>

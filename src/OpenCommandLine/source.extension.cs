@@ -12,7 +12,7 @@ namespace MadsKristensen.OpenCommandLine
         public const string Name = "Open Command Line";
         public const string Description = @"Opens a command line at the root of the project. Support for all consoles such as CMD, PowerShell, Bash etc. Provides syntax highlighting, Intellisense and execution of .cmd and .bat files.";
         public const string Language = "en-US";
-        public const string Version = "2.5.999";
+        public const string Version = "2.6.999";
         public const string Author = "Mads Kristensen";
         public const string Tags = "Solution Explorer, cmd, powershell, bash, post-git, cmder, prompt, console, conemu";
         public const bool IsPreview = false;

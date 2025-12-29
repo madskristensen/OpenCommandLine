@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json.schemastore.org/vsix-publish",
+    "categories": [ "coding", "productivity" ],
+    "private": false,
+    "identity": {
+        "internalName": "OpenCommandLine64",
+        "tags": [
+            "cmd",
+            "powershell",
+            "bash",
+            "terminal",
+            "console",
+            "command-line",
+            "solution-explorer"
+        ]
+    },
+    "assetFiles": [
+        {
+            "pathOnDisk": "screenshots/context-menu.png",
+            "targetPath": "screenshots/context-menu.png"
+        },
+        {
+            "pathOnDisk": "screenshots/options.png",
+            "targetPath": "screenshots/options.png"
+        }
+    ],
+    "overview": "README.md",
+    "publisher": "MadsKristensen",
+    "repo": "https://github.com/madskristensen/OpenCommandLine"
+}

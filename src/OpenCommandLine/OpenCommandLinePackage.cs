@@ -1,10 +1,9 @@
-﻿using EnvDTE;
+using EnvDTE;
 using EnvDTE80;
 using Microsoft;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -13,7 +12,7 @@ using Task = System.Threading.Tasks.Task;
 namespace MadsKristensen.OpenCommandLine
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [InstalledProductRegistration(Vsix.Name, Vsix.Version, Vsix.Version)]
+    [InstalledProductRegistration(Vsix.Name, Vsix.Description, Vsix.Version)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideOptionPage(typeof(Options), "Environment", "Command Line", 101, 104, true, new[] { "cmd", "powershell", "bash" }, ProvidesLocalizedCategoryName = false)]
     [ProvideUIContextRule(PackageGuids.guidBatFileRuleString,
@@ -25,10 +24,16 @@ namespace MadsKristensen.OpenCommandLine
     public sealed class OpenCommandLinePackage : AsyncPackage
     {
         private static DTE2 _dte;
-        public Package Instance;
+
+        /// <summary>
+        /// Gets the singleton instance of the package.
+        /// </summary>
+        public static OpenCommandLinePackage Instance { get; private set; }
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            Instance = this;
+
             await JoinableTaskFactory.SwitchToMainThreadAsync();
 
             _dte = await GetServiceAsync(typeof(DTE)) as DTE2;
@@ -72,11 +77,11 @@ namespace MadsKristensen.OpenCommandLine
 
             if (!string.IsNullOrEmpty(ext) && ext.ToLower() == ".ps1")
             {
-                StartProcess(folder, "powershell.exe", "-ExecutionPolicy Bypass -NoExit -File \"" + Path.GetFileName(path) + "\"");
+                CommandLineLauncher.StartProcess(folder, "powershell.exe", "-ExecutionPolicy Bypass -NoExit -File \"" + Path.GetFileName(path) + "\"");
             }
             else
             {
-                StartProcess(folder, "cmd.exe", "/k \"" + Path.GetFileName(path) + "\"");
+                CommandLineLauncher.StartProcess(folder, "cmd.exe", "/k \"" + Path.GetFileName(path) + "\"");
             }
         }
 
@@ -102,7 +107,7 @@ namespace MadsKristensen.OpenCommandLine
             string confPlatform = VsHelpers.GetSolutionConfigurationPlatformName(_dte);
             arguments = arguments.Replace("%platform%", confPlatform);
 
-            StartProcess(folder, options.Command, arguments);
+            CommandLineLauncher.StartProcess(folder, options.Command, arguments);
         }
 
         private void OpenCmd(object sender, EventArgs e)
@@ -129,62 +134,7 @@ namespace MadsKristensen.OpenCommandLine
             var options = GetDialogPage(typeof(Options)) as Options;
             string folder = VsHelpers.GetFolderPath(options, _dte);
 
-            StartProcess(folder, command, arguments);
-        }
-
-        private static void StartProcess(string workingDirectory, string command, string arguments)
-        {
-            try
-            {
-                command = Environment.ExpandEnvironmentVariables(command ?? string.Empty);
-                arguments = Environment.ExpandEnvironmentVariables(arguments ?? string.Empty);
-
-                var start = new ProcessStartInfo(command, arguments)
-                {
-                    WorkingDirectory = workingDirectory,
-                    LoadUserProfile = true,
-                    UseShellExecute = false
-                };
-
-                ModifyPathVariable(start);
-
-                using (System.Diagnostics.Process.Start(start))
-                {
-                    // Makes sure the process handle is disposed
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex);
-            }
-        }
-
-        private static void ModifyPathVariable(ProcessStartInfo start)
-        {
-            string path = ".\\node_modules\\.bin" + ";" + start.EnvironmentVariables["PATH"];
-
-            var process = System.Diagnostics.Process.GetCurrentProcess();
-            string ideDir = Path.GetDirectoryName(process.MainModule.FileName);
-
-            if (Directory.Exists(ideDir))
-            {
-                string parent = Directory.GetParent(ideDir).Parent.FullName;
-
-                string rc2Preview1Path = new DirectoryInfo(Path.Combine(parent, @"Web\External")).FullName;
-
-                if (Directory.Exists(rc2Preview1Path))
-                {
-                    path += ";" + rc2Preview1Path;
-                    path += ";" + rc2Preview1Path + "\\git";
-                }
-                else
-                {
-                    path += ";" + Path.Combine(ideDir, @"Extensions\Microsoft\Web Tools\External");
-                    path += ";" + Path.Combine(ideDir, @"Extensions\Microsoft\Web Tools\External\git");
-                }
-            }
-
-            start.EnvironmentVariables["PATH"] = path;
+            CommandLineLauncher.StartProcess(folder, command, arguments);
         }
     }
 }
