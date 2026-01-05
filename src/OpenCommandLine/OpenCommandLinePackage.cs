@@ -88,49 +88,38 @@ namespace MadsKristensen.OpenCommandLine
             string ext = Path.GetExtension(path);
 
             var options = GetDialogPage(typeof(Options)) as Options;
-            string command = options?.Command;
+            string command = options?.Command ?? string.Empty;
             string baseArgs = VsHelpers.ReplaceArgumentPlaceholders(options?.Arguments, folder, _dte);
             bool runAsAdmin = options?.RunAsAdministrator ?? false;
 
-            string execArgs;
+            // Determine how to execute based on the configured command
             if (CommandLineLauncher.IsWindowsTerminal(command))
             {
-                if (!string.IsNullOrEmpty(ext) && ext.Equals(".ps1", StringComparison.OrdinalIgnoreCase))
+                string execArgs;
+                if (ext.Equals(".ps1", StringComparison.OrdinalIgnoreCase))
                     execArgs = $"{baseArgs} powershell.exe -ExecutionPolicy Bypass -NoExit -File \"{fileName}\"".Trim();
-                else if (!string.IsNullOrEmpty(ext) && ext.Equals(".nu", StringComparison.OrdinalIgnoreCase))
+                else if (ext.Equals(".nu", StringComparison.OrdinalIgnoreCase))
                     execArgs = $"{baseArgs} nu.exe \"{fileName}\"".Trim();
                 else
                     execArgs = $"{baseArgs} cmd.exe /k \"{fileName}\"".Trim();
+                
+                CommandLineLauncher.StartProcess(folder, command, execArgs, runAsAdmin);
             }
-            else if (CommandLineLauncher.IsPowerShell(command))
+            else if (ext.Equals(".ps1", StringComparison.OrdinalIgnoreCase))
             {
-                execArgs = $"-ExecutionPolicy Bypass -NoExit -Command \"& '.\\{fileName}'\"";
+                // PowerShell script - always use powershell.exe
+                CommandLineLauncher.StartProcess(folder, "powershell.exe", $"-ExecutionPolicy Bypass -NoExit -File \"{fileName}\"", runAsAdmin);
             }
-            else if (CommandLineLauncher.IsCmd(command))
+            else if (ext.Equals(".nu", StringComparison.OrdinalIgnoreCase))
             {
-                execArgs = $"/k \"{fileName}\"";
-                command = "cmd.exe";
+                // Nushell script - always use nu.exe
+                CommandLineLauncher.StartProcess(folder, "nu.exe", $"\"{fileName}\"", runAsAdmin);
             }
             else
             {
-                if (!string.IsNullOrEmpty(ext) && ext.Equals(".ps1", StringComparison.OrdinalIgnoreCase))
-                {
-                    CommandLineLauncher.StartProcess(folder, "powershell.exe", $"-ExecutionPolicy Bypass -NoExit -File \"{fileName}\"", runAsAdmin);
-                    return;
-                }
-                else if (!string.IsNullOrEmpty(ext) && ext.Equals(".nu", StringComparison.OrdinalIgnoreCase))
-                {
-                    CommandLineLauncher.StartProcess(folder, "nu.exe", $"\"{fileName}\"", runAsAdmin);
-                    return;
-                }
-                else
-                {
-                    CommandLineLauncher.StartProcess(folder, "cmd.exe", $"/k \"{fileName}\"", runAsAdmin);
-                    return;
-                }
+                // .cmd and .bat files - always use cmd.exe
+                CommandLineLauncher.StartProcess(folder, "cmd.exe", $"/k \"{fileName}\"", runAsAdmin);
             }
-
-            CommandLineLauncher.StartProcess(folder, command, execArgs, runAsAdmin);
         }
 
         private void BeforeQueryStatus(object sender, EventArgs e)

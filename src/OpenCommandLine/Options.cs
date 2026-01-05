@@ -74,20 +74,22 @@ namespace MadsKristensen.OpenCommandLine
             get => _preset;
             set
             {
-                ThreadHelper.ThrowIfNotOnUIThread();
-
                 _preset = value;
 
-                if (!_isLoading && !_isChanging && DefaultPresets.ContainsKey(value))
+                if (!_isLoading && !_isChanging)
                 {
-                    _isChanging = true;
+                    // Only access DefaultPresets on UI thread since it requires VS services
+                    if (ThreadHelper.CheckAccess() && DefaultPresets.ContainsKey(value))
+                    {
+                        _isChanging = true;
 
-                    Command command = DefaultPresets[value];
-                    Command = command.Name;
-                    Arguments = command.Arguments;
-                    FriendlyName = "Default (" + value + ")";
+                        Command command = DefaultPresets[value];
+                        Command = command.Name;
+                        Arguments = command.Arguments;
+                        FriendlyName = "Default (" + value + ")";
 
-                    _isChanging = false;
+                        _isChanging = false;
+                    }
                 }
             }
         }
@@ -109,8 +111,11 @@ namespace MadsKristensen.OpenCommandLine
             get => _command;
             set
             {
-                _command = value;
-                SetCustom();
+                if (_command != value)
+                {
+                    _command = value;
+                    SetCustom();
+                }
             }
         }
 
@@ -128,8 +133,11 @@ namespace MadsKristensen.OpenCommandLine
             get => _arguments;
             set
             {
-                _arguments = value;
-                SetCustom();
+                if (_arguments != value)
+                {
+                    _arguments = value;
+                    SetCustom();
+                }
             }
         }
 
@@ -201,12 +209,20 @@ namespace MadsKristensen.OpenCommandLine
 
         public override bool IsValid(ITypeDescriptorContext context, object value)
         {
+            // Must be called on UI thread to access DefaultPresets
+            if (!ThreadHelper.CheckAccess())
+                return true; // Allow any value if not on UI thread
+            
             ThreadHelper.ThrowIfNotOnUIThread();
             return Options.DefaultPresets.ContainsKey(value.ToString());
         }
 
         public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
         {
+            // Must be called on UI thread to access DefaultPresets
+            if (!ThreadHelper.CheckAccess())
+                return new StandardValuesCollection(new string[] { "Custom" });
+            
             ThreadHelper.ThrowIfNotOnUIThread();
             return new StandardValuesCollection(Options.DefaultPresets.Keys);
         }
