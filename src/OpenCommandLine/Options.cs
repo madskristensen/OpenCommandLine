@@ -74,10 +74,11 @@ namespace MadsKristensen.OpenCommandLine
             get => _preset;
             set
             {
-                _preset = value;
-
-                if (!_isLoading && !_isChanging)
+                // Only update Command/Arguments when user explicitly changes preset (not during load)
+                if (!_isLoading && !_isChanging && _preset != value)
                 {
+                    _preset = value;
+
                     // Only access DefaultPresets on UI thread since it requires VS services
                     if (ThreadHelper.CheckAccess() && DefaultPresets.ContainsKey(value))
                     {
@@ -90,6 +91,10 @@ namespace MadsKristensen.OpenCommandLine
 
                         _isChanging = false;
                     }
+                }
+                else
+                {
+                    _preset = value;
                 }
             }
         }
@@ -114,7 +119,6 @@ namespace MadsKristensen.OpenCommandLine
                 if (_command != value)
                 {
                     _command = value;
-                    SetCustom();
                 }
             }
         }
@@ -123,9 +127,9 @@ namespace MadsKristensen.OpenCommandLine
 
         [Category("Console")]
         [DisplayName("Command arguments")]
-        [Description(@"Any arguments to pass to the command.\n
-%folder% parameter pass to argument current file path.\n
-%configuration% parameter pass to argument current build configuration.\n
+        [Description(@"Any arguments to pass to the command.
+%folder% parameter pass to argument current file path.
+%configuration% parameter pass to argument current build configuration.
 %platform% parameter pass to argument current build platform.")]
         [DefaultValue("")]
         public string Arguments
@@ -136,7 +140,6 @@ namespace MadsKristensen.OpenCommandLine
                 if (_arguments != value)
                 {
                     _arguments = value;
-                    SetCustom();
                 }
             }
         }
@@ -189,14 +192,6 @@ namespace MadsKristensen.OpenCommandLine
             }
 
             _isLoading = false;
-        }
-
-        private void SetCustom()
-        {
-            if (!_isChanging && !_isLoading)
-            {
-                _preset = "Custom";
-            }
         }
     }
 
