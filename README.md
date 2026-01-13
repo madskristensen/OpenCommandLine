@@ -30,7 +30,7 @@ Right-click on any project, solution, folder, or file in Solution Explorer to op
 | `Alt+Shift+.` | Open PowerShell |
 | `Ctrl+Shift+X` | Execute current batch/script file |
 
-You can customize these shortcuts in **Tools → Options → Environment → Keyboard**. Search for commands starting with `ProjectAndSolutionContextMenus.Project.OpenCommandLine`.
+You can customize these shortcuts in **Tools → Options → Environment → Keyboard**. Search for commands starting with `OpenCommandLine.OpenDefault`.
 
 ### Built-in Presets
 

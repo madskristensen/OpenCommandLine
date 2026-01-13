@@ -12,7 +12,7 @@
 				<Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_FOLDER_EXPLORE" />
 				<Strings>
 					<ButtonText>Open Command Line</ButtonText>
-					<CanonicalName>.OpenCommandLine.OpenCommandLine</CanonicalName>
+					<CanonicalName>.OpenCommandLine.SolutionMenu</CanonicalName>
 				</Strings>
 			</Menu>
 
@@ -21,7 +21,7 @@
 				<Parent guid="guidOpenCommandLineCmdSet" id="WorkspaceMenuGroup" />
 				<Strings>
 					<ButtonText>Open Command Line</ButtonText>
-					<CanonicalName>.OpenCommandLine.OpenCommandLine</CanonicalName>
+					<CanonicalName>.OpenCommandLine.WorkspaceMenu</CanonicalName>
 				</Strings>
 			</Menu>
 		</Menus>
@@ -64,7 +64,7 @@
 				<Strings>
 					<CommandName>Open Command Line</CommandName>
 					<ButtonText>Default</ButtonText>
-					<CanonicalName>.OpenCommandLine.OpenDefault</CanonicalName>
+					<LocCanonicalName>.OpenCommandLine.OpenDefault</LocCanonicalName>
 				</Strings>
 			</Button>
 			<Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenCmd" priority="0x0100" type="Button">
@@ -73,7 +73,7 @@
 				<Strings>
 					<CommandName>Open Developer Command Prompt</CommandName>
 					<ButtonText>Developer Command Prompt</ButtonText>
-					<CanonicalName>.OpenCommandLine.DeveloperCommandPrompt</CanonicalName>
+					<LocCanonicalName>.OpenCommandLine.DeveloperCommandPrompt</LocCanonicalName>
 				</Strings>
 			</Button>
 			<Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenPowershell" priority="0x0200" type="Button">
@@ -82,7 +82,7 @@
 				<Strings>
 					<CommandName>Open PowerShell</CommandName>
 					<ButtonText>PowerShell</ButtonText>
-					<CanonicalName>.OpenCommandLine.OpenPowerShell</CanonicalName>
+					<LocCanonicalName>.OpenCommandLine.OpenPowerShell</LocCanonicalName>
 				</Strings>
 			</Button>
 			<Button guid="guidOpenCommandLineCmdSet" id="cmdidOpenOptions" priority="0x0200" type="Button">
@@ -90,7 +90,7 @@
 				<Strings>
 					<CommandName>Open Command Line Options</CommandName>
 					<ButtonText>Settings...</ButtonText>
-					<CanonicalName>.OpenCommandLine.Settings</CanonicalName>
+					<LocCanonicalName>.OpenCommandLine.Settings</LocCanonicalName>
 				</Strings>
 			</Button>
 			<Button guid="guidOpenCommandLineCmdSet" id="cmdExecuteCmd" priority="0x0700" type="Button">
@@ -100,7 +100,7 @@
 				<CommandFlag>DynamicVisibility</CommandFlag>
 				<Strings>
 					<ButtonText>Execute File</ButtonText>
-					<CanonicalName>.OpenCommandLine.ExecuteFile</CanonicalName>
+					<LocCanonicalName>.OpenCommandLine.ExecuteFile</LocCanonicalName>
 				</Strings>
 			</Button>
 		</Buttons>
